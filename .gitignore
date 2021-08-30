@@ -1,3 +1,8 @@
+
+# Created by https://www.toptal.com/developers/gitignore/api/python
+# Edit at https://www.toptal.com/developers/gitignore?templates=python
+
+### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -50,6 +55,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+pytestdebug.log
 
 # Translations
 *.mo
@@ -70,6 +76,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+doc/_build/
 
 # PyBuilder
 target/
@@ -102,7 +109,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -127,3 +133,19 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# End of https://www.toptal.com/developers/gitignore/api/python
+
+#self_use
+workspace.code-workspace
+*.sqlite3
+Dockerfile
+docker-compose.yml
+pyproject.toml
+.vscode/
+*.db
+.idea/
+.env.dev
