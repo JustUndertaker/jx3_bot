@@ -1,10 +1,9 @@
 from nonebot import get_driver
-from .jx3_event import OpenServerEvent, NewsEvent, AdventureEvent
-from .jx3_soket import on_connect
+from utils.jx3_event import OpenServerEvent, NewsEvent, AdventureEvent
+from utils.jx3_soket import on_connect
 from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot
 import asyncio
-import time
 
 from nonebot.plugin import export
 
