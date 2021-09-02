@@ -1,5 +1,6 @@
 from configs.pathConfig import DATABASE_PATH
 from typing import Optional
+from configs.config import DEFAULT_SERVER
 from peewee import (
     SqliteDatabase,
     Model,
@@ -21,7 +22,7 @@ class GroupInfo(Model):
     # 表的结构
     group_id = IntegerField(primary_key=True, verbose_name='QQ群号', null=False)
     sign_nums = IntegerField(verbose_name='当天签到人数', default=0)
-    server = CharField(verbose_name='绑定服务器', default='幽月轮')
+    server = CharField(verbose_name='绑定服务器', default=DEFAULT_SERVER)
     robot_status = BooleanField(verbose_name='机器人开关', default=True)
 
     class Meta:
