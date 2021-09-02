@@ -6,9 +6,32 @@ from typing import Optional, Union
 import time
 
 
-class Event(BaseEvent):
+class WS_ECHO():
     '''
-    jx3_api的基类事件
+    维护连接池数据
+    '''
+    echo: int
+    '''
+    认证echo
+    '''
+    user_id: Optional[int]
+    '''
+    私聊消息：QQ号
+    '''
+    group_id: Optional[int]
+    '''
+    群消息：QQ群号
+    '''
+
+    def __init__(self, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
+        self.echo = echo
+        self.user_id = user_id
+        self.group_id = group_id
+
+
+class RecvEvent(BaseEvent):
+    '''
+    jx3_api的基类事件，推送基类
     '''
 
     __event__ = "jx3_api"
@@ -53,7 +76,64 @@ class Event(BaseEvent):
         return False
 
 
-class OpenServerRecvEvent(Event):
+class SendEvent(BaseEvent):
+    '''
+    jx3_api的基类事件，发送基类
+    '''
+
+    __event__ = "jx3_api"
+    message_type: str = "jx3_api"
+    post_type: Optional[str]
+    user_id: Optional[int]
+    group_id: Optional[int]
+    echo: Optional[int]
+    '''
+    认证echo
+    '''
+
+    def set_message_type(self, ws_econ: WS_ECHO):
+        self.user_id = ws_econ.user_id
+        self.group_id = ws_econ.group_id
+
+    @classmethod
+    def get_api_type(cls):
+        return None
+
+    @overrides(BaseEvent)
+    def get_type(self) -> str:
+        return self.post_type
+
+    @overrides(BaseEvent)
+    def get_event_name(self) -> str:
+        return f'{self.message_type}'+(f'.{self.post_type}'
+                                       if self.post_type else '')
+
+    @overrides(BaseEvent)
+    def get_event_description(self) -> str:
+        return escape_tag(str(self.dict()))
+
+    @overrides(BaseEvent)
+    def get_message(self) -> Message:
+        raise ValueError("Event has no message!")
+
+    @overrides(BaseEvent)
+    def get_plaintext(self) -> str:
+        raise ValueError("Event has no message!")
+
+    @overrides(BaseEvent)
+    def get_user_id(self) -> str:
+        raise ValueError("Event has no message!")
+
+    @overrides(BaseEvent)
+    def get_session_id(self) -> str:
+        raise ValueError("Event has no message!")
+
+    @overrides(BaseEvent)
+    def is_tome(self) -> bool:
+        return False
+
+
+class OpenServerRecvEvent(RecvEvent):
     '''
     开服提醒事件，服务器主动推送
     '''
@@ -83,7 +163,7 @@ class OpenServerRecvEvent(Event):
         return 2001
 
 
-class NewsRecvEvent(Event):
+class NewsRecvEvent(RecvEvent):
     '''
     官方新闻推送事件，服务器主动推送
     '''
@@ -122,7 +202,7 @@ class NewsRecvEvent(Event):
         return 2002
 
 
-class AdventureRecvEvent(Event):
+class AdventureRecvEvent(RecvEvent):
     '''
     奇遇播报事件，服务器主动推送
     '''
@@ -163,16 +243,12 @@ class AdventureRecvEvent(Event):
         return 2003
 
 
-class DailyEvent(Event):
+class DailyEvent(SendEvent):
     '''
     返回日常事件
     '''
     __event__ = "daily"
     post_type = "daily"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     DateTime: Optional[str]
     '''
     日期
@@ -222,6 +298,7 @@ class DailyEvent(Event):
         self.echo = all_data.get('echo')
         data: dict = all_data.get('data')
         self.DateTime = data.get('DateTime')
+        self.DayWar = data.get('DayWar')
         self.Week = data.get('Week')
         self.DayBattle = data.get('DayBattle')
         self.DayCamp = data.get('DayCamp')
@@ -236,7 +313,7 @@ class DailyEvent(Event):
         return 1001
 
 
-class OpenServerSendEvent(Event):
+class OpenServerSendEvent(SendEvent):
     '''
     返回开服查询结果
     '''
@@ -260,6 +337,7 @@ class OpenServerSendEvent(Event):
         重写初始化函数
         '''
         super(OpenServerSendEvent, self).__init__()
+        self.echo = all_data.get('echo')
         data: dict = all_data.get('data')
         self.server = data.get('server')
         self.region = data.get('region')
@@ -271,16 +349,12 @@ class OpenServerSendEvent(Event):
         return 1002
 
 
-class GoldQueryEvent(Event):
+class GoldQueryEvent(SendEvent):
     '''
     返回金价查询结果
     '''
     __event__ = "gold_query"
     post_type = "gold_query"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     server: Optional[str]
     '''
     服务器名
@@ -325,16 +399,12 @@ class GoldQueryEvent(Event):
         return 1003
 
 
-class FlowerPriceEvent(Event):
+class FlowerPriceEvent(SendEvent):
     '''
     返回鲜花价格查询结果
     '''
     __event__ = "flower_price"
     post_type = "flower_price"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     data: Optional[list[dict]]
     '''
     鲜花数据，是一个字典列表
@@ -353,16 +423,12 @@ class FlowerPriceEvent(Event):
         return 1004
 
 
-class MatchEquipEvent(Event):
+class MatchEquipEvent(SendEvent):
     '''
     返回配装查询结果
     '''
     __event__ = "match_equip"
     post_type = "match_equip"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     心法名称
@@ -392,16 +458,12 @@ class MatchEquipEvent(Event):
         return 1006
 
 
-class MainServerEvent(Event):
+class MainServerEvent(SendEvent):
     '''
     返回主服务器查询结果
     '''
     __event__ = "main_server"
     post_type = "main_server"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     主服务器名称
@@ -421,16 +483,12 @@ class MainServerEvent(Event):
         return 1007
 
 
-class ExtraPointEvent(Event):
+class ExtraPointEvent(SendEvent):
     '''
     返回奇穴查询结果
     '''
     __event__ = "extra_point"
     post_type = "extra_point"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     心法名称
@@ -460,16 +518,12 @@ class ExtraPointEvent(Event):
         return 1008
 
 
-class MedicineEvent(Event):
+class MedicineEvent(SendEvent):
     '''
     返回小药查询结果
     '''
     __event__ = "medicine"
     post_type = "medicine"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     心法名称
@@ -509,16 +563,12 @@ class MedicineEvent(Event):
         return 1010
 
 
-class MacroEvent(Event):
+class MacroEvent(SendEvent):
     '''
     返回宏查询结果
     '''
     __event__ = "macro"
     post_type = "macro"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     心法名称
@@ -548,16 +598,12 @@ class MacroEvent(Event):
         return 1011
 
 
-class ItemPriceEvent(Event):
+class ItemPriceEvent(SendEvent):
     '''
     返回物价查询结果
     '''
     __event__ = "itemprice"
     post_type = "itemprice"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     物品名称
@@ -582,16 +628,12 @@ class ItemPriceEvent(Event):
         return 1012
 
 
-class AdventureConditionEvent(Event):
+class AdventureConditionEvent(SendEvent):
     '''
     返回奇遇条件查询结果
     '''
     __event__ = "adventurecondition"
     post_type = "adventurecondition"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     奇遇名称
@@ -631,16 +673,12 @@ class AdventureConditionEvent(Event):
         return 1013
 
 
-class ExamEvent(Event):
+class ExamEvent(SendEvent):
     '''
     返回科举查询结果
     '''
     __event__ = "exam"
     post_type = "exam"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     question: Optional[str]
     '''
     科举题目
@@ -665,16 +703,12 @@ class ExamEvent(Event):
         return 1014
 
 
-class FurnitureMapEvent(Event):
+class FurnitureMapEvent(SendEvent):
     '''
     返回地图器物查询结果
     '''
     __event__ = "furnituremap"
     post_type = "furnituremap"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     data: Optional[list[dict]]
     '''
     家具数据，是一个列表
@@ -694,16 +728,12 @@ class FurnitureMapEvent(Event):
         return 1015
 
 
-class FurnitureEvent(Event):
+class FurnitureEvent(SendEvent):
     '''
     返回装饰查询结果
     '''
     __event__ = "furniture"
     post_type = "furniture"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     装饰名称
@@ -788,16 +818,12 @@ class FurnitureEvent(Event):
         return 1016
 
 
-class AdventureSearchEvent(Event):
+class AdventureSearchEvent(SendEvent):
     '''
     返回奇遇查询结果
     '''
     __event__ = "adventuresearch"
     post_type = "adventuresearch"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     data: Optional[list[dict]]
     '''
     奇遇数据，是一个列表
@@ -817,16 +843,12 @@ class AdventureSearchEvent(Event):
         return 1018
 
 
-class SaoHuaEvent(Event):
+class SaoHuaEvent(SendEvent):
     '''
     返回随机骚话查询结果
     '''
     __event__ = "saohua"
     post_type = "saohua"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     text: Optional[str]
     '''
     骚话内容
@@ -846,16 +868,12 @@ class SaoHuaEvent(Event):
         return 1019
 
 
-class PendantEvent(Event):
+class PendantEvent(SendEvent):
     '''
     返回挂件查询结果
     '''
     __event__ = "pendant"
     post_type = "pendant"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     name: Optional[str]
     '''
     挂件名称
@@ -895,16 +913,12 @@ class PendantEvent(Event):
         return 1021
 
 
-class ExperienceEvent(Event):
+class ExperienceEvent(SendEvent):
     '''
-    返回奇遇查询结果
+    返回资历查询结果
     '''
     __event__ = "experience"
     post_type = "experience"
-    echo: Optional[int]
-    '''
-    认证echo
-    '''
     data: Optional[list[dict]]
     '''
     资历数据，是一个列表
@@ -972,28 +986,3 @@ Jx3EventList = [
     PendantEvent,
     ExperienceEvent
 ]
-
-
-def get_event_type(data: dict) -> Jx3EventType:
-    '''
-    获取jx3的事件实例
-    '''
-    data_type = data.get('type')
-    for event in Jx3EventList:
-        if data_type == event.get_api_type():
-            return event(data)
-    return None
-
-
-if __name__ == "__main__":
-    data = {
-        "type": 1002,
-        "data": {
-            "server": "长安城",
-            "region": "电信一区",
-            "status": 1
-        },
-        "echo": 153166341
-    }
-    event = get_event_type(data)
-    print(event)

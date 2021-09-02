@@ -1,23 +1,29 @@
 from nonebot.adapters.cqhttp import Bot
 from nonebot.message import handle_event
-from .jx3_event import Jx3EventList
+from .jx3_event import Jx3EventList, WS_ECHO
 from websockets.exceptions import ConnectionClosed, ConnectionClosedError, ConnectionClosedOK
 from asyncio import AbstractEventLoop
 import websockets
 import asyncio
 import json
+from typing import Optional
 
 from utils.log import logger
 
 
-ws_connect = None
+ws_echo_list: list[WS_ECHO] = []  # 消息池，用来维护发送后回复事件
+
+ws_connect = None  # ws全局链接
 
 
-async def send_ws_message(msg: dict):
+async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
     '''
     使用ws连接发送一条消息
     '''
     global ws_connect
+    global ws_echo_list
+    ws_echo = WS_ECHO(echo, user_id, group_id)
+    ws_echo_list.append(ws_echo)
     if ws_connect is not None:
         data = json.dumps(msg)
         await ws_connect.send(data)
@@ -44,11 +50,12 @@ async def on_connect(loop: AbstractEventLoop, bot: Bot):
 
 async def _task(loop: AbstractEventLoop, ws: websockets, bot: Bot):
     global ws_connect
+    global ws_echo_list
     try:
         while True:
             data_recv = await ws.recv()
             data = json.loads(data_recv)
-            msg_type = data['type']
+            msg_type: int = data['type']
             event = None
             for event_type in Jx3EventList:
                 if msg_type == event_type.get_api_type():
@@ -56,6 +63,14 @@ async def _task(loop: AbstractEventLoop, ws: websockets, bot: Bot):
                     break
 
             if event is not None:
+                if msg_type < 2000:
+                    # 处理发送事件，设置user_id或group_id
+                    echo = data['echo']
+                    for i, echo_one in enumerate(ws_echo_list):
+                        if echo == echo_one.echo:
+                            event.set_message_type(echo_one)
+                            del ws_echo_list[i]
+
                 await handle_event(bot, event)
 
     except (ConnectionClosed, ConnectionClosedError, ConnectionClosedOK) as e:
