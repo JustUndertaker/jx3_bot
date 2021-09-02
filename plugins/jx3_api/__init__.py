@@ -4,6 +4,7 @@ from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot
 import asyncio
 from datetime import datetime
+from .data_source import get_server
 from nonebot.plugin import export
 from utils.jx3_event import (
     OpenServerRecvEvent,
@@ -22,7 +23,7 @@ from utils.jx3_event import (
 )
 
 export = export()
-export.plugin_name = 'jx3_api_ws_recv'
+export.plugin_name = 'ws链接回复'
 export.plugin_usage = '用于jx3_api的ws链接，处理服务器接收信息。'
 export.ignore = True  # 插件管理器忽略此插件
 
@@ -63,11 +64,14 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     server = event.server
     stauts = event.status
     msg = None
+    time_now = datetime.now().strftime("%H时%M分")
     if stauts:
-        msg = f'[{server}] 开服啦！'
+        msg = f'时间：{time_now}\n[{server}] 开服啦！'
     group_list = await bot.get_group_list()
     for group in group_list:
-        await bot.send_group_msg(group_id=group['group_id'], message=msg)
+        group_server = await get_server(group['group_id'])
+        if group_server == server:
+            await bot.send_group_msg(group_id=group['group_id'], message=msg)
     await open_server_recv.finish()
 
 
@@ -81,7 +85,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
     news_url = event.news_url
     news_date = event.news_date
 
-    msg = f"[{news_type}]\n{news_tittle}\nurl：{news_url}\n日期：{news_date}"
+    msg = f"[{news_type}]来惹\n标题：{news_tittle}\nurl：{news_url}\n日期：{news_date}"
     group_list = await bot.get_group_list()
     for group in group_list:
         await bot.send_group_msg(group_id=group['id'], message=msg)
@@ -94,13 +98,12 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     奇遇推送事件
     '''
     server = event.server
-    name = event.name
-    time = event.time
-    serendipity = event.serendipity
-    msg = f'[{server}] 的 [{name}] 出奇遇了。\n奇遇：{serendipity}\n时间：{time}'
+    msg = f'奇遇播报：\n[{event.serendipity}]在[{event.time}]被[{event.name}]抱走惹。'
     group_list = await bot.get_group_list()
     for group in group_list:
-        await bot.send_group_msg(group_id=group['group_id'], message=msg)
+        group_server = await get_server(group['group_id'])
+        if group_server == server:
+            await bot.send_group_msg(group_id=group['group_id'], message=msg)
     await adventure_recv.finish()
 
 

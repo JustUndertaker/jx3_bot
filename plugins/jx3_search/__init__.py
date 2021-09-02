@@ -1,5 +1,6 @@
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from nonebot.adapters.cqhttp.permission import GROUP
+from .data_source import get_server
 from nonebot.plugin import export
 from nonebot import on_regex
 import time
@@ -19,9 +20,10 @@ daily = on_regex(pattern=r'^日常$', permission=GROUP, priority=5, block=True) 
 async def _(bot: Bot, event: GroupMessageEvent):
     echo = int(time.time())
     group_id = event.group_id
+    server = await get_server(group_id)
     data = {
         "type": 1001,
-        "server": "长安城",
+        "server": server,
         "echo": echo
     }
     await send_ws_message(msg=data, echo=echo, group_id=group_id)

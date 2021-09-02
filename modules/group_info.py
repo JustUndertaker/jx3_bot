@@ -1,9 +1,11 @@
 from configs.pathConfig import DATABASE_PATH
+from typing import Optional
 from peewee import (
     SqliteDatabase,
     Model,
     IntegerField,
-    BooleanField
+    BooleanField,
+    CharField
 )
 
 
@@ -19,6 +21,7 @@ class GroupInfo(Model):
     # 表的结构
     group_id = IntegerField(primary_key=True, verbose_name='QQ群号', null=False)
     sign_nums = IntegerField(verbose_name='当天签到人数', default=0)
+    server = CharField(verbose_name='绑定服务器', default='幽月轮')
     robot_status = BooleanField(verbose_name='机器人开关', default=True)
 
     class Meta:
@@ -52,7 +55,7 @@ class GroupInfo(Model):
         return record.sign_nums
 
     @classmethod
-    async def get_robot_status(cls, group_id: int) -> bool:
+    async def get_robot_status(cls, group_id: int) -> Optional[bool]:
         '''
         :说明
             获取机器人开关
@@ -145,3 +148,38 @@ class GroupInfo(Model):
         '''
         record = cls.get_or_none(cls.group_id == group_id)
         return record is not None
+
+    @classmethod
+    async def get_server(cls, group_id: int) -> Optional[str]:
+        '''
+        :说明
+            查询群绑定服务器
+
+        :参数
+            * group_id：QQ群号
+
+        :返回
+            * str：服务器名
+        '''
+        record = cls.get_or_none(cls.group_id == group_id)
+        if record is not None:
+            return record.server
+        else:
+            return None
+
+    @classmethod
+    async def set_server(cls, group_id: int, server: str) -> None:
+        '''
+        :说明
+            设置群绑定服务器
+
+        :参数
+            * group_id：QQ群号
+            * server：服务器名
+        '''
+        record = cls.get_or_none(cls.group_id == group_id)
+        if record is not None:
+            record.server = server
+            record.save()
+        else:
+            raise Exception

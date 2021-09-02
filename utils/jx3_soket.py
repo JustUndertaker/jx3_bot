@@ -11,9 +11,15 @@ from typing import Optional
 from utils.log import logger
 
 
-ws_echo_list: list[WS_ECHO] = []  # 消息池，用来维护发送后回复事件
+ws_echo_list: list[WS_ECHO] = []
+'''
+消息池，用来维护发送后回复事件
+'''
 
-ws_connect = None  # ws全局链接
+ws_connect = None
+'''
+ws全局链接
+'''
 
 
 async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
