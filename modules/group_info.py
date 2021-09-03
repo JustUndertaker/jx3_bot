@@ -1,40 +1,40 @@
-from configs.pathConfig import DATABASE_PATH
+from configs.config import DEFAULT_SERVER, DEFAULT_STATUS
 from typing import Optional
-from configs.config import DEFAULT_SERVER
-from peewee import (
-    SqliteDatabase,
-    Model,
-    IntegerField,
-    BooleanField,
-    CharField
-)
-
-
-'''
-GroupInfo表，用于管理整体用户数据
-'''
-
-DB = SqliteDatabase(DATABASE_PATH)
+from tortoise.models import Model
+from tortoise import fields
 
 
 class GroupInfo(Model):
-
-    # 表的结构
-    group_id = IntegerField(primary_key=True, verbose_name='QQ群号', null=False)
-    sign_nums = IntegerField(verbose_name='当天签到人数', default=0)
-    server = CharField(verbose_name='绑定服务器', default=DEFAULT_SERVER)
-    robot_status = BooleanField(verbose_name='机器人开关', default=True)
+    '''
+    QQ群表
+    '''
+    group_id = fields.IntField(pk=True)
+    '''
+    QQ群号
+    '''
+    sign_nums = fields.IntField(default=0)
+    '''
+    签到次数
+    '''
+    server = fields.CharField(max_length=255, default=DEFAULT_SERVER)
+    '''
+    绑定服务器
+    '''
+    robot_status = fields.BooleanField(default=DEFAULT_STATUS)
+    '''
+    机器人状态
+    '''
 
     class Meta:
-        table_name = 'group_info'
-        database = DB
+        table = "group_info"
+        table_description = "管理QQ群信息"
 
     @classmethod
     async def get_group_list(cls) -> list:
         '''
         返回群列表
         '''
-        record = cls.select()
+        record: list[GroupInfo] = await cls.all()
         group_list = []
         for one in record:
             group_list.append(one.group_id)
@@ -52,7 +52,7 @@ class GroupInfo(Model):
         :返回
             * int：签到人数
         '''
-        record, _ = cls.get_or_create(group_id=group_id)
+        record: GroupInfo = await cls.first(group_id=group_id)
         return record.sign_nums
 
     @classmethod
@@ -68,7 +68,7 @@ class GroupInfo(Model):
             * int：签到人数
             * None：未找到记录
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
+        record: GroupInfo = await cls.first(group_id=group_id)
         if record is not None:
             return record.robot_status
         else:
@@ -80,10 +80,7 @@ class GroupInfo(Model):
         :说明
             重置签到人数
         '''
-        record_list = cls.select()
-        for record in record_list:
-            record.sign_nums = 0
-            record.save()
+        await cls.all().update(sign_nums=0)
 
     @classmethod
     async def sign_in_add(cls, group_id: int) -> None:
@@ -94,10 +91,10 @@ class GroupInfo(Model):
         :参数
             * group_id：QQ群号
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
+        record: GroupInfo = await cls.first(group_id=group_id)
         if record is not None:
             record.sign_nums += 1
-            record.save()
+            await record.save(update_fields=["sign_nums"])
         else:
             raise Exception
 
@@ -111,10 +108,10 @@ class GroupInfo(Model):
             * group_id：QQ群号
             * status：机器人状态
         '''
-        record = cls.get_or_none(group_id=group_id)
+        record: GroupInfo = cls.first(group_id=group_id)
         if record is not None:
             record.robot_status = status
-            record.save()
+            await record.save(update_fields=["status"])
         else:
             raise Exception
 
@@ -127,27 +124,14 @@ class GroupInfo(Model):
         :参数
             * group_id：QQ群号
         '''
-        cls.get_or_create(group_id=group_id)
-
-    @classmethod
-    async def delete_one(cls, group_id: int) -> None:
-        '''
-        :说明
-            删除一条记录
-
-        :参数
-            * group_id：QQ群号
-        '''
-        record = cls.get_or_none(cls.group_id == group_id)
-        if record is not None:
-            record.delete_instance()
+        await cls.get_or_create(group_id=group_id)
 
     @classmethod
     async def check_group_init(cls, group_id: int) -> bool:
         '''
         检查群是否注册
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
+        record = await cls.get_or_none(group_id=group_id)
         return record is not None
 
     @classmethod
@@ -162,11 +146,8 @@ class GroupInfo(Model):
         :返回
             * str：服务器名
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
-        if record is not None:
-            return record.server
-        else:
-            return None
+        record = await cls.get_or_none(group_id=group_id)
+        return None if record is None else record.server
 
     @classmethod
     async def set_server(cls, group_id: int, server: str) -> None:
@@ -178,9 +159,9 @@ class GroupInfo(Model):
             * group_id：QQ群号
             * server：服务器名
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
+        record = await cls.get_or_none(group_id=group_id)
         if record is not None:
             record.server = server
-            record.save()
+            await record.save(update_fields=["server"])
         else:
             raise Exception

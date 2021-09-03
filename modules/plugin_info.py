@@ -1,33 +1,29 @@
-from typing import Union
-from configs.pathConfig import DATABASE_PATH
-from peewee import (
-    SqliteDatabase,
-    Model,
-    CharField,
-    IntegerField,
-    BooleanField
-)
-
-'''
-plugin_info表，用于管理插件开关
-'''
-
-DB = SqliteDatabase(DATABASE_PATH)
+from typing import Optional
+from tortoise.models import Model
+from tortoise import fields
 
 
 class PluginInfo(Model):
-
-    # 表的结构
-    module_name = CharField(verbose_name='插件模块名称', null=False)
-    group_id = IntegerField(verbose_name='QQ群号', null=False)
-    status = BooleanField(verbose_name='插件开关状态', null=False, default=True)
+    '''
+    插件管理表
+    '''
+    id = fields.IntField(pk=True, generated=True)
+    module_name = fields.CharField(max_length=255)
+    '''
+    插件名称
+    '''
+    group_id = fields.IntField()
+    status = fields.BooleanField(default=True)
+    '''
+    插件状态
+    '''
 
     class Meta:
-        table_name = 'plugin_info'
-        database = DB
+        table = "plugin_info"
+        table_description = "处理插件"
 
     @classmethod
-    async def get_status(cls, module_name: str, group_id: int) -> Union[bool, None]:
+    async def get_status(cls, module_name: str, group_id: int) -> Optional[bool]:
         '''
         :说明
             返回插件开关
@@ -39,11 +35,8 @@ class PluginInfo(Model):
         :返回
             * bool：当前插件开关状态
         '''
-        record = cls.get_or_none(cls.module_name == module_name, cls.group_id == group_id)
-        if record is not None:
-            return record.status
-        else:
-            return None
+        record = await cls.get_or_none(module_name=module_name, group_id=group_id)
+        return None if record is None else record.status
 
     @classmethod
     async def change_status(cls, module_name: str, group_id: int, status: bool) -> None:
@@ -56,10 +49,10 @@ class PluginInfo(Model):
             * group_id：QQ群号
             * status：开关状态
         '''
-        record = cls.get_or_none(cls.module_name == module_name, cls.group_id == group_id)
+        record = await cls.get_or_none(module_name=module_name, group_id=group_id)
         if record is not None:
             record.status = status
-            record.save()
+            await record.save(update_fields=["status"])
         else:
             raise Exception
 
@@ -73,10 +66,7 @@ class PluginInfo(Model):
             * module_name：插件模块名
             * group_id：QQ群号
         '''
-        record, is_create = cls.get_or_create(module_name=module_name, group_id=group_id)
-        if is_create:
-            record.status = True
-            record.save()
+        await cls.get_or_create(module_name=module_name, group_id=group_id)
 
     @classmethod
     async def set_group_status(cls, group_id: int, status: bool) -> None:
@@ -88,10 +78,7 @@ class PluginInfo(Model):
             * group_id：QQ群号
             * status：插件状态
         '''
-        record_list = cls.select().where(cls.group_id == group_id)
-        for record in record_list:
-            record.status = status
-            record.save()
+        await cls.filter(group_id=group_id).update(status=status)
 
     @classmethod
     async def set_module_status(cls, module_name: str, status: bool) -> None:
@@ -103,10 +90,7 @@ class PluginInfo(Model):
             * module_name：插件模块名
             * status：插件状态
         '''
-        record_list = cls.select().where(cls.module_name == module_name)
-        for record in record_list:
-            record.status = status
-            record.save()
+        await cls.filter(module_name=module_name).update(status=status)
 
     @classmethod
     async def get_all_status_from_group(cls, group_id: int) -> list[dict]:
@@ -121,8 +105,8 @@ class PluginInfo(Model):
 
             * list[dict]：dict字段：module_name，status
         '''
-        req = []
-        record_list = cls.select().where(cls.group_id == group_id)
+        req: list[dict] = []
+        record_list = await cls.filter(group_id=group_id)
         for record in record_list:
             reqdict = {}
             reqdict['module_name'] = record.module_name
@@ -142,5 +126,5 @@ class PluginInfo(Model):
         :返回
             * bool：是否注册
         '''
-        record = cls.get_or_none(cls.group_id == group_id)
+        record = await cls.get_or_none(group_id=group_id)
         return record is not None

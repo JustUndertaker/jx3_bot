@@ -1,69 +1,50 @@
 from datetime import date
-
-from configs.pathConfig import DATABASE_PATH
-from peewee import (
-    SqliteDatabase,
-    Model,
-    IntegerField,
-    CharField,
-    DateField
-)
-
-'''
-UserInfo表，用于管理整体用户数据
-'''
-
-DB = SqliteDatabase(DATABASE_PATH)
+from typing import Optional
+from tortoise.models import Model
+from tortoise import fields
 
 
 class UserInfo(Model):
-
-    # 表的结构
-    user_id = IntegerField(verbose_name='用户QQ号', null=False)
-    group_id = IntegerField(verbose_name='QQ群号', null=False)
-    user_name = CharField(verbose_name='用户昵称', default='')
-    gold = IntegerField(verbose_name='金币数', default=0)
-    friendly = IntegerField(verbose_name='好感度', default=0)
-    lucky = IntegerField(verbose_name='今日运势', default=0)
-    sign_times = IntegerField(verbose_name='累计签到次数', default=0)
-    last_sign = DateField(verbose_name='上次签到日期', null=True)
+    '''
+    用户表
+    '''
+    id = fields.IntField(pk=True, generated=True)
+    user_id = fields.IntField()
+    '''
+    用户QQ号
+    '''
+    group_id = fields.IntField()
+    '''
+    所属QQ群号
+    '''
+    user_name = fields.CharField(max_length=255)
+    '''
+    用户昵称
+    '''
+    gold = fields.IntField(default=0)
+    '''
+    用户金币
+    '''
+    friendly = fields.IntField(default=0)
+    '''
+    好感度
+    '''
+    lucky = fields.IntField(default=1)
+    '''
+    今日运势
+    '''
+    sign_times = fields.IntField(default=0)
+    '''
+    累计签到次数
+    '''
+    last_sign = fields.DateField(null=True)
 
     class Meta:
-        table_name = 'user_info'
-        database = DB
-
-    def display(self):
-        t = f'QQ号: {self.user_id}\n' \
-            f'金币: {self.gold}\n' \
-            f'好感度: {self.friendly}\n' \
-            f'今日运势: {self.lucky}\n' \
-            f'累计签到: {self.sign_times}\n'
-        if self.last_sign is not None:
-            t += f'上次签到: {self.last_sign}'
-        return t
+        table = "user_info"
+        table_description = "管理用户"
 
     @classmethod
-    async def user_display(cls, user_id: int, group_id: int):
-        '''
-        :说明：
-            获取用户
-
-        :参数
-            * user_id：用户QQ
-            * group_id：QQ群号
-
-        :返回
-            * UserInfo：用户数据记录
-            * None：不存在记录
-        '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.display()
-        else:
-            return ''
-
-    @classmethod
-    async def get_friendly(cls, user_id: int, group_id: int) -> int:
+    async def get_friendly(cls, user_id: int, group_id: int) -> Optional[int]:
         '''
         :说明：
             获取用户的好感度
@@ -76,14 +57,11 @@ class UserInfo(Model):
             * int：好感度
             * None：不存在记录
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.friendly
-        else:
-            return None
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.friendly
 
     @classmethod
-    async def get_gold(cls, user_id: int, group_id: int) -> int:
+    async def get_gold(cls, user_id: int, group_id: int) -> Optional[int]:
         '''
         :说明：
             获取用户的金币
@@ -95,14 +73,11 @@ class UserInfo(Model):
         :返回
             * 好感度
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.gold
-        else:
-            return None
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.gold
 
     @classmethod
-    async def get_sign_times(cls, user_id: int, group_id: int) -> int:
+    async def get_sign_times(cls, user_id: int, group_id: int) -> Optional[int]:
         '''
         :说明：
             获取累计签到次数
@@ -114,14 +89,11 @@ class UserInfo(Model):
         :返回
             * int：累计签到次数
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.sign_times
-        else:
-            return None
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.sign_times
 
     @classmethod
-    async def get_last_sign(cls, user_id: int, group_id: int) -> date:
+    async def get_last_sign(cls, user_id: int, group_id: int) -> Optional[date]:
         '''
         :说明：
             获取用户的上次签到日期
@@ -133,14 +105,11 @@ class UserInfo(Model):
         :返回
             * date:上次签到日期
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.last_sign
-        else:
-            return None
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.last_sign
 
     @classmethod
-    async def get_lucky(cls, user_id: int, group_id: int) -> int:
+    async def get_lucky(cls, user_id: int, group_id: int) -> Optional[int]:
         '''
         :说明：
             获取用户的运势
@@ -152,11 +121,8 @@ class UserInfo(Model):
         :返回
             * int：今日运势
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
-        if record is not None:
-            return record.lucky
-        else:
-            return None
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.lucky
 
     @classmethod
     async def sign_in(cls, user_id: int, group_id: int) -> None:
@@ -169,11 +135,11 @@ class UserInfo(Model):
             * group_id：QQ群号
         '''
         today = date.today()
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
             record.last_sign = today
             record.sign_times += 1
-            record.save()
+            await record.save(update_fields=["last_sign", "sign_times"])
         else:
             raise Exception
 
@@ -188,9 +154,9 @@ class UserInfo(Model):
             * group_id：QQ群号
             * user_name：用户昵称
         '''
-        record, _ = cls.get_or_create(user_id=user_id, group_id=group_id)
+        record, _ = await cls.get_or_create(user_id=user_id, group_id=group_id)
         record.user_name = user_name
-        record.save()
+        await record.save(update_fields=["user_name"])
 
     @classmethod
     async def delete_one(cls, user_id: int, group_id: int) -> None:
@@ -202,9 +168,9 @@ class UserInfo(Model):
             * user_id：用户QQ
             * group_id：QQ群号
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
-            record.delete_instance()
+            await record.delete()
 
     @classmethod
     async def change_lucky(cls, user_id: int, group_id: int, lucky: int) -> None:
@@ -217,10 +183,10 @@ class UserInfo(Model):
             * group_id：QQ群号
             * lucky：运势值
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
             record.lucky = lucky
-            record.save()
+            await record.save(update_fields=["lucky"])
         else:
             raise Exception
 
@@ -235,10 +201,10 @@ class UserInfo(Model):
             * group_id：QQ群号
             * num：改变金币数量
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
             record.gold += num
-            record.save()
+            await record.save(update_fields=['gold'])
         else:
             raise Exception
 
@@ -253,10 +219,10 @@ class UserInfo(Model):
             * group_id：QQ群号
             * num：改变友好度
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id == user_id, group_id == group_id)
         if record is not None:
             record.friendly += num
-            record.save()
+            await record.save(update_fields=['friendly'])
         else:
             raise Exception
 
@@ -273,5 +239,5 @@ class UserInfo(Model):
         :返回
             * bool：是否存在
         '''
-        record = cls.get_or_none(cls.user_id == user_id, cls.group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         return (record is not None)

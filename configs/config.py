@@ -8,3 +8,6 @@ LOGGER_DEBUG: bool = True
 
 # 默认绑定服务器
 DEFAULT_SERVER: str = "幽月轮"
+
+# 群默认开启状态
+DEFAULT_STATUS: bool = True
