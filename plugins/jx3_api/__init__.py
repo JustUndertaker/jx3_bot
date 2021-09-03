@@ -6,6 +6,7 @@ import asyncio
 from datetime import datetime
 from .data_source import get_server
 from nonebot.plugin import export
+from utils.log import logger
 from utils.jx3_event import (
     OpenServerRecvEvent,
     NewsRecvEvent,
@@ -35,6 +36,8 @@ async def _(bot: Bot):
     '''
     初始化链接ws
     '''
+    log = 'jx3_api > 开始连接ws.'
+    logger.info(log)
     loop = asyncio.get_event_loop()
     loop.create_task(on_connect(loop, bot))
 
@@ -72,6 +75,8 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
         group_server = await get_server(group['group_id'])
         if group_server == server:
             await bot.send_group_msg(group_id=group['group_id'], message=msg)
+    log = f'开服推送事件：[{server}]，时间[{time_now}]'
+    logger.info(log)
     await open_server_recv.finish()
 
 
@@ -89,6 +94,8 @@ async def _(bot: Bot, event: NewsRecvEvent):
     group_list = await bot.get_group_list()
     for group in group_list:
         await bot.send_group_msg(group_id=group['id'], message=msg)
+    log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
+    logger.info(log)
     await news_recv.finish()
 
 
@@ -99,6 +106,8 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     '''
     server = event.server
     msg = f'奇遇播报：\n[{event.serendipity}]在[{event.time}]被[{event.name}]抱走惹。'
+    log = f'奇遇推送事件：{msg}'
+    logger.debug(log)
     group_list = await bot.get_group_list()
     for group in group_list:
         group_server = await get_server(group['group_id'])
