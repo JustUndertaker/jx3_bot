@@ -7,9 +7,8 @@ from nonebot.permission import SUPERUSER
 
 from utils.log import logger
 from nonebot.typing import T_State
-import re
 import os
-from .base import manager_init, PluginManager
+from .base import manager_init
 from nonebot.exception import IgnoredException
 from .data_source import (
     check_plugin_status,

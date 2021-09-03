@@ -147,5 +147,7 @@ docker-compose.yml
 pyproject.toml
 .vscode/
 *.db
+*.db-shm
+*.db-wal
 .idea/
 .env.dev

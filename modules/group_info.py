@@ -65,14 +65,10 @@ class GroupInfo(Model):
             * group_id：QQ群号
 
         :返回
-            * int：签到人数
-            * None：未找到记录
+            * bool
         '''
-        record: GroupInfo = await cls.first(group_id=group_id)
-        if record is not None:
-            return record.robot_status
-        else:
-            return None
+        record: GroupInfo = await cls.get_or_none(group_id=group_id)
+        return None if record is None else record.robot_status
 
     @classmethod
     async def reset_sign(cls) -> None:
@@ -108,7 +104,7 @@ class GroupInfo(Model):
             * group_id：QQ群号
             * status：机器人状态
         '''
-        record: GroupInfo = cls.first(group_id=group_id)
+        record: GroupInfo = await cls.first(group_id=group_id)
         if record is not None:
             record.robot_status = status
             await record.save(update_fields=["status"])
@@ -132,7 +128,7 @@ class GroupInfo(Model):
         检查群是否注册
         '''
         record = await cls.get_or_none(group_id=group_id)
-        return record is not None
+        return (record is not None)
 
     @classmethod
     async def get_server(cls, group_id: int) -> Optional[str]:

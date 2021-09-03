@@ -8,6 +8,7 @@ from utils.log import logger
 from configs.pathConfig import PATH_FONT, MEAU_IMG_OPEN, MEAU_IMG_CLOSE
 from .base import PluginManager
 from modules.plugin_info import PluginInfo
+from modules.group_info import GroupInfo
 
 
 async def check_group_init(group_id: int) -> bool:
@@ -36,6 +37,11 @@ async def check_plugin_status(module_name: str, group_id: int) -> Union[bool, No
     :返回
         * bool:插件状态
     '''
+    # 判断机器人开关
+    status = await GroupInfo.get_robot_status(group_id)
+    if status is None or status == False:
+        return False
+    # 返回插件开关
     return await PluginInfo.get_status(module_name, group_id)
 
 

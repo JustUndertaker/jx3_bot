@@ -8,7 +8,7 @@ async def database_init():
     初始化建表
     '''
     logger.debug('正在注册数据库')
-    db_url = 'sqlite://'+DATABASE_PATH
+    db_url = f'sqlite://{DATABASE_PATH}'
     # 这里填要加载的表
     models = [
         'modules.group_info',
