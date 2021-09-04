@@ -1,4 +1,4 @@
-from configs.config import DEFAULT_SERVER, DEFAULT_STATUS
+from configs.config import DEFAULT_SERVER, DEFAULT_STATUS, ROBOT_ACTIVE
 from typing import Optional
 from tortoise.models import Model
 from tortoise import fields
@@ -24,6 +24,7 @@ class GroupInfo(Model):
     '''
     机器人状态
     '''
+    active = fields.IntField(default=ROBOT_ACTIVE)
 
     class Meta:
         table = "group_info"
@@ -161,3 +162,35 @@ class GroupInfo(Model):
             await record.save(update_fields=["server"])
         else:
             raise Exception
+
+    @classmethod
+    async def set_active(cls, group_id: int, active: int) -> None:
+        '''
+        :说明
+            设置群机器人的活跃度
+
+        :参数
+            * group_id：QQ群号
+            * active：活跃度，1-100
+        '''
+        record = await cls.get_or_none(group_id=group_id)
+        if record is not None:
+            record.active = active
+            await record.save(update_fields=["active"])
+        else:
+            raise Exception
+
+    @classmethod
+    async def get_active(cls, group_id: int) -> Optional[int]:
+        '''
+        :说明
+            获取机器人活跃度
+
+        :参数
+            * group_id：QQ群号
+
+        :返回
+            * int：活跃度，1-100
+        '''
+        record = await cls.get_or_none(group_id=group_id)
+        return None if record is None else record.active

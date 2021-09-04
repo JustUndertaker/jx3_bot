@@ -13,6 +13,9 @@ class PluginInfo(Model):
     插件名称
     '''
     group_id = fields.IntField()
+    '''
+    QQ群号
+    '''
     status = fields.BooleanField(default=True)
     '''
     插件状态
