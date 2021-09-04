@@ -1,8 +1,13 @@
 import nonebot
 from .ap_scheduler import APSscheduler
 
-# 全局定时器对象
+
 scheduler = APSscheduler
+'''全局定时器对象'''
+
+
+nickname = list(nonebot.get_driver().config.nickname)[0]
+'''机器人昵称'''
 
 
 def get_bot():
