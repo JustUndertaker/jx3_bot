@@ -1,4 +1,4 @@
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
+from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.rule import to_me
 from nonebot import on_message
