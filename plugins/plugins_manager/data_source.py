@@ -6,7 +6,7 @@ from nonebot.adapters.cqhttp import MessageSegment
 
 from utils.log import logger
 from configs.pathConfig import PATH_FONT, MEAU_IMG_OPEN, MEAU_IMG_CLOSE
-from .base import PluginManager
+from .model import PluginManager
 from modules.plugin_info import PluginInfo
 from modules.group_info import GroupInfo
 
