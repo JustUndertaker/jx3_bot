@@ -38,7 +38,11 @@ apt-get install python3.9
 ```
 pip install -r requirements.txt
 ```
-
+### 安装playwright
+页面截图需要采用playwright，第一次启动需要安装，可以参考[文档](https://playwright.dev/python/docs/intro)。
+```
+playwright install
+```
 ### 配置设置
 #### configs.config.py
 ```
