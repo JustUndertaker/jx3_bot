@@ -22,7 +22,7 @@ async def check_group_init(group_id: int) -> bool:
     :返回
         * bool：是否注册
     '''
-    return await PluginInfo.check_group_init(group_id)
+    return await GroupInfo.check_group_init(group_id)
 
 
 async def check_plugin_status(module_name: str, group_id: int) -> Union[bool, None]:

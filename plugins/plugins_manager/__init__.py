@@ -68,12 +68,12 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     # 鉴权函数
     status = await check_plugin_status(module_name, group_id)
 
-    if status is None:
+    if is_init is None:
         reason = f'[{group_id}]群未注册'
         log = f'事件被阻断：{reason}'
         logger.debug(log)
         raise IgnoredException(reason)
-    elif not status:
+    elif status == False:
         reason = f'[{module_name}]插件未开启'
         log = f'事件被阻断：{reason}'
         logger.debug(log)
