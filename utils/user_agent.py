@@ -47,4 +47,5 @@ user_agent = [
 
 
 def get_user_agent():
+    '''返回随机一个UA'''
     return {'User-Agent': random.choice(user_agent)}
