@@ -38,3 +38,10 @@ async def get_server_name(name: str) -> Optional[str]:
         return data['server']
     else:
         return None
+
+
+async def change_active(group_id: int, active: int) -> None:
+    '''
+    设置活跃值
+    '''
+    await GroupInfo.set_active(group_id, active)

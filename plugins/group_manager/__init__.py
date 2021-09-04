@@ -8,6 +8,7 @@ from .data_source import (
     group_init,
     get_server_name,
     change_server,
+    change_active
 )
 
 export = export()
@@ -28,8 +29,8 @@ async def _(bot: Bot):
     for group in group_list:
         await group_init(group['group_id'])
 
-server_regex = r"^绑定服务器 [\u4e00-\u9fa5]+$"
-server_useage = "[更换绑定服务器]\n群管理命令：绑定服务器 XXX"
+server_regex = r"^服务器 [\u4e00-\u9fa5]+$"
+server_useage = "[更换绑定服务器]\n群管理命令：服务器 XXX"
 server_change = on_regex(pattern=server_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
@@ -46,7 +47,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
     server = await get_server_name(name)
     if server is None:
-        msg = f'参数错误，检查一下呀。\n\n{server_useage}'
+        msg = f'参数错误，检查一下呀。\n{server_useage}'
         log = f'更换服务器出错，参数错误。'
         logger.info(log)
         await server_change.finish(msg)
@@ -55,3 +56,25 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f'更换服务器成功，绑定服务器为：{server}'
     logger.info(log)
     await server_change.finish(msg)
+
+
+active_regex = r"^活跃值 [0-9]+$"
+active_usage = "[设置活跃值]\n群管理命令：活跃值 XX（1-99）"
+active_change = on_regex(pattern=server_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+
+
+@active_change.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''
+    设置活跃值
+    '''
+    regex = event.get_plaintext()
+    active = int(regex.split(' ')[-1])
+    if active < 1 or active > 99:
+        msg = f"参数错误，检查一下呀。\n{active_usage}"
+        await active_change.finish(msg)
+
+    group_id = event.group_id
+    await change_active(group_id, active)
+    msg = f"活跃值设为：{active}"
+    await active_change.finish(msg)
