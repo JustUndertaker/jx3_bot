@@ -48,7 +48,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     server = await get_server_name(name)
     if server is None:
         msg = f'参数错误，检查一下呀。\n{server_useage}'
-        log = f'更换服务器出错，参数错误。'
+        log = '更换服务器出错，参数错误。'
         logger.info(log)
         await server_change.finish(msg)
     await change_server(group_id=group_id, server=server)

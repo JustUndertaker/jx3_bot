@@ -4,7 +4,6 @@ from utils.log import logger
 from configs.config import CHAT_VOICE
 import httpx
 from typing import Optional
-import base64
 
 
 async def get_active(group_id: int) -> int:
@@ -91,7 +90,7 @@ async def get_image() -> Optional[str]:
     url = 'https://www.jx3api.com/extend/stickers'
     params = {"format": "json"}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url=url)
+        req_url = await client.get(url=url, params=params)
         req = req_url.json()
         if req['code'] == 200:
             data = req['data']

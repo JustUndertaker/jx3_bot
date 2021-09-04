@@ -39,7 +39,7 @@ async def check_plugin_status(module_name: str, group_id: int) -> Union[bool, No
     '''
     # 判断机器人开关
     status = await GroupInfo.get_robot_status(group_id)
-    if status is None or status == False:
+    if status is None or status is False:
         return False
     # 返回插件开关
     return await PluginInfo.get_status(module_name, group_id)

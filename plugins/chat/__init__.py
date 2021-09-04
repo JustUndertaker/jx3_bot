@@ -33,7 +33,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = await get_reply_qingyunke(text)
         if msg is None:
             # 访问失败
-            log = f'接口访问失败，关闭事件。'
+            log = '接口访问失败，关闭事件。'
             logger.info(log)
             await chat.finish()
 

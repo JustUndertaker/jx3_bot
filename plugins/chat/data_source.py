@@ -12,7 +12,7 @@ async def get_reply_jx3(question: str) -> Optional[str]:
     '''
     # 判断参数是否完整
     if CHAT_NLP['secretId'] == "" or CHAT_NLP['secretKey'] == "":
-        log = f'jx3_api接口参数不足，无法请求。'
+        log = 'jx3_api接口参数不足，无法请求。'
         logger.debug(log)
         return None
 
@@ -68,7 +68,7 @@ async def get_reply_qingyunke(text: str) -> Optional[str]:
                 # 消息替换
                 msg = msg.replace(r'{br}', '\n')
                 msg = msg.replace('菲菲', nickname)
-                log = f'请求青云客API成功。'
+                log = '请求青云客API成功。'
                 logger.debug(log)
                 return msg
             else:
