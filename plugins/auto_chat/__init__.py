@@ -29,7 +29,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
     if num > active:
         await message.finish()
 
-    user_id = event.user_id
     # 获取一条骚话
     text = await get_saohua()
     num = random.randrange(100)
@@ -40,5 +39,5 @@ async def _(bot: Bot, event: GroupMessageEvent):
             msg = MessageSegment.record(voice_str)
             await message.finish(msg)
 
-    msg = MessageSegment.at(user_id)+MessageSegment.text(text)
+    msg = MessageSegment.text(text)
     await message.finish(msg)

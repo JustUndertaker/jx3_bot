@@ -18,7 +18,8 @@ async def get_active(group_id: int) -> int:
     :返回
         * int：活跃度
     '''
-    await GroupInfo.get_active(group_id)
+    active = await GroupInfo.get_active(group_id)
+    return active
 
 
 async def get_saohua() -> str:
@@ -66,19 +67,15 @@ async def get_voice(text: str) -> Optional[str]:
     params['text'] = text
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:
-            req_url = await client.get(url=url)
+            req_url = await client.get(url=url, params=params)
             req = req_url.json()
             if req['code'] == 200:
                 data = req['data']
                 voice_url = data['url']
                 # 获取语音数据
-                req_url = await client.get(url=voice_url)
-                byte_data = req_url.content
-                base64_str = base64.b64encode(byte_data)
-                req_str = 'base64://'+base64_str.decode()
-                return req_str
+                return voice_url
             else:
-                log = f'语音合成请求参数出错。'
+                log = f'语音合成请求参数出错：{req["msg"]}'
                 logger.debug(log)
                 return None
         except Exception as e:
