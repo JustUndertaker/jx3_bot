@@ -2,7 +2,7 @@
 
 # JX3_ROBOT
 
-_✨基于[nonebot2](https://github.com/nonebot/nonebot2)的剑网三机器人，采用[jx3api](https://jx3api.com)作为数据源。✨_
+_✨基于[nonebot2](https://github.com/nonebot/nonebot2)的剑网三群聊机器人，采用[jx3api](https://jx3api.com)作为数据源。✨_
 
 </div>
 
@@ -15,7 +15,13 @@ _✨基于[nonebot2](https://github.com/nonebot/nonebot2)的剑网三机器人�
 <img src="https://img.shields.io/badge/go--cqhttp-v1.0.0--beta6-red"></a>
 </p>
 
-****
+## 简介
+基于nonebot2的剑网三的QQ群聊机器人，采用jx3api为数据接口，提供剑网三的一些查询，娱乐功能。
+
+- 兼容windows，linux平台
+- 全异步处理，支持多个群操作
+- 使用websockets连接jx3api
+- 适配nonebot2风格代码，自定义事件
 
 ## 部署机器人
 ### 安装环境
@@ -24,7 +30,7 @@ _✨基于[nonebot2](https://github.com/nonebot/nonebot2)的剑网三机器人�
 apt-get install python3.9
 ```
 
-**QQ协议端可以采用[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)。**
+**QQ协议端采用[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)。**
 
 - go-cqhttp需要下载ffmpeg环境，windows点击[这里](https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z)下载，具体安装请参考[文档](https://docs.go-cqhttp.org/guide/quick_start.html#%E5%AE%89%E8%A3%85-ffmpeg)。
 
