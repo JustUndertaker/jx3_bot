@@ -4,7 +4,7 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.message import run_preprocessor
 from nonebot.plugin import Matcher
 from nonebot.permission import SUPERUSER
-
+from utils.utils import nickname
 from utils.log import logger
 from nonebot.typing import T_State
 import os
@@ -15,7 +15,8 @@ from .data_source import (
     plugin_init,
     change_plugin_status,
     check_group_init,
-    get_meau_card
+    get_meau_card,
+    set_robot_status
 )
 
 
@@ -81,13 +82,13 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
 
 
 # =================================管理员手动更新==========================
-update = on_regex(r"^更新$", permission=SUPERUSER, priority=2, block=False)
+update = on_regex(r"^更新$", permission=SUPERUSER, priority=2, block=True)
 
 
 @update.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''
-    管理员手动更新群信息，和后面的签到是同一个命令
+    管理员手动更新群信息
     '''
     # 群id
     group_id = event.group_id
@@ -97,7 +98,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     await plugin_init(group_id)
 
 changeregex = r'^设置 [\u4E00-\u9FA5A-Za-z0-9_]+ [开|关]$'
-change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=False)
+change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 # =================================功能开关===============================
@@ -149,7 +150,7 @@ def _get_change_params(text: str) -> tuple[str, bool]:
 
 # ===============插件菜单===============
 meauregex = r'(^菜单$)|(^功能$)'
-meau = on_regex(meauregex, permission=GROUP, priority=2, block=False)
+meau = on_regex(meauregex, permission=GROUP, priority=2, block=True)
 
 
 @meau.handle()
@@ -162,3 +163,25 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     logger.info(log)
     msg = await get_meau_card(group_id)
     await meau.finish(msg)
+
+
+robotregex = r'^机器人 [开|关]$'
+robotchange = on_regex(changeregex, permission=SUPERUSER, priority=2, block=True)
+
+
+@robotchange.handle()
+async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+    '''
+    设置机器人状态
+    '''
+    get_status = event.get_plaintext().split(" ")[-1]
+    group_id = event.group_id
+    if get_status == "开":
+        status = True
+    else:
+        status = False
+
+    # 设置开关
+    await set_robot_status(group_id, status)
+    msg = f"{nickname} 当前状态为：[{get_status}]"
+    await robotchange.finish(msg)
