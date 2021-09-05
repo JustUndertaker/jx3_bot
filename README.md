@@ -121,6 +121,10 @@ python bot.py
 |活跃值|活跃值 [1-99]|设置机器人活跃值|
 |更新信息|更新|手动更新群成员信息|
 
+### 超级用户
+**超级用户可以在群里设置机器人开关状态**
+>命令：机器人 [开/关]
+
 ## 感谢
 * [onebot](https://github.com/howmanybots/onebot)：聊天机器人应用接口标准。
 * [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)：cqhttp的golang实现。
