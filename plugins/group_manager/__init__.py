@@ -23,6 +23,7 @@ from .data_source import (
     user_detele,
     get_user_name,
     group_detel,
+    set_robot_status
 )
 
 export = export()
@@ -191,3 +192,25 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
         await someone_in_group.finish(msg)
 
     await someone_in_group.finish()
+
+
+robotregex = r'^机器人 [开|关]$'
+robotchange = on_regex(pattern=robotregex, permission=SUPERUSER, priority=2, block=True)
+
+
+@robotchange.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''
+    设置机器人状态
+    '''
+    get_status = event.get_plaintext().split(" ")[-1]
+    group_id = event.group_id
+    if get_status == "开":
+        status = True
+    else:
+        status = False
+
+    # 设置开关
+    await set_robot_status(group_id, status)
+    msg = f"{nickname} 当前状态为：[{get_status}]"
+    await robotchange.finish(msg)

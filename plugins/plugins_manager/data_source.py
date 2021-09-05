@@ -87,11 +87,6 @@ async def change_plugin_status(plugin_name: str, group_id: int, status: bool) ->
     return msg
 
 
-async def set_robot_status(group_id: int, status: bool):
-    '''设置机器人开关'''
-    await GroupInfo.set_robot_status(group_id, status)
-
-
 async def get_meau_card(group_id: int) -> MessageSegment:
     '''
     :说明

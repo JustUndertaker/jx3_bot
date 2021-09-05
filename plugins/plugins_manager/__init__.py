@@ -4,7 +4,6 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.message import run_preprocessor
 from nonebot.plugin import Matcher
 from nonebot.permission import SUPERUSER
-from utils.utils import nickname
 from utils.log import logger
 from nonebot.typing import T_State
 import os
@@ -16,7 +15,6 @@ from .data_source import (
     change_plugin_status,
     check_group_init,
     get_meau_card,
-    set_robot_status
 )
 
 
@@ -163,25 +161,3 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     logger.info(log)
     msg = await get_meau_card(group_id)
     await meau.finish(msg)
-
-
-robotregex = r'^机器人 [开|关]$'
-robotchange = on_regex(changeregex, permission=SUPERUSER, priority=2, block=True)
-
-
-@robotchange.handle()
-async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
-    '''
-    设置机器人状态
-    '''
-    get_status = event.get_plaintext().split(" ")[-1]
-    group_id = event.group_id
-    if get_status == "开":
-        status = True
-    else:
-        status = False
-
-    # 设置开关
-    await set_robot_status(group_id, status)
-    msg = f"{nickname} 当前状态为：[{get_status}]"
-    await robotchange.finish(msg)

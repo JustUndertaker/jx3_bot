@@ -109,7 +109,7 @@ class GroupInfo(Model):
         record: GroupInfo = await cls.get_or_none(group_id=group_id)
         if record is not None:
             record.robot_status = status
-            await record.save(update_fields=["status"])
+            await record.save(update_fields=["robot_status"])
         else:
             raise Exception
 

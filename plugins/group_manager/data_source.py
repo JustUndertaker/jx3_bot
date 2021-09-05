@@ -109,3 +109,8 @@ async def check_robot_status(group_id: int) -> Optional[bool]:
         * None：未注册群
     '''
     return await GroupInfo.get_robot_status(group_id)
+
+
+async def set_robot_status(group_id: int, status: bool):
+    '''设置机器人开关'''
+    await GroupInfo.set_robot_status(group_id, status)
