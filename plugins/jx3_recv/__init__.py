@@ -2,7 +2,7 @@ from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot
 from datetime import datetime
 from nonebot.plugin import export
-from .data_source import get_server
+from .data_source import get_server, get_robot_status
 from utils.log import logger
 from utils.jx3_event import (
     OpenServerRecvEvent,
@@ -34,9 +34,13 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
         msg = f'时间：{time_now}\n[{server}] 开服啦！'
     group_list = await bot.get_group_list()
     for group in group_list:
-        group_server = await get_server(group['group_id'])
+        group_id = group['group_id']
+        group_server = await get_server(group_id)
         if group_server == server:
-            await bot.send_group_msg(group_id=group['group_id'], message=msg)
+            # 判断机器人是否开启
+            status = await get_robot_status(group_id)
+            if status:
+                await bot.send_group_msg(group_id=group_id, message=msg)
     log = f'开服推送事件：[{server}]，时间[{time_now}]'
     logger.info(log)
     await open_server_recv.finish()
@@ -55,7 +59,10 @@ async def _(bot: Bot, event: NewsRecvEvent):
     msg = f"[{news_type}]来惹\n标题：{news_tittle}\nurl：{news_url}\n日期：{news_date}"
     group_list = await bot.get_group_list()
     for group in group_list:
-        await bot.send_group_msg(group_id=group['id'], message=msg)
+        group_id = group['group_id']
+        status = await get_robot_status(group_id)
+        if status:
+            await bot.send_group_msg(group_id=group_id, message=msg)
     log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
     logger.info(log)
     await news_recv.finish()
@@ -72,7 +79,11 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     logger.debug(log)
     group_list = await bot.get_group_list()
     for group in group_list:
-        group_server = await get_server(group['group_id'])
+        group_id = group['group_id']
+        group_server = await get_server(group_id)
         if group_server == server:
-            await bot.send_group_msg(group_id=group['group_id'], message=msg)
+            # 判断机器人开关
+            status = await get_robot_status(group_id)
+            if status:
+                await bot.send_group_msg(group_id=group_id, message=msg)
     await adventure_recv.finish()
