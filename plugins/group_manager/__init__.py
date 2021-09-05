@@ -6,6 +6,7 @@ from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from utils.log import logger
 from .data_source import (
     group_init,
+    user_init,
     get_server_name,
     change_server,
     change_active
@@ -23,11 +24,19 @@ driver = get_driver()
 @driver.on_bot_connect
 async def _(bot: Bot):
     '''
-    初始化注册群
+    初始化注册
     '''
+    # 群注册
     group_list = await bot.get_group_list()
     for group in group_list:
-        await group_init(group['group_id'])
+        group_id = group['group_id']
+        await group_init(group_id=group_id)
+        # 用户注册
+        user_list = await bot.get_group_member_list(group_id=group_id)
+        for user in user_list:
+            user_id = user['user_id']
+            user_name = user['nickname'] if user['card'] == "" else user['card']
+            await user_init(user_id, group_id, user_name)
 
 server_regex = r"^服务器 [\u4e00-\u9fa5]+$"
 server_useage = "[更换绑定服务器]\n群管理命令：服务器 XXX"

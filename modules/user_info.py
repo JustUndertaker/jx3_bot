@@ -17,7 +17,7 @@ class UserInfo(Model):
     '''
     所属QQ群号
     '''
-    user_name = fields.CharField(max_length=255)
+    user_name = fields.CharField(max_length=255, default="")
     '''
     用户昵称
     '''
@@ -219,7 +219,7 @@ class UserInfo(Model):
             * group_id：QQ群号
             * num：改变友好度
         '''
-        record = await cls.get_or_none(user_id == user_id, group_id == group_id)
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
             record.friendly += num
             await record.save(update_fields=['friendly'])

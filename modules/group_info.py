@@ -31,14 +31,15 @@ class GroupInfo(Model):
         table_description = "管理QQ群信息"
 
     @classmethod
-    async def get_group_list(cls) -> list:
+    async def get_group_list(cls) -> list[int]:
         '''
-        返回群列表
+        返回群列表，开启机器人的
         '''
         record: list[GroupInfo] = await cls.all()
         group_list = []
         for one in record:
-            group_list.append(one.group_id)
+            if one.robot_status:
+                group_list.append(one.group_id)
         return group_list
 
     @classmethod
@@ -53,7 +54,7 @@ class GroupInfo(Model):
         :返回
             * int：签到人数
         '''
-        record: GroupInfo = await cls.first(group_id=group_id)
+        record: GroupInfo = await cls.get_or_none(group_id=group_id)
         return record.sign_nums
 
     @classmethod
@@ -88,7 +89,7 @@ class GroupInfo(Model):
         :参数
             * group_id：QQ群号
         '''
-        record: GroupInfo = await cls.first(group_id=group_id)
+        record: GroupInfo = await cls.get_or_none(group_id=group_id)
         if record is not None:
             record.sign_nums += 1
             await record.save(update_fields=["sign_nums"])
@@ -105,7 +106,7 @@ class GroupInfo(Model):
             * group_id：QQ群号
             * status：机器人状态
         '''
-        record: GroupInfo = await cls.first(group_id=group_id)
+        record: GroupInfo = await cls.get_or_none(group_id=group_id)
         if record is not None:
             record.robot_status = status
             await record.save(update_fields=["status"])

@@ -1,4 +1,5 @@
 from modules.group_info import GroupInfo
+from modules.user_info import UserInfo
 from typing import Optional
 import httpx
 from utils.user_agent import get_user_agent
@@ -9,6 +10,19 @@ async def group_init(group_id: int) -> None:
     注册群信息
     '''
     await GroupInfo.append_or_update(group_id)
+
+
+async def user_init(user_id: int, group_id: int, user_name: str) -> None:
+    '''
+        :说明
+            注册一条用户信息
+
+        :参数
+            * user_id：用户QQ
+            * group_id：QQ群号
+            * user_name：用户昵称
+    '''
+    await UserInfo.append_or_update(user_id, group_id, user_name)
 
 
 async def change_server(group_id: int, server: str) -> None:
