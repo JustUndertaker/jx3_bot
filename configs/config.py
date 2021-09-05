@@ -22,9 +22,8 @@ CHAT_VOICE = {
 }
 '''聊天配置-语音合成'''
 
-LOGGER_DEBUG: bool = True
-'''插件日志的debug信息是否显示在控制台'''
-
+MAX_RECON_TIMES = 100
+'''ws链接最大重连次数'''
 
 DEFAULT_SERVER: str = "幽月轮"
 '''每个群默认绑定服务器'''
@@ -36,3 +35,6 @@ DEFAULT_STATUS: bool = True
 
 ROBOT_ACTIVE: int = 10
 '''机器人自动插话活跃度，1-100'''
+
+LOGGER_DEBUG: bool = True
+'''插件日志的debug信息是否显示在控制台'''
