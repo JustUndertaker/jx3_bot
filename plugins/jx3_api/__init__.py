@@ -18,6 +18,7 @@ from utils.jx3_event import (
     ExamEvent,
     PendantEvent,
     EquipQueryEvent,
+    RaiderseSearchEvent,
 
 )
 
@@ -53,6 +54,7 @@ adventurecondition = on(type='adventurecondition', priority=5, block=True)  # �
 exam = on(type='exam', priority=5, block=True)  # 科举查询
 # TODO：地图器物查询，装饰物查询，奇遇查询
 pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
+raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 奇遇查询
 
 
 @daily.handle()
@@ -61,8 +63,8 @@ async def _(bot: Bot, event: DailyEvent):
     日常查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
-        await daily.finish()
+        msg = f'查询失败，{event.msg_success}。'
+        await daily.finish(msg)
     msg = f'当前时间：{event.DateTime} 星期{event.Week}\n'
     msg += f'今日大战：{event.DayWar}\n'
     msg += f'今日战场：{event.DayBattle}\n'
@@ -82,11 +84,11 @@ async def _(bot: Bot, event: OpenServerSendEvent):
     开服查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await open_server_send.finish(msg)
     status = "已开服" if event.status else "维护中"
-    msg = f'{event.server}当前状态是[{status}]'
-    await open_server_send(msg)
+    msg = f'{event.server} 当前状态是[{status}]'
+    await open_server_send.finish(msg)
 
 
 @gold_query.handle()
@@ -95,8 +97,8 @@ async def _(bot: Bot, event: GoldQueryEvent):
     金价查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
-        await gold_query.finish()
+        msg = f'查询失败，{event.msg_success}。'
+        await gold_query.finish(msg)
     date_now = datetime.now().strftime("%m-%d %H:%M")
     msg = f'金价[{event.server}] {date_now}\n'
     msg += f'官方平台：1元={event.price_wanbaolou}金\n'
@@ -112,9 +114,9 @@ async def _(bot: Bot, event: ExtraPointEvent):
     奇穴查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await extra_point.finish(msg)
-    msg = f'[{event.name}]推荐奇穴：\n'
+    msg = f'[{event.name}]\n'
     msg += f'龙门绝境奇穴：\n{event.longmen}\n'
     msg += f'战场任务奇穴：\n{event.battle}'
     await extra_point.finish(msg)
@@ -126,7 +128,7 @@ async def _(bot: Bot, event: MedicineEvent):
     小药查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await medicine.finish(msg)
     msg = f'[{event.name}]小药：\n'
     msg += f'增强食品：{event.heightenFood}\n'
@@ -143,11 +145,11 @@ async def _(bot: Bot, event: MacroEvent):
     宏查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await macro.finish(msg)
-    msg = f'[{event.name}]宏：\n'
-    msg += f'{event.command}\n\n'
-    msg += f'奇穴：{event.plan}'
+    msg = f'宏 {event.name} 更新时间：{event.time}\n'
+    msg += f'{event.command}\n'
+    msg += f'奇穴：{event.holes}'
 
     await macro.finish(msg)
 
@@ -158,14 +160,9 @@ async def _(bot: Bot, event: AdventureConditionEvent):
     奇遇条件查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await adventurecondition.finish(msg)
-    msg = f'[{event.name}]条件：\n'
-    msg += f'触发方式：{event.method}\n'
-    msg += f'满足条件：{event.need}\n'
-    msg += f'其他可能：{event.other}\n'
-    msg += f'物品奖励：{event.reward}'
-
+    msg = ""
     await adventurecondition.finish(msg)
 
 
@@ -175,10 +172,10 @@ async def _(bot: Bot, event: ExamEvent):
     科举查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await exam.finish(msg)
     msg = f'[问题]\n{event.question}\n'
-    msg+f'[答案]\n{event.answer}'
+    msg += f'[答案]\n{event.answer}'
 
     await exam.finish(msg)
 
@@ -189,13 +186,13 @@ async def _(bot: Bot, event: PendantEvent):
     挂件查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await pendant.finish(msg)
     msg = f'[{event.name}]\n'
     msg += f'物品类型：{event.type}\n'
     msg += f'使用特效：{event.use}\n'
     msg += f'物品说明：{event.explain}\n'
-    msg += f'获取方式：{event.obtain}'
+    msg += f'获取方式：{event.source}'
 
     await pendant.finish(msg)
 
@@ -206,10 +203,23 @@ async def _(bot: Bot, event: EquipQueryEvent):
     角色装备查询
     '''
     if event.msg_success != "success":
-        msg = '查询失败，未找到该数据。'
+        msg = f'查询失败，{event.msg_success}。'
         await equip_query.finish(msg)
     data = event.data
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await equip_query.finish(msg)
+
+
+@raiderse_search.handle()
+async def _(bot: Bot, event: RaiderseSearchEvent):
+    '''
+    攻略查询
+    '''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await equip_query.finish(msg)
+    img = event.url
+    msg = MessageSegment.image(img)
+    await raiderse_search.finish(msg)
