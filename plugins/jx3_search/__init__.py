@@ -1,6 +1,6 @@
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from nonebot.adapters.cqhttp.permission import GROUP
-from .data_source import get_server, get_macro_name
+from .data_source import get_server, get_macro_name, get_xinfa
 from nonebot.plugin import export
 from nonebot import on_regex
 import time
@@ -31,7 +31,7 @@ exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, bl
 raiderse = on_regex(pattern=r"^攻略 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)  # 攻略查询
 pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 挂件查询
 # raiderse_search = pendant = on_regex(pattern=r'^奇遇 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇遇查询
-# TODO：条件查询，器物谱查询，装饰查询，挂件查询
+# TODO：条件查询，器物谱查询，装饰查询，挂件查询，装备属性
 
 
 @daily.handle()
@@ -100,9 +100,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     echo = int(time.time())
     group_id = event.group_id
     get_name = event.get_plaintext().split(" ")[-1]
+    name = get_xinfa(get_name)
     msg = {
         "type": 1008,
-        "name": get_name,
+        "name": name,
         "echo": echo
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
@@ -115,9 +116,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     echo = int(time.time())
     group_id = event.group_id
     get_name = event.get_plaintext().split(" ")[-1]
+    name = get_xinfa(get_name)
     msg = {
         "type": 1010,
-        "name": get_name,
+        "name": name,
         "echo": echo
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
@@ -131,9 +133,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     group_id = event.group_id
     text = event.get_plaintext()
     get_name = get_macro_name(text)
+    name = get_xinfa(get_name)
     msg = {
         "type": 1011,
-        "name": get_name,
+        "name": name,
         "echo": echo
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
@@ -191,9 +194,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     echo = int(time.time())
     group_id = event.group_id
     get_name = event.get_plaintext().split(" ")[-1]
+    name = get_xinfa(get_name)
     msg = {
         "type": 1006,
-        "name": get_name,
+        "name": name,
         "echo": echo
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
