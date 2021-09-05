@@ -3,6 +3,7 @@ from nonebot.message import handle_event
 from .jx3_event import Jx3EventList, WS_ECHO
 from websockets.exceptions import ConnectionClosed, ConnectionClosedError, ConnectionClosedOK
 from asyncio import AbstractEventLoop
+from configs.config import MAX_RECON_TIMES
 import websockets
 import asyncio
 import json
@@ -47,7 +48,7 @@ async def on_connect(loop: AbstractEventLoop, bot: Bot):
             return
         except (ConnectionRefusedError, OSError) as e:
             logger.info(f'jx3_api > [{count}] {e}')
-            if count == 100:
+            if count == MAX_RECON_TIMES:
                 return
             count += 1
             logger.info(f'jx3_api > [{count}] 尝试向 websockets 服务器建立链接！')

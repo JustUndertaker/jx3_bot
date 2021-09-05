@@ -60,6 +60,9 @@ async def _(bot: Bot, event: DailyEvent):
     '''
     日常查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await daily.finish()
     msg = f'当前时间：{event.DateTime} 星期{event.Week}\n'
     msg += f'今日大战：{event.DayWar}\n'
     msg += f'今日战场：{event.DayBattle}\n'
@@ -78,6 +81,9 @@ async def _(bot: Bot, event: OpenServerSendEvent):
     '''
     开服查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await open_server_send.finish()
     status = "已开服" if event.status else "维护中"
     msg = f'{event.server}当前状态是[{status}]'
     await open_server_send(msg)
@@ -88,13 +94,15 @@ async def _(bot: Bot, event: GoldQueryEvent):
     '''
     金价查询
     '''
-    date_now = datetime.now().strftime("%Y-%m-%d")
-    msg = f'[{event.server}]金价，日期：{date_now}\n'
-    msg += f'万宝楼：{event.price_wanbaolou}\n'
-    msg += f'uu898：{event.price_uu898}\n'
-    msg += f'dd373：{event.price_dd373}\n'
-    msg += f'5173：{event.price_5173}\n'
-    msg += f'7881：{event.price_7881}'
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await gold_query.finish()
+    date_now = datetime.now().strftime("%m-%d %H:%M")
+    msg = f'金价[{event.server}] {date_now}\n'
+    msg += f'官方平台：1元={event.price_wanbaolou}金\n'
+    msg += f'悠悠平台：1元={event.price_uu898}金\n'
+    msg += f'嘟嘟平台：1元={event.price_dd373}金\n'
+    msg += f'其他平台：1元={event.price_5173}金'
     await gold_query.finish(msg)
 
 
@@ -103,7 +111,10 @@ async def _(bot: Bot, event: ExtraPointEvent):
     '''
     奇穴查询
     '''
-    msg = f'[{event.name}]奇穴：\n'
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await extra_point.finish()
+    msg = f'[{event.name}]推荐奇穴：\n'
     msg += f'龙门绝境奇穴：\n{event.longmen}\n'
     msg += f'战场任务奇穴：\n{event.battle}'
     await extra_point.finish(msg)
@@ -114,6 +125,9 @@ async def _(bot: Bot, event: MedicineEvent):
     '''
     小药查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await medicine.finish()
     msg = f'[{event.name}]小药：\n'
     msg += f'增强食品：{event.heightenFood}\n'
     msg += f'辅助食品：{event.auxiliaryFood}\n'
@@ -128,6 +142,9 @@ async def _(bot: Bot, event: MacroEvent):
     '''
     宏查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await macro.finish()
     msg = f'[{event.name}]宏：\n'
     msg += f'{event.command}\n\n'
     msg += f'奇穴：{event.plan}'
@@ -140,6 +157,9 @@ async def _(bot: Bot, event: AdventureConditionEvent):
     '''
     奇遇条件查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await adventurecondition.finish()
     msg = f'[{event.name}]条件：\n'
     msg += f'触发方式：{event.method}\n'
     msg += f'满足条件：{event.need}\n'
@@ -154,6 +174,9 @@ async def _(bot: Bot, event: ExamEvent):
     '''
     科举查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await exam.finish()
     msg = f'[问题]\n{event.question}\n'
     msg+f'[答案]\n{event.answer}'
 
@@ -165,6 +188,9 @@ async def _(bot: Bot, event: PendantEvent):
     '''
     挂件查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await pendant.finish()
     msg = f'[{event.name}]\n'
     msg += f'物品类型：{event.type}\n'
     msg += f'使用特效：{event.use}\n'
@@ -179,6 +205,9 @@ async def _(bot: Bot, event: EquipQueryEvent):
     '''
     角色装备查询
     '''
+    if event.msg_success != "success":
+        msg = '查询失败，未找到该数据。'
+        await equip_query.finish()
     data = event.data
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)

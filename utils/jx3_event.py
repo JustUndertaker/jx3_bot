@@ -88,7 +88,11 @@ class SendEvent(BaseEvent):
     group_id: Optional[int]
     echo: Optional[int]
     '''
-    认证echo
+    会话echo
+    '''
+    msg_success: Optional[str]
+    '''
+    是否查询成功，成功为sucess，失败为其他
     '''
 
     def set_message_type(self, ws_econ: WS_ECHO):
@@ -296,6 +300,7 @@ class DailyEvent(SendEvent):
         '''
         super(DailyEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
         self.DateTime = data.get('DateTime')
         self.DayWar = data.get('DayWar')
@@ -338,6 +343,7 @@ class OpenServerSendEvent(SendEvent):
         '''
         super(OpenServerSendEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
         self.server = data.get('server')
         self.region = data.get('zone')
@@ -386,6 +392,7 @@ class GoldQueryEvent(SendEvent):
         '''
         super(GoldQueryEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
         self.server = data.get('server')
         self.price_wanbaolou = data.get('wanbaolou')
@@ -416,6 +423,7 @@ class FlowerPriceEvent(SendEvent):
         '''
         super(FlowerPriceEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
 
     @classmethod
@@ -448,6 +456,7 @@ class MatchEquipEvent(SendEvent):
         '''
         super(MatchEquipEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.pveUrl = data.get('pevUrl')
@@ -483,6 +492,7 @@ class ExtraPointEvent(SendEvent):
         '''
         super(ExtraPointEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.longmen = data.get('long')
@@ -526,6 +536,7 @@ class MedicineEvent(SendEvent):
         '''
         super(MedicineEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.heightenFood = data.get('heightenFood')
@@ -567,6 +578,7 @@ class MacroEvent(SendEvent):
         '''
         super(MacroEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.holes = data.get('holes')
@@ -595,6 +607,7 @@ class ItemPriceEvent(SendEvent):
         '''
         super(ItemPriceEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
 
     @classmethod
@@ -619,6 +632,7 @@ class AdventureConditionEvent(SendEvent):
         '''
         super(AdventureConditionEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
 
     @classmethod
@@ -647,6 +661,7 @@ class ExamEvent(SendEvent):
         '''
         super(ExamEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.question = data.get('question')
         self.answer = data.get('answer')
@@ -673,6 +688,7 @@ class FurnitureMapEvent(SendEvent):
         '''
         super(FurnitureMapEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.data = data.get('data')
 
@@ -698,6 +714,7 @@ class FurnitureEvent(SendEvent):
         '''
         super(FurnitureEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
 
     @classmethod
@@ -722,6 +739,7 @@ class AdventureSearchEvent(SendEvent):
         '''
         super(AdventureSearchEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.data = data.get('data')
 
@@ -763,6 +781,7 @@ class PendantEvent(SendEvent):
         '''
         super(PendantEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.type = data.get('type')
@@ -796,6 +815,7 @@ class RaiderseSearchEvent(SendEvent):
         '''
         super(RaiderseSearchEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
         self.url = data.get('url')
@@ -822,6 +842,7 @@ class EquipQueryEvent(SendEvent):
         '''
         super(EquipQueryEvent, self).__init__()
         self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
 
     @classmethod
