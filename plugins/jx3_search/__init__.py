@@ -28,8 +28,10 @@ adventure_regex = r"^(前置)|(条件) [\u4e00-\u9fa5]+$"
 adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)  # 奇遇前置查询
 
 exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, block=True)  # 科举查询
+raiderse = on_regex(pattern=r"^攻略 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)  # 攻略查询
 pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 挂件查询
 # raiderse_search = pendant = on_regex(pattern=r'^奇遇 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇遇查询
+# TODO：条件查询，器物谱查询，装饰查询，挂件查询
 
 
 @daily.handle()
@@ -191,6 +193,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     get_name = event.get_plaintext().split(" ")[-1]
     msg = {
         "type": 1006,
+        "name": get_name,
+        "echo": echo
+    }
+    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await open_server_send.finish()
+
+
+@raiderse.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''攻略查询'''
+    echo = int(time.time())
+    group_id = event.group_id
+    get_name = event.get_plaintext().split(" ")[-1]
+    msg = {
+        "type": 1023,
         "name": get_name,
         "echo": echo
     }

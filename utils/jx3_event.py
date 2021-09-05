@@ -771,7 +771,7 @@ class PendantEvent(SendEvent):
 
 class RaiderseSearchEvent(SendEvent):
     '''
-    返回奇遇查询结果
+    返回攻略查询结果
     '''
     __event__ = "raidersesearch"
     post_type = "raidersesearch"
@@ -838,6 +838,7 @@ Jx3EventType = Union[
     MedicineEvent,
     MacroEvent,
     ItemPriceEvent,
+    RaiderseSearchEvent,
     AdventureConditionEvent,
     ExamEvent,
     FurnitureMapEvent,
@@ -859,6 +860,7 @@ Jx3EventList = [
     MedicineEvent,
     MacroEvent,
     ItemPriceEvent,
+    RaiderseSearchEvent,
     AdventureConditionEvent,
     ExamEvent,
     FurnitureMapEvent,
