@@ -83,7 +83,7 @@ async def _(bot: Bot, event: OpenServerSendEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await open_server_send.finish()
+        await open_server_send.finish(msg)
     status = "已开服" if event.status else "维护中"
     msg = f'{event.server}当前状态是[{status}]'
     await open_server_send(msg)
@@ -113,7 +113,7 @@ async def _(bot: Bot, event: ExtraPointEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await extra_point.finish()
+        await extra_point.finish(msg)
     msg = f'[{event.name}]推荐奇穴：\n'
     msg += f'龙门绝境奇穴：\n{event.longmen}\n'
     msg += f'战场任务奇穴：\n{event.battle}'
@@ -127,7 +127,7 @@ async def _(bot: Bot, event: MedicineEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await medicine.finish()
+        await medicine.finish(msg)
     msg = f'[{event.name}]小药：\n'
     msg += f'增强食品：{event.heightenFood}\n'
     msg += f'辅助食品：{event.auxiliaryFood}\n'
@@ -144,7 +144,7 @@ async def _(bot: Bot, event: MacroEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await macro.finish()
+        await macro.finish(msg)
     msg = f'[{event.name}]宏：\n'
     msg += f'{event.command}\n\n'
     msg += f'奇穴：{event.plan}'
@@ -159,7 +159,7 @@ async def _(bot: Bot, event: AdventureConditionEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await adventurecondition.finish()
+        await adventurecondition.finish(msg)
     msg = f'[{event.name}]条件：\n'
     msg += f'触发方式：{event.method}\n'
     msg += f'满足条件：{event.need}\n'
@@ -176,7 +176,7 @@ async def _(bot: Bot, event: ExamEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await exam.finish()
+        await exam.finish(msg)
     msg = f'[问题]\n{event.question}\n'
     msg+f'[答案]\n{event.answer}'
 
@@ -190,7 +190,7 @@ async def _(bot: Bot, event: PendantEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await pendant.finish()
+        await pendant.finish(msg)
     msg = f'[{event.name}]\n'
     msg += f'物品类型：{event.type}\n'
     msg += f'使用特效：{event.use}\n'
@@ -207,7 +207,7 @@ async def _(bot: Bot, event: EquipQueryEvent):
     '''
     if event.msg_success != "success":
         msg = '查询失败，未找到该数据。'
-        await equip_query.finish()
+        await equip_query.finish(msg)
     data = event.data
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
