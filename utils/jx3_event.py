@@ -406,31 +406,6 @@ class GoldQueryEvent(SendEvent):
         return 1003
 
 
-class FlowerPriceEvent(SendEvent):
-    '''
-    返回鲜花价格查询结果
-    '''
-    __event__ = "flower_price"
-    post_type = "flower_price"
-    data: Optional[list[dict]]
-    '''
-    鲜花数据，是一个字典列表
-    '''
-
-    def __init__(self, all_data: dict):
-        '''
-        重写初始化函数
-        '''
-        super(FlowerPriceEvent, self).__init__()
-        self.echo = all_data.get('echo')
-        self.msg_success = all_data.get('msg')
-        self.data = all_data.get('data')
-
-    @classmethod
-    def get_api_type(cls):
-        return 1004
-
-
 class MatchEquipEvent(SendEvent):
     '''
     返回配装查询结果
@@ -459,7 +434,7 @@ class MatchEquipEvent(SendEvent):
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
         self.name = data.get('name')
-        self.pveUrl = data.get('pevUrl')
+        self.pveUrl = data.get('pveUrl')
         self.pvpUrl = data.get('pvpUrl')
 
     @classmethod
@@ -858,7 +833,6 @@ Jx3EventType = Union[
     DailyEvent,
     OpenServerSendEvent,
     GoldQueryEvent,
-    FlowerPriceEvent,
     MatchEquipEvent,
     ExtraPointEvent,
     MedicineEvent,
@@ -880,7 +854,6 @@ Jx3EventList = [
     DailyEvent,
     OpenServerSendEvent,
     GoldQueryEvent,
-    FlowerPriceEvent,
     MatchEquipEvent,
     ExtraPointEvent,
     MedicineEvent,

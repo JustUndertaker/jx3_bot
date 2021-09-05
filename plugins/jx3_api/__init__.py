@@ -14,6 +14,7 @@ from utils.jx3_event import (
     ExtraPointEvent,
     MedicineEvent,
     MacroEvent,
+    MatchEquipEvent,
     AdventureConditionEvent,
     ExamEvent,
     PendantEvent,
@@ -45,7 +46,8 @@ daily = on(type="daily", priority=5, block=True)    # 日常查询
 open_server_send = on(type='open_server_send', priority=5, block=True)  # 开服查询
 gold_query = on(type='gold_query', priority=5, block=True)  # 金价查询
 equip_query = on(type="equipquery", priority=5, block=True)  # 角色装备查询
-# TODO：花价
+equip_group_query = on(type="match_equip", priority=5, block=True)  # 配装查询
+# TODO：
 extra_point = on(type='extra_point', priority=5, block=True)  # 奇穴查询
 medicine = on(type='medicine', priority=5, block=True)  # 小药查询
 macro = on(type='macro', priority=5, block=True)  # 宏查询
@@ -223,3 +225,14 @@ async def _(bot: Bot, event: RaiderseSearchEvent):
     img = event.url
     msg = MessageSegment.image(img)
     await raiderse_search.finish(msg)
+
+
+@equip_group_query.handle()
+async def _(bot: Bot, event: MatchEquipEvent):
+    '''配装查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await equip_query.finish(msg)
+    msg = MessageSegment.text(f'{event.name}配装：\nPve装备：\n')+MessageSegment.image(event.pveUrl) + \
+        MessageSegment.text("Pvp装备：\n")+MessageSegment.image(event.pvpUrl)
+    await equip_group_query.finish(msg)

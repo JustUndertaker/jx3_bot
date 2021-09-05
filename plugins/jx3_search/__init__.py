@@ -19,6 +19,7 @@ open_server_send = on_regex(pattern=r'^开服$', permission=GROUP, priority=5, b
 gold_query = on_regex(pattern=r'^金价$', permission=GROUP, priority=5, block=True)  # 金价查询
 extra_point = on_regex(pattern=r'^奇穴 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇穴查询
 medicine = on_regex(pattern=r'^小药 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 小药查询
+equip_group_query = on_regex(pattern=r'^配装 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 配装查询
 
 macro_regex = r"(^宏 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+宏$)"
 macro = on_regex(pattern=macro_regex, permission=GROUP, priority=5, block=True)  # 宏查询
@@ -175,6 +176,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     get_name = event.get_plaintext().split(" ")[-1]
     msg = {
         "type": 1021,
+        "name": get_name,
+        "echo": echo
+    }
+    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await open_server_send.finish()
+
+
+@equip_group_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''配装查询'''
+    echo = int(time.time())
+    group_id = event.group_id
+    get_name = event.get_plaintext().split(" ")[-1]
+    msg = {
+        "type": 1006,
         "name": get_name,
         "echo": echo
     }
