@@ -60,7 +60,7 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     is_init = await check_group_init(group_id)
 
     # 判断是否跳过本插件
-    if module_name == self_module:
+    if module_name == self_module or module_name == "group_manager":
         if is_init or (state['_matched'] == '更新'):
             return
 
