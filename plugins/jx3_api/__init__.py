@@ -1,10 +1,10 @@
 from nonebot import get_driver
 from utils.jx3_soket import on_connect
 from nonebot.plugin import on
-from nonebot.adapters.cqhttp import Bot
+from nonebot.adapters.cqhttp import Bot, MessageSegment
 import asyncio
 from datetime import datetime
-from .data_source import get_server
+from .data_source import get_server, get_html_screenshots
 from nonebot.plugin import export
 from utils.log import logger
 from utils.jx3_event import (
@@ -20,6 +20,7 @@ from utils.jx3_event import (
     AdventureConditionEvent,
     ExamEvent,
     PendantEvent,
+    EquipQueryEvent,
 
 )
 
@@ -48,7 +49,8 @@ adventure_recv = on(type="adventure_recv", priority=5, block=True)  # 奇遇推�
 daily = on(type="daily", priority=5, block=True)    # 日常查询
 open_server_send = on(type='open_server_send', priority=5, block=True)  # 开服查询
 gold_query = on(type='gold_query', priority=5, block=True)  # 金价查询
-# TODO：花价，配装查询
+equip_query = on(type="equipquery", priority=5, block=True)  # 角色装备查询
+# TODO：花价
 extra_point = on(type='extra_point', priority=5, block=True)  # 奇穴查询
 medicine = on(type='medicine', priority=5, block=True)  # 小药查询
 macro = on(type='macro', priority=5, block=True)  # 宏查询
@@ -233,3 +235,15 @@ async def _(bot: Bot, event: PendantEvent):
     msg += f'获取方式：{event.obtain}'
 
     await pendant.finish(msg)
+
+
+@equip_query.handle()
+async def _(bot: Bot, event: EquipQueryEvent):
+    '''
+    角色装备查询
+    '''
+    data = event.data
+    pagename = "equip.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
