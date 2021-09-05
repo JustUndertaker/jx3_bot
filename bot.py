@@ -5,6 +5,7 @@ import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 from utils.database import database_init
 from utils.ap_scheduler import start_scheduler
+from utils.monkeypatch import monkeypatch
 
 nonebot.init()
 app = nonebot.get_asgi()
@@ -24,4 +25,5 @@ nonebot.load_plugins("plugins")
 
 if __name__ == "__main__":
     nonebot.logger.warning("Always use `nb run` to start the bot instead of manually running!")
+    monkeypatch()  # 猴子补丁，针对windows平台
     nonebot.run(app="__mp_main__:app")
