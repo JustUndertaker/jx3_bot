@@ -195,7 +195,7 @@ class NewsRecvEvent(RecvEvent):
         self.news_type = data.get('type')
         self.news_tittle = data.get('title')
         self.news_url = data.get('url')
-        self.news_date = data.get('news_date')
+        self.news_date = data.get('date')
 
     @classmethod
     def get_api_type(cls):
@@ -340,7 +340,7 @@ class OpenServerSendEvent(SendEvent):
         self.echo = all_data.get('echo')
         data: dict = all_data.get('data')
         self.server = data.get('server')
-        self.region = data.get('region')
+        self.region = data.get('zone')
         status = data.get('status')
         self.status = (True if status == 1 else False)
 
@@ -458,31 +458,6 @@ class MatchEquipEvent(SendEvent):
         return 1006
 
 
-class MainServerEvent(SendEvent):
-    '''
-    返回主服务器查询结果
-    '''
-    __event__ = "main_server"
-    post_type = "main_server"
-    name: Optional[str]
-    '''
-    主服务器名称
-    '''
-
-    def __init__(self, all_data: dict):
-        '''
-        重写初始化函数
-        '''
-        super(MainServerEvent, self).__init__()
-        self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.name = data.get('name')
-
-    @classmethod
-    def get_api_type(cls):
-        return 1007
-
-
 class ExtraPointEvent(SendEvent):
     '''
     返回奇穴查询结果
@@ -510,7 +485,7 @@ class ExtraPointEvent(SendEvent):
         self.echo = all_data.get('echo')
         data = all_data.get('data')
         self.name = data.get('name')
-        self.longmen = data.get('longmen')
+        self.longmen = data.get('long')
         self.battle = data.get('battle')
 
     @classmethod
@@ -573,13 +548,17 @@ class MacroEvent(SendEvent):
     '''
     心法名称
     '''
-    plan: Optional[str]
+    holes: Optional[str]
     '''
     奇穴
     '''
     command: Optional[str]
     '''
     宏命令
+    '''
+    time: Optional[str]
+    '''
+    更新时间
     '''
 
     def __init__(self, all_data: dict):
@@ -590,8 +569,9 @@ class MacroEvent(SendEvent):
         self.echo = all_data.get('echo')
         data = all_data.get('data')
         self.name = data.get('name')
-        self.plan = data.get('plan')
+        self.holes = data.get('holes')
         self.command = data.get('command')
+        self.time = data.get('time')
 
     @classmethod
     def get_api_type(cls):
@@ -604,11 +584,7 @@ class ItemPriceEvent(SendEvent):
     '''
     __event__ = "itemprice"
     post_type = "itemprice"
-    name: Optional[str]
-    '''
-    物品名称
-    '''
-    data: Optional[list[dict]]
+    data: Optional[dict]
     '''
     物价数据
     '''
@@ -619,8 +595,6 @@ class ItemPriceEvent(SendEvent):
         '''
         super(ItemPriceEvent, self).__init__()
         self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.name = data.get('name')
         self.data = all_data.get('data')
 
     @classmethod
@@ -634,25 +608,9 @@ class AdventureConditionEvent(SendEvent):
     '''
     __event__ = "adventurecondition"
     post_type = "adventurecondition"
-    name: Optional[str]
+    data: Optional[dict]
     '''
-    奇遇名称
-    '''
-    method: Optional[str]
-    '''
-    触发方式
-    '''
-    need: Optional[str]
-    '''
-    满足条件
-    '''
-    other: Optional[str]
-    '''
-    其他可能
-    '''
-    reward: Optional[str]
-    '''
-    物品奖励
+    条件数据
     '''
 
     def __init__(self, all_data: dict):
@@ -661,12 +619,7 @@ class AdventureConditionEvent(SendEvent):
         '''
         super(AdventureConditionEvent, self).__init__()
         self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.name = data.get('name')
-        self.method = data.get('method')
-        self.need = data.get('need')
-        self.other = data.get('other')
-        self.reward = data.get('reward')
+        self.data = all_data.get('data')
 
     @classmethod
     def get_api_type(cls):
@@ -734,61 +687,9 @@ class FurnitureEvent(SendEvent):
     '''
     __event__ = "furniture"
     post_type = "furniture"
-    name: Optional[str]
+    data: Optional[dict]
     '''
     装饰名称
-    '''
-    type: Optional[int]
-    '''
-    装饰类型
-    '''
-    quality: Optional[int]
-    '''
-    装饰品质
-    '''
-    source: Optional[str]
-    '''
-    装饰来源
-    '''
-    architecture: Optional[int]
-    '''
-    装饰价格
-    '''
-    levelLimit: Optional[int]
-    '''
-    家园所需等级
-    '''
-    qualityLevel: Optional[int]
-    '''
-    品质等级
-    '''
-    viewScore: Optional[int]
-    '''
-    观赏等级
-    '''
-    practicalScore: Optional[int]
-    '''
-    实用等级
-    '''
-    hardScore: Optional[int]
-    '''
-    坚固等级
-    '''
-    geomanticScore: Optional[int]
-    '''
-    风水等级
-    '''
-    interestingScore: Optional[int]
-    '''
-    趣味等级
-    '''
-    imagePath: Optional[str]
-    '''
-    图鉴链接
-    '''
-    tip: Optional[str]
-    '''
-    装饰介绍
     '''
 
     def __init__(self, all_data: dict):
@@ -797,21 +698,7 @@ class FurnitureEvent(SendEvent):
         '''
         super(FurnitureEvent, self).__init__()
         self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.name = data.get('name')
-        self.type = data.get('type')
-        self.quality = data.get('quality')
-        self.source = data.get('source')
-        self.architecture = data.get('architecture')
-        self.levelLimit = data.get('levelLimit')
-        self.qualityLevel = data.get('qualityLevel')
-        self.viewScore = data.get('viewScore')
-        self.practicalScore = data.get('practicalScore')
-        self.hardScore = data.get('hardScore')
-        self.geomanticScore = data.get('geomanticScore')
-        self.interestingScore = data.get('interestingScore')
-        self.imagePath = data.get('imagePath')
-        self.tip = data.get('tip')
+        self.data = all_data.get('data')
 
     @classmethod
     def get_api_type(cls):
@@ -843,31 +730,6 @@ class AdventureSearchEvent(SendEvent):
         return 1018
 
 
-class SaoHuaEvent(SendEvent):
-    '''
-    返回随机骚话查询结果
-    '''
-    __event__ = "saohua"
-    post_type = "saohua"
-    text: Optional[str]
-    '''
-    骚话内容
-    '''
-
-    def __init__(self, all_data: dict):
-        '''
-        重写初始化函数
-        '''
-        super(SaoHuaEvent, self).__init__()
-        self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.text = data.get('text')
-
-    @classmethod
-    def get_api_type(cls):
-        return 1019
-
-
 class PendantEvent(SendEvent):
     '''
     返回挂件查询结果
@@ -890,7 +752,7 @@ class PendantEvent(SendEvent):
     '''
     物品说明
     '''
-    obtain: Optional[str]
+    source: Optional[str]
     '''
     获取方式
     '''
@@ -906,20 +768,50 @@ class PendantEvent(SendEvent):
         self.type = data.get('type')
         self.use = data.get('use')
         self.explain = data.get('explain')
-        self.obtain = data.get('obtain')
+        self.source = data.get('source')
 
     @classmethod
     def get_api_type(cls):
         return 1021
 
 
-class ExperienceEvent(SendEvent):
+class RaiderseSearchEvent(SendEvent):
     '''
-    返回资历查询结果
+    返回奇遇查询结果
     '''
-    __event__ = "experience"
-    post_type = "experience"
-    data: Optional[list[dict]]
+    __event__ = "raidersesearch"
+    post_type = "raidersesearch"
+    name: Optional[list[dict]]
+    '''
+    攻略名称
+    '''
+    url: Optional[str]
+    '''
+    攻略图片url
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super(RaiderseSearchEvent, self).__init__()
+        self.echo = all_data.get('echo')
+        data = all_data.get('data')
+        self.name = data.get('name')
+        self.url = data.get('url')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1023
+
+
+class EquipQueryEvent(SendEvent):
+    '''
+    返回角色装备查询结果
+    '''
+    __event__ = "equipquery"
+    post_type = "equipquery"
+    data: Optional[dict]
     '''
     资历数据，是一个列表
     '''
@@ -928,14 +820,13 @@ class ExperienceEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(ExperienceEvent, self).__init__()
+        super(EquipQueryEvent, self).__init__()
         self.echo = all_data.get('echo')
-        data = all_data.get('data')
-        self.data = data.get('data')
+        self.data = all_data.get('data')
 
     @classmethod
     def get_api_type(cls):
-        return 1022
+        return 1025
 
 
 Jx3EventType = Union[
@@ -948,7 +839,6 @@ Jx3EventType = Union[
     GoldQueryEvent,
     FlowerPriceEvent,
     MatchEquipEvent,
-    MainServerEvent,
     ExtraPointEvent,
     MedicineEvent,
     MacroEvent,
@@ -958,9 +848,8 @@ Jx3EventType = Union[
     FurnitureMapEvent,
     FurnitureEvent,
     AdventureSearchEvent,
-    SaoHuaEvent,
     PendantEvent,
-    ExperienceEvent
+    EquipQueryEvent
 ]
 
 Jx3EventList = [
@@ -972,7 +861,6 @@ Jx3EventList = [
     GoldQueryEvent,
     FlowerPriceEvent,
     MatchEquipEvent,
-    MainServerEvent,
     ExtraPointEvent,
     MedicineEvent,
     MacroEvent,
@@ -982,7 +870,6 @@ Jx3EventList = [
     FurnitureMapEvent,
     FurnitureEvent,
     AdventureSearchEvent,
-    SaoHuaEvent,
     PendantEvent,
-    ExperienceEvent
+    EquipQueryEvent
 ]
