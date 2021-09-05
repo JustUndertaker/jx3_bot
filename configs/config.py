@@ -2,22 +2,6 @@
 全局配置文件
 '''
 
-LOGGER_DEBUG: bool = True
-'''插件日志的debug信息是否显示在控制台'''
-
-
-DEFAULT_SERVER: str = "幽月轮"
-'''默认绑定服务器'''
-
-
-DEFAULT_STATUS: bool = True
-'''群默认开启状态'''
-
-
-ROBOT_ACTIVE: int = 20
-'''机器人自动插话活跃度，1-100'''
-
-
 CHAT_NLP = {
     "secretId": "",  # 腾讯云API的secretId，开通地址：https://console.cloud.tencent.com/cam/capi
     "secretKey": ""  # 腾讯云API的secretKey，NLP申请：https://console.cloud.tencent.com/nlp
@@ -37,3 +21,18 @@ CHAT_VOICE = {
     "pitch_rate": 0,  # 音调，取值范围：-500～500
 }
 '''聊天配置-语音合成'''
+
+LOGGER_DEBUG: bool = True
+'''插件日志的debug信息是否显示在控制台'''
+
+
+DEFAULT_SERVER: str = "幽月轮"
+'''每个群默认绑定服务器'''
+
+
+DEFAULT_STATUS: bool = True
+'''机器人在每个群默认开启状态'''
+
+
+ROBOT_ACTIVE: int = 10
+'''机器人自动插话活跃度，1-100'''

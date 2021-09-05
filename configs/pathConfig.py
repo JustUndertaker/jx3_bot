@@ -19,3 +19,7 @@ MEAU_IMG_OPEN = './resources/img/plugins_manager/open.png'
 '''功能菜单-开关图片'''
 MEAU_IMG_CLOSE = './resources/img/plugins_manager/close.png'
 '''功能菜单-开关图片'''
+
+
+HTML_PATH = '/resources/html/'
+'''html文件路径'''
