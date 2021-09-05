@@ -102,7 +102,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await active_change.finish(msg)
 
 
-someone_in_group = on_notice(rule=check_event(GroupIncreaseNoticeEvent), priority=3, block=True)
+check_in_group = ['notice.group_increase.approve', 'notice.group_increase.invite']
+someone_in_group = on_notice(rule=check_event(check_in_group), priority=3, block=True)
 
 
 @someone_in_group.handle()
@@ -123,6 +124,11 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
             await user_init(user_id, group_id, user_name)
+
+            msg = f'我加入了群({group_id})'
+            admin_user_list = get_admin_list()
+            for admin_id in admin_user_list:
+                await bot.send_private_msg(user_id=admin_id, message=msg)
         msg = None
         if DEFAULT_STATUS:
             msg = f'可爱的{nickname}驾到了，有什么问题尽管来问我吧！'
@@ -134,14 +140,16 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         await someone_in_group.finish()
 
     # 注册用户
-    user_name = ""
-    await user_init(group_id, user_id, user_name)
+    user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id, no_cache=True)
+    user_name = user_info['nickname']
+    await user_init(user_id, group_id, user_name)
     # 欢迎语
     msg = MessageSegment.at(user_id)+DEFAULT_WELCOME
     await someone_in_group.finish(msg)
 
 
-someone_left = on_notice(rule=check_event(GroupDecreaseNoticeEvent))
+check_left = ['notice.group_decrease.leave', 'notice.group_decrease.kick', 'notice.group_decrease.kick_me']
+someone_left = on_notice(rule=check_event(check_left), priority=3, block=True)
 
 
 @someone_left.handle()

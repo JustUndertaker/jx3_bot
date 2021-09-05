@@ -2,6 +2,7 @@ from modules.group_info import GroupInfo
 from modules.user_info import UserInfo
 from typing import Optional
 import httpx
+from nonebot.typing import T_State
 from utils.user_agent import get_user_agent
 from nonebot.adapters.cqhttp import Event, Bot
 from nonebot.rule import Rule
@@ -84,14 +85,13 @@ async def change_active(group_id: int, active: int) -> None:
     await GroupInfo.set_active(group_id, active)
 
 
-def check_event(check_event: Event):
+def check_event(event_list: str):
     '''
     检查事件
     '''
-    event_name = check_event.get_event_name()
 
-    async def _check_event(bot: "Bot", event: "Event") -> bool:
-        return event_name == event.get_event_name()
+    async def _check_event(bot: "Bot", event: "Event", state: T_State) -> bool:
+        return event.get_event_name() in event_list
 
     return Rule(_check_event)
 
