@@ -1,15 +1,28 @@
-from nonebot import get_driver, on_regex
+from nonebot import get_driver, on_regex, on_notice
 from nonebot.plugin import export
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
+from nonebot.adapters.cqhttp import (
+    Bot,
+    GroupMessageEvent,
+    GroupIncreaseNoticeEvent,
+    GroupDecreaseNoticeEvent,
+    MessageSegment,
+)
+from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from utils.log import logger
+from utils.utils import get_admin_list, nickname
 from .data_source import (
     group_init,
     user_init,
     get_server_name,
     change_server,
-    change_active
+    change_active,
+    check_event,
+    check_robot_status,
+    user_detele,
+    get_user_name,
+    group_detel,
 )
 
 export = export()
@@ -87,3 +100,86 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await change_active(group_id, active)
     msg = f"活跃值设为：{active}"
     await active_change.finish(msg)
+
+
+someone_in_group = on_notice(rule=check_event(GroupIncreaseNoticeEvent), priority=3, block=True)
+
+
+@someone_in_group.handle()
+async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
+    '''
+    群成员增加事件
+    '''
+    group_id = event.group_id
+    user_id = event.user_id
+    self_id = event.self_id
+    # 判断是否是机器人进群
+    if user_id == self_id:
+        # 注册群
+        await group_init(group_id)
+        # 用户注册
+        user_list = await bot.get_group_member_list(group_id=group_id)
+        for user in user_list:
+            user_id = user['user_id']
+            user_name = user['nickname'] if user['card'] == "" else user['card']
+            await user_init(user_id, group_id, user_name)
+        msg = None
+        if DEFAULT_STATUS:
+            msg = f'可爱的{nickname}驾到了，有什么问题尽管来问我吧！'
+        await someone_in_group.finish(msg)
+
+    # 判断机器人是否开启
+    status = await check_robot_status(group_id)
+    if status is None or status is False:
+        await someone_in_group.finish()
+
+    # 注册用户
+    user_name = ""
+    await user_init(group_id, user_id, user_name)
+    # 欢迎语
+    msg = MessageSegment.at(user_id)+DEFAULT_WELCOME
+    await someone_in_group.finish(msg)
+
+
+someone_left = on_notice(rule=check_event(GroupDecreaseNoticeEvent))
+
+
+@someone_left.handle()
+async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
+    '''
+    群成员减少事件
+    '''
+    user_id = event.user_id
+    group_id = event.group_id
+    user_name = await get_user_name(user_id, group_id)
+    # 删除数据
+    await user_detele(user_id, group_id)
+
+    sub_type = event.sub_type
+    if sub_type == "kick_me":
+        # 机器人被踢了
+        msg = f'我在群({group_id})被管理员踹走了……'
+        admin_user_list = get_admin_list()
+        for admin_id in admin_user_list:
+            await bot.send_private_msg(user_id=admin_id, message=msg)
+        # 删除数据
+        await group_detel(group_id)
+        await someone_in_group.finish()
+
+    # 查看群是否开启
+    status = await check_robot_status(group_id)
+    if status is None or status is False:
+        await someone_in_group.finish()
+
+    sub_type = event.sub_type
+    if sub_type == "leave":
+        # 有人主动退群
+        msg = f"{user_name}({user_id})"+DEFAULT_LEFT
+        await someone_in_group.finish(msg)
+
+    if sub_type == "kick":
+        # 有人被踢出群
+        msg = f"{user_name}({user_id})"+DEFAULT_LEFT_KICK
+        await someone_in_group.finish(msg)
+
+    await someone_in_group.finish()

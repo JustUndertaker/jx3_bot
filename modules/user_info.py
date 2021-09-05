@@ -125,6 +125,22 @@ class UserInfo(Model):
         return None if record is None else record.lucky
 
     @classmethod
+    async def get_user_name(cls, user_id: int, group_id: int) -> Optional[str]:
+        '''
+        :说明：
+            获取用户的昵称
+
+        :参数
+            * user_id：用户QQ
+            * group_id：QQ群号
+
+        :返回
+            * str：昵称
+        '''
+        record = await cls.get_or_none(user_id=user_id, group_id=group_id)
+        return None if record is None else record.user_name
+
+    @classmethod
     async def sign_in(cls, user_id: int, group_id: int) -> None:
         '''
         :说明：
@@ -170,6 +186,19 @@ class UserInfo(Model):
         '''
         record = await cls.get_or_none(user_id=user_id, group_id=group_id)
         if record is not None:
+            await record.delete()
+
+    @classmethod
+    async def delete_group(cls, group_id: int) -> None:
+        '''
+        :说明
+            删除一个群所有信息
+
+        :参数
+            * group_id：QQ群号
+        '''
+        record_list = await cls.filter(group_id=group_id)
+        for record in record_list:
             await record.delete()
 
     @classmethod

@@ -38,3 +38,12 @@ ROBOT_ACTIVE: int = 10
 
 LOGGER_DEBUG: bool = True
 '''插件日志的debug信息是否显示在控制台'''
+
+DEFAULT_WELCOME: str = "欢迎新同学来到这里。"
+'''默认群欢迎语'''
+
+DEFAULT_LEFT: str = "默默地离开了我们……"
+'''默认成员离开说辞'''
+
+DEFAULT_LEFT_KICK: str = "被管理员狠狠地踢走了……"
+'''默认成员被踢说辞'''

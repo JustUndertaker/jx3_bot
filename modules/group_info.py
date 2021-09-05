@@ -195,3 +195,10 @@ class GroupInfo(Model):
         '''
         record = await cls.get_or_none(group_id=group_id)
         return None if record is None else record.active
+
+    @classmethod
+    async def delete_one(cls, group_id: int) -> None:
+        '''删除一条数据'''
+        record = await cls.get_or_none(group_id=group_id)
+        if record is not None:
+            await record.delete()
