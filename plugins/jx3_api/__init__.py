@@ -4,7 +4,7 @@ from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot, MessageSegment
 import asyncio
 from datetime import datetime
-from .data_source import get_html_screenshots
+from utils.browser import get_html_screenshots
 from nonebot.plugin import export
 from utils.log import logger
 from utils.jx3_event import (
