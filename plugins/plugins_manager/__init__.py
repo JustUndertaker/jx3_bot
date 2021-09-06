@@ -58,21 +58,15 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
 
     # 判断是否注册
     is_init = await check_group_init(group_id)
+    if is_init is None or module_name == self_module:
+        log = '此插件不归管理器管理，跳过。'
+        logger.debug(log)
+        return
 
-    # 判断是否跳过本插件
-    if module_name == self_module or module_name == "group_manager":
-        if is_init or (state['_matched'] == '更新'):
-            return
-
-    # 鉴权函数
+    # 管理器管理函数
     status = await check_plugin_status(module_name, group_id)
 
-    if is_init is None:
-        reason = f'[{group_id}]群未注册'
-        log = f'事件被阻断：{reason}'
-        logger.debug(log)
-        raise IgnoredException(reason)
-    elif status is False:
+    if status is False:
         reason = f'[{module_name}]插件未开启'
         log = f'事件被阻断：{reason}'
         logger.debug(log)

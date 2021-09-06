@@ -19,11 +19,16 @@ class PluginBase():
     '''
     插件用法
     '''
+    ignore: bool
+    '''
+    插件是否被管理器忽略
+    '''
 
-    def __init__(self, module_name: str, plugin_name: str, plugin_usage: str):
+    def __init__(self, module_name: str, plugin_name: str, plugin_usage: str, ignore: bool):
         self.module_name = module_name
         self.plugin_name = plugin_name
         self.plugin_usage = plugin_usage
+        self.ignore = ignore
 
 
 PluginManager: list[PluginBase] = []
@@ -50,15 +55,11 @@ def manager_init() -> None:
 
         # 设置插件
         try:
-            # 跳过手动忽略的模块
             ignore = plugin.export['ignore']
-            if ignore:
-                continue
-
             module_name = plugin.name
             plugin_name = plugin.export['plugin_name']
             usage = plugin.export['plugin_usage']
-            one = PluginBase(module_name, plugin_name, usage)
+            one = PluginBase(module_name, plugin_name, usage, ignore)
             PluginManager.append(one)
         except Exception:
             continue

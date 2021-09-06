@@ -51,6 +51,9 @@ async def plugin_init(group_id: int) -> None:
         注册一个群的所有插件
     '''
     for plugin in PluginManager:
+        # 跳过忽略的插件
+        if plugin.ignore:
+            continue
         module_name = plugin.module_name
         await PluginInfo.append_or_update(module_name, group_id)
 
