@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>角色信息</title>
+    <link href="css/index.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+    <style type="text/css">
+        span.serif {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+
+        el-table-column.serif {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+
+        h3.serif {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+
+        div.serif {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="el-card box-card3 is-always-shadow" id="jiaose">
+        <div class="el-card__header">
+            <div class="clearfix"><span class="serif" style="text-align: center; display: block; font-weight: bold;"
+                    id="page_tittle">角色图鉴</span></div>
+        </div>
+        <div class="el-card__body">
+            <section class="el-container">
+                <section class="el-container">
+                    <aside class="el-aside serif" style="width: 570px;">
+                        <div class="el-card box-card is-always-shadow">
+                            <div class="el-card__header">
+                                <div class="clearfix"><span class="serif"
+                                        style="text-align: center; display: block;">人物属性</span></div>
+                            </div>
+                            <div class="el-card__body">
+                                <div class="el-table el-table--fit el-table--striped el-table--border el-table--enable-row-hover el-table--enable-row-transition"
+                                    style="width: 501px;">
+                                    <div class="hidden-columns">
+                                        <div class="serif"></div>
+                                        <div class="serif"></div>
+                                    </div>
+                                    <div class="el-table__header-wrapper">
+                                        <table cellspacing="0" cellpadding="0" border="0" class="el-table__header"
+                                            style="width: 500px;">
+                                            <colgroup>
+                                                <col name="el-table_1_column_1" width="200">
+                                                <col name="el-table_1_column_2" width="300">
+                                                <col name="gutter" width="0">
+                                            </colgroup>
+                                            <thead class="has-gutter">
+                                                <tr class="">
+                                                    <th colspan="1" rowspan="1"
+                                                        class="el-table_1_column_1  is-center   is-leaf">
+                                                        <div class="cell">属性</div>
+                                                    </th>
+                                                    <th colspan="1" rowspan="1"
+                                                        class="el-table_1_column_2  is-center   is-leaf">
+                                                        <div class="cell">数值</div>
+                                                    </th>
+                                                    <th class="gutter" style="width: 0px; display: none;"></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div class="el-table__body-wrapper is-scrolling-none">
+                                        <table cellspacing="0" cellpadding="0" border="0" class="el-table__body"
+                                            style="width: 500px;">
+                                            <colgroup>
+                                                <col name="el-table_1_column_1" width="200">
+                                                <col name="el-table_1_column_2" width="300">
+                                            </colgroup>
+                                            <tbody>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_0">角色</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_0">没有数据，哎？Σ(⊙▽⊙")</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_1">装分</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_1">没有数据，哎？Σ(⊙▽⊙")</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_2">气血</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_2">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_3">体质</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_3">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_4">根骨</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_4">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_5">力道</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_5">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_6">身法</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_6">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_7">元气</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_7">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_8">攻击力</span>
+                                                        </div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_8">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_9">基础攻击力</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_9">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_10">破招</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_10">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_11">会心</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_11">没有数据，哎？Σ(⊙▽⊙")
+                                                            </span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_12">会效</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_12">没有数据，哎？Σ(⊙▽⊙")
+                                                            </span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_13">加速</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_13">没有数据，哎？Σ(⊙▽⊙") </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_14">破防</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_14">1没有数据，哎？Σ(⊙▽⊙")
+                                                            </span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_15">无双</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_15">没有数据，哎？Σ(⊙▽⊙")
+                                                            </span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_16">外功防御</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_16">没有数据，哎？Σ(⊙▽⊙")</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_17">内功防御</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_17">没有数据，哎？Σ(⊙▽⊙")</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_1 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_tittle_18">化劲</span></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_1_column_2 is-center ">
+                                                        <div class="cell"><span class="serif"
+                                                                id="role_value_18">没有数据，哎？Σ(⊙▽⊙") </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="el-table__column-resize-proxy" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                    <main class="el-main">
+                        <div class="el-card box-card1 is-always-shadow">
+                            <div class="el-card__header">
+                                <div class="clearfix"><span class="serif"
+                                        style="text-align: center; display: block;">人物装备</span></div>
+                            </div>
+                            <div class="el-card__body">
+                                <div class="el-table el-table--fit el-table--striped el-table--border el-table--enable-row-hover el-table--enable-row-transition"
+                                    style="width: 251px;">
+                                    <div class="hidden-columns">
+                                        <div></div>
+                                        <div class="serif"></div>
+                                    </div>
+                                    <!---->
+                                    <div class="el-table__body-wrapper is-scrolling-none">
+                                        <table cellspacing="0" cellpadding="0" border="0" class="el-table__body"
+                                            style="width: 250px;">
+                                            <colgroup>
+                                                <col name="el-table_2_column_3" width="60">
+                                                <col name="el-table_2_column_4" width="190">
+                                            </colgroup>
+                                            <tbody>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" id="equip_icon_0" alt=""
+                                                                width="34px"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_0">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_1"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_1">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_2"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_2">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_3"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_3">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_4"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_4">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_5"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_5">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_6"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_6">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_7"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_7">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_8"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_8">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_9"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_9">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_10"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_10">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="el-table__row el-table__row--striped">
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_3  ">
+                                                        <div class="cell"><img src="" alt="" width="34px"
+                                                                id="equip_icon_11"></div>
+                                                    </td>
+                                                    <td rowspan="1" colspan="1" class="el-table_2_column_4  ">
+                                                        <div class="cell"><span class="serif" style="margin-left: 10px;"
+                                                                id="equip_name_11">没有数据，哎？Σ(⊙▽⊙")</span></div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="el-table__column-resize-proxy" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="el-card box-card1 is-always-shadow" style="margin-top: 12px;">
+                            <div class="el-card__header">
+                                <div class="clearfix"><span class="serif"
+                                        style="text-align: center; display: block;">数据来源</span></div>
+                            </div>
+                            <div class="el-card__body"> <span class="el-tag el-tag--success el-tag--light"
+                                    style="text-align: center; display: block;">https://jx3api.com</span></div>
+                        </div>
+                    </main>
+                </section>
+            </section>
+            <div class="el-card box-card2 is-always-shadow" style="margin-top: 12px;">
+                <div class="el-card__body">
+                    <div style="display: flex; justify-content: space-around;">
+                        <div><img src="" alt="" id="qixue_icon_0">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_0"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_1">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_1"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_2">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_2"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_3">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_3"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_4">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_4"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_5">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_5"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_6">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_6"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_7">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_7"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_8">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_8"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_9">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_9"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_10">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_10"></div>
+                        </div>
+                        <div><img src="" alt="" id="qixue_icon_11">
+                            <div class="serif" style="width: 48px; text-align: center;" id="qixue_name_11"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="el-card box-card2 is-always-shadow" style="margin-top: 10px;">
+
+                <div class="el-card__body"><span class="el-tag el-tag--light"
+                        style="text-align: center; display: block;"> 图片由"<a id="nickname">机器人</a>"自动生成</span></div>
+            </div>
+        </div>
+    </div>
+    <script src="js/equip.js"></script>
+    <style>
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            margin-bottom: 18px;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .clearfix:before,
+        .clearfix:after {
+            display: table;
+            content: "";
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .box-card {
+            width: 541px;
+        }
+
+        .box-card1 {
+            width: 291px;
+        }
+
+        .box-card2 {
+            width: 100%;
+        }
+
+        .box-card3 {
+            width: 904px;
+        }
+    </style>
+</body>
+
+</html>

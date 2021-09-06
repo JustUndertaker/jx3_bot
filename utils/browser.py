@@ -2,6 +2,7 @@ from playwright.async_api import async_playwright
 from playwright.async_api import BrowserContext, Playwright
 from utils.log import logger
 import os
+import json
 import base64
 from configs.pathConfig import HTML_PATH
 from typing import Optional
@@ -49,12 +50,14 @@ async def get_html_screenshots(pagename: str, data: dict) -> str:
     await page.goto(url)
 
     # 注入js
-    data_str = str(data)
+    data_str = json.dumps(data, ensure_ascii=False)
     js = f"data={data_str}\nhandle(data)"
     await page.evaluate(js)
 
     # 截图
-    screenshot_bytes = await page.screenshot()
+    await page.wait_for_load_state("networkidle")
+    element_handle = await page.query_selector("#jiaose")
+    screenshot_bytes = await element_handle.screenshot(type="jpeg", quality=100)
     base64_str = base64.b64encode(screenshot_bytes)
     req_str = 'base64://'+base64_str.decode()
     await page.close()

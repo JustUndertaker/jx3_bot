@@ -3,6 +3,7 @@ from utils.jx3_soket import on_connect
 from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot, MessageSegment
 import asyncio
+from .data_source import handle_data
 from datetime import datetime
 from utils.browser import get_html_screenshots
 from nonebot.plugin import export
@@ -207,7 +208,10 @@ async def _(bot: Bot, event: EquipQueryEvent):
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
         await equip_query.finish(msg)
-    data = event.data
+    get_data = event.data
+
+    # 数据预处理
+    data = handle_data(get_data)
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
