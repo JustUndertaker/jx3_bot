@@ -47,3 +47,7 @@ DEFAULT_LEFT: str = "默默地离开了我们……"
 
 DEFAULT_LEFT_KICK: str = "被管理员狠狠地踢走了……"
 '''默认成员被踢说辞'''
+
+
+IMG_CACHE: bool = True
+'''截图是否缓存，缓存会下载图标到本地'''
