@@ -1,6 +1,11 @@
 from modules.group_info import GroupInfo
 from .config import zhiye, shuxing
 from utils.utils import nickname
+from utils.user_agent import get_user_agent
+from configs.pathConfig import HTML_PATH
+from configs.config import IMG_CACHE
+import os
+import httpx
 
 
 async def get_server(group_id: int) -> str:
@@ -51,7 +56,7 @@ def _handle_attributes(attribute: dict) -> dict:
     return data
 
 
-def handle_data(alldata: dict) -> dict:
+async def handle_data(alldata: dict) -> dict:
     '''预处理数据'''
     sectName = alldata.get("sectName")
     role = f'{alldata.get("forceName")}|{alldata.get("sectName")}'
@@ -76,8 +81,14 @@ def handle_data(alldata: dict) -> dict:
     attribute = num_data.get("attribute")
     post_equip = num_data.get('equip')
     post_qixue = num_data.get('qixue')
+
     attribute = _handle_attributes(attribute)
     post_attribute = _handle_data(role, body, attribute, shuxing_data)
+    # 判断是否需要缓存
+    if IMG_CACHE:
+        post_equip = await _handle_icon(post_equip)
+        post_qixue = await _handle_icon(post_qixue)
+
     post_data = {}
     post_data['tittle'] = tittle
     post_data['nickname'] = nickname
@@ -108,3 +119,36 @@ def _handle_data(role: str, body: str, attribute: dict, shuxing_data: dict) -> l
         }
         data.append(one_dict)
     return data
+
+
+async def _handle_icon(data: list[dict]) -> dict:
+    '''处理icon'''
+    icon_path = "."+HTML_PATH+"icons/"
+    icons_files = os.listdir(icon_path)
+    for one_data in data:
+        icon_url = one_data.get('icon')
+        icon_name = _get_icon_name(icon_url)
+        filename = icon_path+icon_name
+        if (icon_name in icons_files):
+            # 文件已存在，替换url
+            icon_file = "icons/"+icon_name
+            one_data['icon'] = icon_file
+        else:
+            # 文件不存在，需要下载
+            await _get_icon(icon_url, filename)
+
+    return data
+
+
+def _get_icon_name(url: str) -> str:
+    '''从url返回文件名'''
+    url_list = url.split("/")
+    last = url_list[-1].split("?")
+    return last[0]
+
+
+async def _get_icon(url: str, filename: str) -> None:
+    '''下载icon'''
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        req = await client.get(url)
+        open(filename, 'wb').write(req.content)

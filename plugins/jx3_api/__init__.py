@@ -211,7 +211,7 @@ async def _(bot: Bot, event: EquipQueryEvent):
     get_data = event.data
 
     # 数据预处理
-    data = handle_data(get_data)
+    data = await handle_data(get_data)
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
