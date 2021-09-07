@@ -56,7 +56,7 @@ async def get_html_screenshots(pagename: str, data: dict) -> str:
 
     # 截图
     await page.wait_for_load_state("networkidle")
-    element_handle = await page.query_selector("#jiaose")
+    element_handle = await page.query_selector("#main")
     screenshot_bytes = await element_handle.screenshot(type="jpeg", quality=100)
     base64_str = base64.b64encode(screenshot_bytes)
     req_str = 'base64://'+base64_str.decode()

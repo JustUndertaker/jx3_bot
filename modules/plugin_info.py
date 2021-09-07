@@ -12,6 +12,10 @@ class PluginInfo(Model):
     '''
     插件名称
     '''
+    description = fields.CharField(max_length=255, default='')
+    '''
+    插件描述
+    '''
     group_id = fields.IntField()
     '''
     QQ群号
@@ -60,16 +64,19 @@ class PluginInfo(Model):
             raise Exception
 
     @classmethod
-    async def append_or_update(cls, module_name: str, group_id: int) -> None:
+    async def append_or_update(cls, module_name: str, description: str,  group_id: int) -> None:
         '''
         :说明
             增加，或更新一条数据
 
         :参数
             * module_name：插件模块名
+            * description：插件描述
             * group_id：QQ群号
         '''
-        await cls.get_or_create(module_name=module_name, group_id=group_id)
+        record, _ = await cls.get_or_create(module_name=module_name, group_id=group_id)
+        record.description = description
+        await record.save(update_fields=["description"])
 
     @classmethod
     async def set_group_status(cls, group_id: int, status: bool) -> None:
@@ -106,13 +113,14 @@ class PluginInfo(Model):
 
         :返回
 
-            * list[dict]：dict字段：module_name，status
+            * list[dict]：dict字段：module_name，description，status
         '''
         req: list[dict] = []
         record_list = await cls.filter(group_id=group_id)
         for record in record_list:
             reqdict = {}
             reqdict['module_name'] = record.module_name
+            reqdict['description'] = record.description
             reqdict['status'] = record.status
             req.append(reqdict)
         return req

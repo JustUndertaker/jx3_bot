@@ -9,12 +9,13 @@ from nonebot.typing import T_State
 import os
 from .model import manager_init
 from nonebot.exception import IgnoredException
+from utils.browser import get_html_screenshots
 from .data_source import (
     check_plugin_status,
     plugin_init,
     change_plugin_status,
     check_group_init,
-    get_meau_card,
+    get_meau_data,
 )
 
 
@@ -150,8 +151,12 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''
     显示功能开关状态
     '''
+    self_id = event.self_id
     group_id = event.group_id
     log = f'{event.sender.nickname}（{event.user_id}，{event.group_id}）请求功能菜单。'
     logger.info(log)
-    msg = await get_meau_card(group_id)
+    data = await get_meau_data(self_id, group_id)
+    pagename = "meau.html"
+    img = await get_html_screenshots(pagename, data)
+    msg = MessageSegment.image(img)
     await meau.finish(msg)
