@@ -75,7 +75,7 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
 
 
 # =================================管理员手动更新==========================
-update = on_regex(r"^更新$", permission=SUPERUSER, priority=2, block=True)
+update = on_regex(r"^更新信息$", permission=SUPERUSER, priority=2, block=True)
 
 
 @update.handle()

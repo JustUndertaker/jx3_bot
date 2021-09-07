@@ -58,8 +58,8 @@ macro_regex = r"(^宏 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+宏$)"
 macro = on_regex(pattern=macro_regex, permission=GROUP, priority=5, block=True)
 
 # 奇遇前置查询
-adventure_regex = r"^(前置)|(条件) [\u4e00-\u9fa5]+$"
-adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)
+#adventure_regex = r"^(前置)|(条件) [\u4e00-\u9fa5]+$"
+#adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)
 
 # 科举查询
 exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, block=True)
