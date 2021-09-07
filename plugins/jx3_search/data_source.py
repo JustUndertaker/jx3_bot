@@ -101,3 +101,53 @@ def get_xinfa(name: str) -> str:
 
     # 未找到，返回原值
     return name
+
+
+async def get_flowers_server(text: str) -> str:
+    '''处理花价查询，返回url'''
+    args = re.search(r'^花价 [\u4e00-\u9fa5]+$', text)
+    if args is not None:
+        server = text.split(' ')[-1]
+        # 查询主服务器
+        async with httpx.AsyncClient(headers=get_user_agent()) as client:
+            url = "https://www.jx3api.com/app/master"
+            params = {
+                "name": server
+            }
+            try:
+                req_url = await client.get(url, params=params)
+                req = req_url.json()
+                if req['code'] == 200:
+                    data = req['data']
+                    return data['server']
+            except Exception:
+                return None
+    return None
+
+
+async def get_flower_url(server: str) -> dict:
+    url = "https://www.jx3api.com/service/flower"
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        params = {
+            "server": server,
+            "flower": "flower"
+        }
+        req_url = await client.get(url, params=params)
+        return req_url.json()
+
+
+async def get_update_url() -> dict:
+    '''获取更新公告'''
+    url = "https://www.jx3api.com/service/update"
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        req_url = await client.get(url)
+        return req_url.json()
+
+
+async def get_price(name: str) -> dict:
+    '''获取物价'''
+    url = "https://www.jx3api.com/service/price"
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        params = {"name": name}
+        req_url = await client.get(url, params=params)
+        return req_url.json()

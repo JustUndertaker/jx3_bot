@@ -1,4 +1,4 @@
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
+from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from nonebot import on_regex
@@ -13,7 +13,11 @@ from .data_source import (
     get_peizhuang_name,
     get_gonglue_name,
     get_equipquery_name,
-    get_open_server_name
+    get_open_server_name,
+    get_flowers_server,
+    get_flower_url,
+    get_update_url,
+    get_price
 )
 
 
@@ -66,6 +70,19 @@ raiderse = on_regex(pattern=raiderse, permission=GROUP, priority=5, block=True)
 
 # 挂件查询
 pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)
+
+
+# -----使用jx3pai-----
+# 花价查询
+flowers_regex = r"(^花价$)|(^花价 [\u4e00-\u9fa5]+$)"
+flowers = on_regex(pattern=flowers_regex, permission=GROUP, priority=5, block=True)
+
+# 更新公告
+update_regex = r"(^更新$)|(^公告$)|(^更新公告$)"
+update_query = on_regex(pattern=update_regex, permission=GROUP, priority=5, block=True)
+
+# 物价查询
+price_query = on_regex(pattern=r"^物价 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 # raiderse_search = pendant = on_regex(pattern=r'^奇遇 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇遇查询
 # TODO：条件查询，器物谱查询，装饰查询，挂件查询，装备属性
 
@@ -264,3 +281,47 @@ async def _(bot: Bot, event: GroupMessageEvent):
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
     await open_server_send.finish()
+
+
+@flowers.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''花价查询'''
+    group_id = event.group_id
+    text = event.get_plaintext()
+    server = await get_flowers_server(text)
+    if server is None:
+        server = await get_server(group_id)
+
+    data = await get_flower_url(server)
+    if data['code'] == 200:
+        img = data['data']['url']
+        msg = MessageSegment.image(img)
+    else:
+        msg = data['msg']
+    await flowers.finish(msg)
+
+
+@update_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''更新公告'''
+    data = await get_update_url()
+    if data['code'] == 200:
+        img = data['data']['url']
+        msg = MessageSegment.image(img)
+    else:
+        msg = data['msg']
+    await flowers.finish(msg)
+
+
+@price_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''物价查询'''
+    text = event.get_plaintext()
+    name = text.split(' ')[-1]
+    data = await get_price(name)
+    if data['code'] == 200:
+        img = data['data']['url']
+        msg = MessageSegment.image(img)
+    else:
+        msg = data['msg']
+    await flowers.finish(msg)
