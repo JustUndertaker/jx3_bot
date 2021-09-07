@@ -204,7 +204,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
     await open_server_send.finish()
 
-
+"""
 @adventurecondition.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''前置查询'''
@@ -218,7 +218,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     }
     await send_ws_message(msg=msg, echo=echo, group_id=group_id)
     await open_server_send.finish()
-
+"""
 
 @exam.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
