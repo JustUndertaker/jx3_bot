@@ -48,14 +48,11 @@ open_server_send = on(type='open_server_send', priority=5, block=True)  # 开服
 gold_query = on(type='gold_query', priority=5, block=True)  # 金价查询
 equip_query = on(type="equipquery", priority=5, block=True)  # 角色装备查询
 equip_group_query = on(type="match_equip", priority=5, block=True)  # 配装查询
-# TODO：
 extra_point = on(type='extra_point', priority=5, block=True)  # 奇穴查询
 medicine = on(type='medicine', priority=5, block=True)  # 小药查询
 macro = on(type='macro', priority=5, block=True)  # 宏查询
-# TODO：物价查询
 adventurecondition = on(type='adventurecondition', priority=5, block=True)  # 奇遇条件查询
 exam = on(type='exam', priority=5, block=True)  # 科举查询
-# TODO：地图器物查询，装饰物查询，奇遇查询
 pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
 raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 奇遇查询
 
