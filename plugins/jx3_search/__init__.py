@@ -11,7 +11,9 @@ from .data_source import (
     get_qixue_name,
     get_medicine_name,
     get_peizhuang_name,
-    get_gonglue_name
+    get_gonglue_name,
+    get_equipquery_name,
+    get_open_server_name
 )
 
 
@@ -21,31 +23,49 @@ export.plugin_usage = '提供各种剑网三的查询功能。'
 export.ignore = False  # 插件管理器忽略此插件
 
 
-daily = on_regex(pattern=r'^日常$', permission=GROUP, priority=5, block=True)  # 日常查询
-equipquery = on_regex(pattern=r'^(装备)|(属性) [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 装备查询
-open_server_send = on_regex(pattern=r'^开服$', permission=GROUP, priority=5, block=True)  # 开服查询
-gold_query = on_regex(pattern=r'^金价$', permission=GROUP, priority=5, block=True)  # 金价查询
+# 日常查询
+daily = on_regex(pattern=r"^日常$", permission=GROUP, priority=5, block=True)
 
+# 装备查询
+equipquery_regex = r"(^(装备)|(属性) [\u4e00-\u9fa5]+$)|(^(装备)|(属性) [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)"
+equipquery = on_regex(pattern=equipquery_regex, permission=GROUP, priority=5, block=True)
+
+# 开服查询
+open_server_regex = r"(^开服$)|(^开服 [\u4e00-\u9fa5]+$)"
+open_server_send = on_regex(pattern=open_server_regex, permission=GROUP, priority=5, block=True)
+
+# 金价查询
+gold_query = on_regex(pattern=r"^金价$", permission=GROUP, priority=5, block=True)
+
+# 奇穴查询
 extra_point_regex = r"(^奇穴 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+奇穴$)"
-extra_point = on_regex(pattern=extra_point_regex, permission=GROUP, priority=5, block=True)  # 奇穴查询
+extra_point = on_regex(pattern=extra_point_regex, permission=GROUP, priority=5, block=True)
 
+# 小药查询
 medicine_regex = r"(^小药 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+小药$)"
-medicine = on_regex(pattern=medicine_regex, permission=GROUP, priority=5, block=True)  # 小药查询
+medicine = on_regex(pattern=medicine_regex, permission=GROUP, priority=5, block=True)
 
+# 配装查询
 equip_group_query_regex = r"(^配装 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+配装$)"
-equip_group_query = on_regex(pattern=equip_group_query_regex, permission=GROUP, priority=5, block=True)  # 配装查询
+equip_group_query = on_regex(pattern=equip_group_query_regex, permission=GROUP, priority=5, block=True)
 
+# 宏查询
 macro_regex = r"(^宏 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+宏$)"
-macro = on_regex(pattern=macro_regex, permission=GROUP, priority=5, block=True)  # 宏查询
+macro = on_regex(pattern=macro_regex, permission=GROUP, priority=5, block=True)
 
+# 奇遇前置查询
 adventure_regex = r"^(前置)|(条件) [\u4e00-\u9fa5]+$"
-adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)  # 奇遇前置查询
+adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)
 
-exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, block=True)  # 科举查询
+# 科举查询
+exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, block=True)
 
+# 攻略查询
 raiderse = r"(^攻略 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+攻略$)"
-raiderse = on_regex(pattern=raiderse, permission=GROUP, priority=5, block=True)  # 攻略查询
-pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 挂件查询
+raiderse = on_regex(pattern=raiderse, permission=GROUP, priority=5, block=True)
+
+# 挂件查询
+pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)
 # raiderse_search = pendant = on_regex(pattern=r'^奇遇 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇遇查询
 # TODO：条件查询，器物谱查询，装饰查询，挂件查询，装备属性
 
@@ -70,8 +90,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''装备查询'''
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(group_id)
-    name = event.get_plaintext().split(" ")[-1]
+    text = event.get_plaintext()
+    server, name = get_equipquery_name(text)
+    if server is None:
+        server = await get_server(group_id)
     msg = {
         "type": 1025,
         "server": server,
@@ -87,7 +109,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''开服查询'''
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(group_id)
+    text = event.get_plaintext()
+    server = await get_open_server_name(text)
+    if server is None:
+        server = await get_server(group_id)
     msg = {
         "type": 1002,
         "server": server,

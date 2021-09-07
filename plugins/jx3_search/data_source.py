@@ -1,5 +1,8 @@
 from modules.group_info import GroupInfo
 from .config import zhiye_name
+from typing import Optional, Tuple
+from utils.user_agent import get_user_agent
+import httpx
 import re
 
 
@@ -8,6 +11,40 @@ async def get_server(group_id: int) -> str:
     获取绑定服务器名称
     '''
     return await GroupInfo.get_server(group_id)
+
+
+def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:
+    '''处理查询装备'''
+    text_list = text.split(' ')
+    if len(text_list) == 2:
+        name = text_list[1]
+        server = None
+    else:
+        server = text_list[1]
+        name = text_list[2]
+    return server, name
+
+
+async def get_open_server_name(text: str) -> Optional[str]:
+    '''处理开服查询'''
+    args = re.search(r'^开服 [\u4e00-\u9fa5]+$', text)
+    if args is not None:
+        server = text.split(' ')[-1]
+        # 查询主服务器
+        async with httpx.AsyncClient(headers=get_user_agent()) as client:
+            url = "https://www.jx3api.com/app/master"
+            params = {
+                "name": server
+            }
+            try:
+                req_url = await client.get(url, params=params)
+                req = req_url.json()
+                if req['code'] == 200:
+                    data = req['data']
+                    return data['server']
+            except Exception:
+                return None
+    return None
 
 
 def get_macro_name(text: str) -> str:
