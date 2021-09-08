@@ -34,7 +34,7 @@ apt-get install python3.9
 
 **QQ协议端采用[go-cqhttp](https://github.com/Mrs4s/go-cqhttp)。**
 
-- go-cqhttp需要下载ffmpeg环境，windows点击[这里](https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z)下载，具体安装请参考[文档](https://docs.go-cqhttp.org/guide/quick_start.html#%E5%AE%89%E8%A3%85-ffmpeg)。
+- go-cqhttp需要下载ffmpeg环境，否则无法发送语音消息，具体安装请参考[文档](https://docs.go-cqhttp.org/guide/quick_start.html#%E5%AE%89%E8%A3%85-ffmpeg)。
 
 ### 安装依赖
 ```
