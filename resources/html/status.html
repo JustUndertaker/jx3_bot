@@ -15,11 +15,18 @@
         <div class="card">
             <div class="card-header">
                 <font color="green">
-                    <h6 class="text-center"><a id="nickname"></a> 运行状态</h6>
+                    <h6 class="text-center">管理：打开/关闭 [群号]，打开/关闭所有</h6>
                 </font>
             </div>
             <div class="card-body">
-                <h5 class="text-center">群数量：<a id="group_nums">0</a></h5>
+                <div class="row">
+                    <div class="col">
+                        <h5 class="text-center alert alert-primary"><a id="nickname"></a> 运行状态</h5>
+                    </div>
+                    <div class="col">
+                        <h5 class="text-center alert alert-success">群数量：<a id="group_nums">0</a></h5>
+                    </div>
+                </div>
                 <table class="table table-striped h5" id="table">
                     <thead>
                         <tr>
