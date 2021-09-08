@@ -83,7 +83,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 active_regex = r"^活跃值 [0-9]+$"
 active_usage = "[设置活跃值]\n群管理命令：活跃值 XX（1-99）"
-active_change = on_regex(pattern=server_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+active_change = on_regex(pattern=active_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 @active_change.handle()
