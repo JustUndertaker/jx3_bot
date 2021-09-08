@@ -1,4 +1,4 @@
-from nonebot import get_driver, on_regex, on_notice,on_request
+from nonebot import get_driver, on_regex, on_notice,on_request,on_message
 from nonebot.plugin import export
 from datetime import datetime
 from nonebot.adapters.cqhttp import (
@@ -12,12 +12,13 @@ from nonebot.adapters.cqhttp import (
     GroupRequestEvent,
     PrivateMessageEvent
 )
-from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS,DEFAULT_FIREND_ADD,DEFAULT_GROUP_ADD
+from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS,DEFAULT_FIREND_ADD,DEFAULT_GROUP_ADD,PRIVATE_CHAT
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from utils.log import logger
 from utils.utils import get_admin_list, nickname
 from utils.browser import get_html_screenshots
+from ..chat.data_source import get_reply_jx3,get_reply_qingyunke
 from .data_source import (
     group_init,
     user_init,
@@ -318,3 +319,36 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg="所有群已关闭机器人！"
     await change_all.finish(msg)
+
+
+chat_event=['message.private.friend','message.private.group']
+chat=on_message(rule=check_event(chat_event),priority=9, block=True)
+
+
+@chat.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''其他人私聊消息
+    自动根据确定API
+    '''
+    if not PRIVATE_CHAT:
+        await chat.finish()
+    # 获得聊天内容
+    text = event.get_plaintext()
+    name = event.sender.nickname
+    log = f'{name}（{event.user_id}）私聊闲聊：{text}'
+    logger.info(log)
+
+    # 使用jx3api访问
+    msg = await get_reply_jx3(text)
+    if msg is None:
+        # 使用青云客访问
+        msg = await get_reply_qingyunke(text)
+        if msg is None:
+            # 访问失败
+            log = '接口访问失败，关闭事件。'
+            logger.info(log)
+            await chat.finish()
+
+    log = f'接口返回：{msg}'
+    logger.info(log)
+    await chat.finish(msg)
