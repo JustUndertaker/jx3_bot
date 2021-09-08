@@ -124,18 +124,3 @@ class PluginInfo(Model):
             reqdict['status'] = record.status
             req.append(reqdict)
         return req
-
-    @classmethod
-    async def check_group_init(cls, group_id: int) -> bool:
-        '''
-        :说明
-            检测群是否注册
-
-        :参数
-            * group_id：QQ群号
-
-        :返回
-            * bool：是否注册
-        '''
-        record = await cls.get_or_none(group_id=group_id)
-        return record is not None
