@@ -134,7 +134,7 @@ def _get_change_params(text: str) -> tuple[str, bool]:
 
 
 # ===============插件菜单===============
-meauregex = r'(^菜单$)|(^功能$)'
+meauregex = r'(^菜单$)|(^功能$)|(^状态$)'
 meau = on_regex(meauregex, permission=GROUP, priority=2, block=True)
 
 
