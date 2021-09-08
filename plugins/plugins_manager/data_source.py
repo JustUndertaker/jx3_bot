@@ -7,17 +7,22 @@ from modules.plugin_info import PluginInfo
 from modules.group_info import GroupInfo
 
 
-async def check_group_init(group_id: int) -> bool:
+async def check_group_init(group_id: int,module_name:str) -> bool:
     '''
     :说明
-        检查群是否注册
+        检查群是否注册，会跳过忽略插件
 
     :参数
         * group_id：QQ群号
+        * module_name：模块名
 
     :返回
         * bool：是否注册
     '''
+    for plugin in PluginManager:
+        if module_name==plugin.module_name:
+            if plugin.ignore:
+                return False
     return await GroupInfo.check_group_init(group_id)
 
 

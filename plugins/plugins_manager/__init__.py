@@ -58,8 +58,8 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     module_name = matcher.plugin_name
 
     # 判断是否注册
-    is_init = await check_group_init(group_id)
-    if is_init is None or module_name == self_module:
+    is_init = await check_group_init(group_id,module_name)
+    if is_init is False or module_name == self_module:
         log = '此插件不归管理器管理，跳过。'
         logger.debug(log)
         return
