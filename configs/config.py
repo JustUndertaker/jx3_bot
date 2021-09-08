@@ -29,6 +29,12 @@ DEFAULT_SERVER: str = "幽月轮"
 '''每个群默认绑定服务器'''
 
 
+DEFAULT_FIREND_ADD:bool=True
+'''默认是否接收添加好友请求'''
+
+DEFAULT_GROUP_ADD:bool= True
+'''默认是否接收加群请求'''
+
 DEFAULT_STATUS: bool = True
 '''机器人在每个群默认开启状态'''
 

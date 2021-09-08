@@ -1,6 +1,6 @@
 from modules.group_info import GroupInfo
 from modules.user_info import UserInfo
-from typing import Optional
+from typing import Optional, Tuple
 import httpx
 from nonebot.typing import T_State
 from utils.user_agent import get_user_agent
@@ -8,12 +8,15 @@ from nonebot.adapters.cqhttp import Event, Bot
 from nonebot.rule import Rule
 
 
-async def group_init(group_id: int) -> None:
+async def group_init(group_id: int,group_name:str) -> None:
     '''
     注册群信息
     '''
-    await GroupInfo.append_or_update(group_id)
+    await GroupInfo.append_or_update(group_id,group_name)
 
+async def get_group_name(group_id:int)->str:
+    '''获取群名'''
+    return await GroupInfo.get_group_name(group_id)
 
 async def group_detel(group_id: int) -> None:
     '''删除群数据'''
@@ -111,6 +114,30 @@ async def check_robot_status(group_id: int) -> Optional[bool]:
     return await GroupInfo.get_robot_status(group_id)
 
 
-async def set_robot_status(group_id: int, status: bool):
+async def set_robot_status(group_id: int, status: bool)->bool:
     '''设置机器人开关'''
-    await GroupInfo.set_robot_status(group_id, status)
+    return await GroupInfo.set_robot_status(group_id, status)
+
+async def get_all_data()->list[dict]:
+    '''
+        :返回所有数据,dict字段：
+        * group_id：群号
+        * group_name：群名
+        * sign_nums：签到数
+        * server：服务器名
+        * robot_status：运行状态
+        * active：活跃值
+    '''
+    return await GroupInfo.get_all_data()
+
+def get_text_num(text: str)->Tuple[bool,int]:
+    '''从信息中获取开关，群号'''
+    _status=text.split(' ')[0]
+    _group_id=text.split(' ')[1]
+    status=(_status=="打开")
+    group_id=int(_group_id)
+    return status,group_id
+
+async def change_status_all(status:bool)->None:
+    '''设置所有状态'''
+    await GroupInfo.change_status_all(status)
