@@ -56,7 +56,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
     news_url = event.news_url
     news_date = event.news_date
 
-    msg = f"[{news_type}]来惹\n标题：{news_tittle}\nurl：{news_url}\n日期：{news_date}"
+    msg = f"[{news_type}]来惹\n标题：{news_tittle}\n链接：{news_url}\n日期：{news_date}"
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
