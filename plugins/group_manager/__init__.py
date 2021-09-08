@@ -52,8 +52,8 @@ async def _(bot: Bot):
             user_name = user['nickname'] if user['card'] == "" else user['card']
             await user_init(user_id, group_id, user_name)
 
-server_regex = r"^服务器 [\u4e00-\u9fa5]+$"
-server_useage = "[更换绑定服务器]\n群管理命令：服务器 XXX"
+server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
+server_useage = "[更换绑定服务器]\n群管理命令：绑定 XXX"
 server_change = on_regex(pattern=server_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
