@@ -124,6 +124,12 @@ python bot.py
 **超级用户可以在群里设置机器人开关状态**
 >命令：机器人 [开/关]
 
+**超级用户私聊机器人可以管理机器人**
+|**指令**|**说明**|
+| :----: | :----: |
+|状态/运行状态|查看机器人运行状态|
+|打开/关闭 [QQ群号]|设置某个群的机器人状态|
+|打开/关闭所有|全局设置机器人状态|
 ## 感谢
 * [onebot](https://github.com/howmanybots/onebot)：聊天机器人应用接口标准。
 * [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)：cqhttp的golang实现。
