@@ -38,10 +38,6 @@ async def get_sign_in(user_id: int, group_id: int, user_name: str) -> Message:
     :返回
         * MessageSegment：机器人返回消息
     '''
-    # 更新记录
-    await UserInfo.append_or_update(user_id, group_id, user_name)
-    await GroupInfo.append_or_update(group_id)
-
     # 获取上次签到日期
     last_sign = await UserInfo.get_last_sign(user_id, group_id)
     # 判断是否已签到
