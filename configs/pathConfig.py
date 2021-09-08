@@ -23,3 +23,5 @@ MEAU_IMG_CLOSE = './resources/img/plugins_manager/close.png'
 
 HTML_PATH = '/resources/html/'
 '''html文件路径'''
+
+HELP_IMG_PATH='/resources/img/help.jpg'

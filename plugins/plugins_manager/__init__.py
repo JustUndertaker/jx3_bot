@@ -6,6 +6,7 @@ from nonebot.plugin import Matcher
 from nonebot.permission import SUPERUSER
 from utils.log import logger
 from nonebot.typing import T_State
+from configs.pathConfig import HELP_IMG_PATH
 import os
 from .model import manager_init
 from nonebot.exception import IgnoredException
@@ -152,3 +153,13 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     img = await get_html_screenshots(pagename, data)
     msg = MessageSegment.image(img)
     await meau.finish(msg)
+
+
+help_info=on_regex(pattern=r"^帮助$",permission=GROUP, priority=2, block=True)
+
+@help_info.handle()
+async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+    '''帮助info'''
+    img_path="file:///"+os.getcwd()+HELP_IMG_PATH
+    msg= MessageSegment.image(img_path)
+    await help_info.finish(msg)
