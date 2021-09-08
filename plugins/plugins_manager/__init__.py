@@ -90,7 +90,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     logger.info(log)
     await plugin_init(group_id)
 
-changeregex = r'^设置 [\u4E00-\u9FA5A-Za-z0-9_]+ [开|关]$'
+changeregex = r'^(打开|关闭) [\u4E00-\u9FA5A-Za-z0-9_]+$'
 change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
@@ -127,17 +127,9 @@ def _get_change_params(text: str) -> tuple[str, bool]:
         * status：开关状态
     '''
     text_list = text.split(' ')
-    try:
-        plugin_name = text_list[1]
-        _status = text_list[2]
-        if _status == '开':
-            status = True
-        elif _status == '关':
-            status = False
-        else:
-            raise Exception
-    except Exception:
-        raise Exception
+    plugin_name = text_list[1]
+    _status = text_list[0]
+    status=(_status=="打开")
     return plugin_name, status
 
 
