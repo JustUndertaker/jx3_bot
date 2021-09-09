@@ -130,6 +130,9 @@ python bot.py
 |状态/运行状态|查看机器人运行状态|
 |打开/关闭 [QQ群号]|设置某个群的机器人状态|
 |打开/关闭所有|全局设置机器人状态|
+|好友列表|获取机器人好友列表|
+|退群 [QQ群号]|机器人主动退群|
+|删除好友 [QQ号]|删除指定好友|
 ## 感谢
 * [onebot](https://github.com/howmanybots/onebot)：聊天机器人应用接口标准。
 * [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)：cqhttp的golang实现。
