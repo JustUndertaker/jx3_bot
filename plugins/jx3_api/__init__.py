@@ -172,7 +172,8 @@ async def _(bot: Bot, event: AdventureConditionEvent):
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
         await adventurecondition.finish(msg)
-    msg = ""
+    url = event.url
+    msg = MessageSegment.image(url)
     await adventurecondition.finish(msg)
 
 

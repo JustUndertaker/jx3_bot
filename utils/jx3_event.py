@@ -596,9 +596,9 @@ class AdventureConditionEvent(SendEvent):
     '''
     __event__ = "adventurecondition"
     post_type = "adventurecondition"
-    data: Optional[dict]
+    url: Optional[dict]
     '''
-    条件数据
+    条件图片url
     '''
 
     def __init__(self, all_data: dict):
@@ -608,7 +608,8 @@ class AdventureConditionEvent(SendEvent):
         super(AdventureConditionEvent, self).__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
-        self.data = all_data.get('data')
+        data = all_data.get('data')
+        self.url = data.get('url')
 
     @classmethod
     def get_api_type(cls):
