@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>好友列表</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container" style="width: 600px;" id="main">
+        <div class="card">
+            <div class="card-header">
+                <font color="green">
+                    <h6 class="text-center"><a id="nickname"></a> 的好友</h6>
+                </font>
+            </div>
+            <div class="card-body">
+                <p class="text-center alert alert-info">好友数：<a id="friend_nums">0</a></p>
+                <table class="table table-striped h5" id="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">名称</th>
+                            <th scope="col">QQ号</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <font color="#FF0000">
+                    <h6 class="text-center">删好友指令：删除好友 [QQ号]</h6>
+                </font>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/friend.js"></script>
+</body>
+
+</html>

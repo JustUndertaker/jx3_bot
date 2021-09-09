@@ -59,7 +59,7 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     module_name = matcher.plugin_name
 
     # 判断是否注册
-    is_init = await check_group_init(group_id,module_name)
+    is_init = await check_group_init(group_id, module_name)
     if is_init is False or module_name == self_module:
         log = '此插件不归管理器管理，跳过。'
         logger.debug(log)
@@ -130,7 +130,7 @@ def _get_change_params(text: str) -> tuple[str, bool]:
     text_list = text.split(' ')
     plugin_name = text_list[1]
     _status = text_list[0]
-    status=(_status=="打开")
+    status = (_status == "打开")
     return plugin_name, status
 
 
@@ -155,11 +155,12 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     await meau.finish(msg)
 
 
-help_info=on_regex(pattern=r"^帮助$",permission=GROUP, priority=2, block=True)
+help_info = on_regex(pattern=r"^帮助$", permission=GROUP, priority=2, block=True)
+
 
 @help_info.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''帮助info'''
-    img_path="file:///"+os.getcwd()+HELP_IMG_PATH
-    msg= MessageSegment.image(img_path)
+    img_path = "file:///"+os.getcwd()+HELP_IMG_PATH
+    msg = MessageSegment.image(img_path)
     await help_info.finish(msg)
