@@ -12,7 +12,7 @@ class GroupInfo(Model):
     '''
     QQ群号
     '''
-    group_name=fields.CharField(max_length=255,default='')
+    group_name = fields.CharField(max_length=255, default='')
     '''
     群名
     '''
@@ -47,7 +47,7 @@ class GroupInfo(Model):
         return group_list
 
     @classmethod
-    async def get_group_name(cls, group_id:int)->Optional[str]:
+    async def get_group_name(cls, group_id: int) -> Optional[str]:
         '''
         :说明
             * 获取群名
@@ -141,7 +141,7 @@ class GroupInfo(Model):
             return False
 
     @classmethod
-    async def append_or_update(cls, group_id: int,group_name:str) -> None:
+    async def append_or_update(cls, group_id: int, group_name: str) -> None:
         '''
         :说明
             * 增加，或者更新一条数据
@@ -149,8 +149,8 @@ class GroupInfo(Model):
         :参数
             * group_id：QQ群号
         '''
-        record,_=await cls.get_or_create(group_id=group_id)
-        record.group_name=group_name
+        record, _ = await cls.get_or_create(group_id=group_id)
+        record.group_name = group_name
         await record.save(update_fields=["group_name"])
 
     @classmethod
@@ -226,7 +226,7 @@ class GroupInfo(Model):
         return None if record is None else record.active
 
     @classmethod
-    async def get_all_data(cls)-> list[dict]:
+    async def get_all_data(cls) -> list[dict]:
         '''
         :返回所有数据,dict字段：
         * group_id：群号
@@ -236,28 +236,29 @@ class GroupInfo(Model):
         * robot_status：运行状态
         * active：活跃值
         '''
-        record_list=await cls.all()
-        data=[]
+        record_list = await cls.all()
+        data = []
         for record in record_list:
-            one_data={}
-            one_data['group_id']= record.group_id
-            one_data['group_name']= record.group_name
-            one_data['sign_nums']= record.sign_nums
-            one_data['server']= record.server
-            one_data['robot_status']= record.robot_status
-            one_data['active']= record.active
+            one_data = {}
+            one_data['group_id'] = record.group_id
+            one_data['group_name'] = record.group_name
+            one_data['sign_nums'] = record.sign_nums
+            one_data['server'] = record.server
+            one_data['robot_status'] = record.robot_status
+            one_data['active'] = record.active
             data.append(one_data)
         return data
 
     @classmethod
-    async def change_status_all(cls,status: bool)-> None:
+    async def change_status_all(cls, status: bool) -> None:
         '''改变所有机器人开关'''
         await cls.all().update(robot_status=status)
 
-
     @classmethod
-    async def delete_one(cls, group_id: int) -> None:
+    async def delete_one(cls, group_id: int) -> bool:
         '''删除一条数据'''
         record = await cls.get_or_none(group_id=group_id)
         if record is not None:
             await record.delete()
+            return True
+        return False
