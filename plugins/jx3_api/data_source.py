@@ -33,9 +33,9 @@ def _handle_attributes(attribute: dict) -> dict:
     # 会心
     data['atCriticalStrike'] = f"{attribute.get('atCriticalStrike')}（{attribute.get('atCriticalStrikeLevel')}%）"
     # 会效
-    data['atCriticalDamagePowerBase'] = f"{attribute.get('atCriticalDamagePowerBase')}（{attribute.get('atCriticalDamagePowerBase')}%）"
+    data['atCriticalDamagePowerBase'] = f"{attribute.get('atCriticalDamagePowerBase')}（{attribute.get('atCriticalDamagePowerBaseLevel')}%）"
     # 加速
-    data['atHasteBase'] = f"{attribute.get('atHasteBase')}（{attribute.get('atHasteBaseLevel')}%）"
+    data['atHasteBase'] = f"{attribute.get('atHasteBaseLevel')}（{attribute.get('atHasteBase')}%）"
     # 破防
     data['atOvercome'] = f"{attribute.get('atOvercome')}（{attribute.get('atOvercomeBaseLevel')}%）"
     # 无双

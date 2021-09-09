@@ -1,5 +1,5 @@
 from nonebot import get_driver
-from utils.jx3_soket import on_connect
+from utils.jx3_soket import on_connect, ws_connect
 from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot, MessageSegment
 import asyncio
@@ -32,15 +32,25 @@ export.ignore = True  # 插件管理器忽略此插件
 driver = get_driver()
 
 
-@driver.on_bot_connect
-async def _(bot: Bot):
+@driver.on_startup
+async def _():
     '''
     初始化链接ws
     '''
     log = 'jx3_api > 开始连接ws.'
     logger.info(log)
     loop = asyncio.get_event_loop()
-    loop.create_task(on_connect(loop, bot))
+    loop.create_task(on_connect(loop))
+
+
+@driver.on_shutdown
+async def _():
+    '''shut_down时关闭链接'''
+    global ws_connect
+    log = 'jx3_api > shut_down关闭链接。'
+    logger.info(log)
+    ws_connect.close()
+    ws_connect = None
 
 
 daily = on(type="daily", priority=5, block=True)    # 日常查询

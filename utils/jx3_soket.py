@@ -1,5 +1,5 @@
-from nonebot.adapters.cqhttp import Bot
 from nonebot.message import handle_event
+from nonebot import get_bots
 from .jx3_event import Jx3EventList, WS_ECHO
 from websockets.exceptions import ConnectionClosed, ConnectionClosedError, ConnectionClosedOK
 from asyncio import AbstractEventLoop
@@ -36,7 +36,7 @@ async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, g
         await ws_connect.send(data)
 
 
-async def on_connect(loop: AbstractEventLoop, bot: Bot):
+async def on_connect(loop: AbstractEventLoop):
     count = 0
     global ws_connect
 
@@ -44,7 +44,7 @@ async def on_connect(loop: AbstractEventLoop, bot: Bot):
         try:
             ws_connect = await websockets.connect("wss://socket.nicemoe.cn")
             logger.info('jx3_api > websockets链接成功！')
-            loop.create_task(_task(loop, ws_connect, bot))
+            loop.create_task(_task(loop, ws_connect))
             return
         except (ConnectionRefusedError, OSError) as e:
             logger.info(f'jx3_api > [{count}] {e}')
@@ -55,7 +55,7 @@ async def on_connect(loop: AbstractEventLoop, bot: Bot):
             await asyncio.sleep(10)
 
 
-async def _task(loop: AbstractEventLoop, ws: websockets, bot: Bot):
+async def _task(loop: AbstractEventLoop, ws: websockets):
     global ws_connect
     global ws_echo_list
     try:
@@ -78,13 +78,16 @@ async def _task(loop: AbstractEventLoop, ws: websockets, bot: Bot):
                             event.set_message_type(echo_one)
                             del ws_echo_list[i]
 
-                await handle_event(bot, event)
+                # 广播事件
+                bots = get_bots()
+                for _, one_bot in bots.items():
+                    await handle_event(one_bot, event)
 
     except (ConnectionClosed, ConnectionClosedError, ConnectionClosedOK) as e:
         ws_connect = None
         if e.code != 1000:
             logger.error('jx3_api > 链接已断开！')
-            loop.create_task(on_connect(loop, bot))
+            loop.create_task(on_connect(loop))
         else:
             logger.error('jx3_api > 链接被服务器关闭！')
         logger.error(e)
