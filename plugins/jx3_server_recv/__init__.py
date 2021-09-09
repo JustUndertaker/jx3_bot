@@ -26,6 +26,8 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     time_now = datetime.now().strftime("%H时%M分")
     if stauts:
         msg = f'时间：{time_now}\n[{server}] 开服啦！'
+    else:
+        msg=f'时间{time_now}\n[{server}]维护惹。'
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
