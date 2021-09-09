@@ -174,7 +174,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     group_id = int(text.split(' ')[-1])
     flag, group_name = await leave_group(group_id)
     if flag:
-        await bot.set_group_leave(group_id, True)
+        await bot.set_group_leave(group_id=group_id, is_dismiss=True)
         msg = f'成功，已退出群：[{group_name}]({group_id})'
     else:
         msg = f'失败，未找到群：({group_id})。'

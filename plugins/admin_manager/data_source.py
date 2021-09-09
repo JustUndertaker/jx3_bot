@@ -51,7 +51,7 @@ async def change_status_all(status: bool) -> None:
 
 async def leave_group(group_id: int) -> Tuple[bool, str]:
     '''退群，返回[成功flag，群名]'''
-    group_name = GroupInfo.get_group_name(group_id)
+    group_name = await GroupInfo.get_group_name(group_id)
     if group_name is None:
         group_name = ""
         return False, group_name
