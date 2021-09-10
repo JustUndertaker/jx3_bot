@@ -230,16 +230,6 @@ async def _(bot: Bot, event: FriendRequestEvent):
         await event.approve(bot)
     await friend_add.finish()
 
-check_group_add = ['request.group.invite']
-group_add = on_request(rule=check_event(check_group_add), priority=3, block=True)
-
-
-@group_add.handle()
-async def _(bot: Bot, event: GroupRequestEvent):
-    '''加群请求事件'''
-    if DEFAULT_GROUP_ADD:
-        await event.approve(bot)
-    await group_add.finish()
 
 robotregex = r'^机器人 [开|关]$'
 robotchange = on_regex(pattern=robotregex, permission=SUPERUSER, priority=2, block=True)
