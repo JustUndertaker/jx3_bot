@@ -1,4 +1,4 @@
-from nonebot import get_driver, on_regex, on_notice, on_request
+from nonebot import get_driver, on_regex, on_notice
 from nonebot.plugin import export
 from nonebot.adapters.cqhttp import (
     Bot,
@@ -6,11 +6,8 @@ from nonebot.adapters.cqhttp import (
     GroupIncreaseNoticeEvent,
     GroupDecreaseNoticeEvent,
     MessageSegment,
-    FriendAddNoticeEvent,
-    FriendRequestEvent,
-    GroupRequestEvent,
 )
-from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS, DEFAULT_FIREND_ADD, DEFAULT_GROUP_ADD
+from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from utils.log import logger
@@ -200,35 +197,6 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
         await someone_in_group.finish(msg)
 
     await someone_in_group.finish()
-
-
-check_firend_add = ['notice.friend_add']
-someone_add_me = on_notice(rule=check_event(check_firend_add), priority=3, block=True)
-
-
-@someone_add_me.handle()
-async def _(bot: Bot, event: FriendAddNoticeEvent):
-    '''添加好友'''
-    user_id = event.user_id
-    user_info = await bot.get_stranger_info(user_id=user_id, no_cache=True)
-    user_name = user_info['nickname']
-    msg = f"我添加了好友[{user_name}]({user_id})"
-    admin_user_list = get_admin_list()
-    for admin_id in admin_user_list:
-        await bot.send_private_msg(user_id=admin_id, message=msg)
-    await someone_add_me.finish()
-
-
-check_friend_add = ['request.friend']
-friend_add = on_request(rule=check_event(check_friend_add), priority=3, block=True)
-
-
-@friend_add.handle()
-async def _(bot: Bot, event: FriendRequestEvent):
-    '''加好友请求事件'''
-    if DEFAULT_FIREND_ADD:
-        await event.approve(bot)
-    await friend_add.finish()
 
 
 robotregex = r'^机器人 [开|关]$'
