@@ -1,13 +1,14 @@
 from typing import Optional
-from nonebot.adapters.cqhttp import MessageSegment
 
-from utils.utils import nickname
-from .model import PluginManager
-from modules.plugin_info import PluginInfo
 from modules.group_info import GroupInfo
+from modules.plugin_info import PluginInfo
+from nonebot.adapters.cqhttp import MessageSegment
+from utils.utils import nickname
+
+from .model import PluginManager
 
 
-async def check_group_init(group_id: int,module_name:str) -> bool:
+async def check_group_init(group_id: int, module_name: str) -> bool:
     '''
     :说明
         检查群是否注册，会跳过忽略插件
@@ -20,7 +21,7 @@ async def check_group_init(group_id: int,module_name:str) -> bool:
         * bool：是否注册
     '''
     for plugin in PluginManager:
-        if module_name==plugin.module_name:
+        if module_name == plugin.module_name:
             if plugin.ignore:
                 return False
     return await GroupInfo.check_group_init(group_id)

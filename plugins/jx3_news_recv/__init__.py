@@ -1,10 +1,9 @@
-from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot
-from nonebot.plugin import export
-from .data_source import  get_robot_status
-from utils.log import logger
+from nonebot.plugin import export, on
 from utils.jx3_event import NewsRecvEvent
+from utils.log import logger
 
+from .data_source import get_robot_status
 
 export = export()
 export.plugin_name = '新闻推送'
@@ -13,7 +12,6 @@ export.ignore = False  # 插件管理器忽略此插件
 
 
 news_recv = on(type="news_recv", priority=5, block=True)  # 新闻推送
-
 
 
 @news_recv.handle()
@@ -36,4 +34,3 @@ async def _(bot: Bot, event: NewsRecvEvent):
     log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
     logger.info(log)
     await news_recv.finish()
-

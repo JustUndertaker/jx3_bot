@@ -1,11 +1,13 @@
-from modules.group_info import GroupInfo
-from .config import zhiye, shuxing
-from utils.utils import nickname
-from utils.user_agent import get_user_agent
-from configs.pathConfig import HTML_PATH
-from configs.config import IMG_CACHE
 import os
+
 import httpx
+from configs.config import IMG_CACHE
+from configs.pathConfig import HTML_PATH
+from modules.group_info import GroupInfo
+from utils.user_agent import get_user_agent
+from utils.utils import nickname
+
+from .config import shuxing, zhiye
 
 
 async def get_server(group_id: int) -> str:

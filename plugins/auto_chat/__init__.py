@@ -1,14 +1,11 @@
+import random
+
+from nonebot import on_message
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
-from nonebot import on_message
 from nonebot.plugin import export
-import random
-from .data_source import (
-    get_active,
-    get_saohua,
-    get_voice,
-    get_image
-)
+
+from .data_source import get_active, get_image, get_saohua, get_voice
 
 export = export()
 export.plugin_name = '自动插话'

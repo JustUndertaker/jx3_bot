@@ -1,10 +1,11 @@
-from nonebot.plugin import on
-from nonebot.adapters.cqhttp import Bot
 from datetime import datetime
-from nonebot.plugin import export
-from .data_source import get_server, get_robot_status
-from utils.log import logger
+
+from nonebot.adapters.cqhttp import Bot
+from nonebot.plugin import export, on
 from utils.jx3_event import OpenServerRecvEvent
+from utils.log import logger
+
+from .data_source import get_robot_status, get_server
 
 export = export()
 export.plugin_name = '开服推送'
@@ -27,7 +28,7 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     if stauts:
         msg = f'时间：{time_now}\n[{server}] 开服啦！'
     else:
-        msg=f'时间{time_now}\n[{server}]维护惹。'
+        msg = f'时间{time_now}\n[{server}]维护惹。'
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
@@ -40,4 +41,3 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     log = f'开服推送事件：[{server}]，时间[{time_now}]'
     logger.info(log)
     await open_server_recv.finish()
-

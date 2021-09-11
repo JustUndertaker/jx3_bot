@@ -1,12 +1,13 @@
+from typing import Tuple
+
 from modules.group_info import GroupInfo
 from modules.user_info import UserInfo
-from typing import Tuple
-from nonebot.typing import T_State
-from nonebot.adapters.cqhttp import Event, Bot
+from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.rule import Rule
+from nonebot.typing import T_State
 
 
-def check_event(event_list: str):
+def check_event(event_list: list[str]):
     '''
     检查事件
     '''

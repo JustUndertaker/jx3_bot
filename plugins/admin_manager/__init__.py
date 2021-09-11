@@ -1,28 +1,19 @@
-from nonebot import on_regex, on_notice, on_request, on_message
-from nonebot.plugin import export
 from datetime import datetime
-from nonebot.adapters.cqhttp import (
-    Bot,
-    MessageSegment,
-    FriendAddNoticeEvent,
-    FriendRequestEvent,
-    GroupRequestEvent,
-    PrivateMessageEvent
-)
+
 from configs.config import DEFAULT_FIREND_ADD, DEFAULT_GROUP_ADD, PRIVATE_CHAT
+from nonebot import on_message, on_notice, on_regex, on_request
+from nonebot.adapters.cqhttp import (Bot, FriendAddNoticeEvent,
+                                     FriendRequestEvent, GroupRequestEvent,
+                                     MessageSegment, PrivateMessageEvent)
 from nonebot.permission import SUPERUSER
+from nonebot.plugin import export
+from utils.browser import get_html_screenshots
 from utils.log import logger
 from utils.utils import get_admin_list, nickname
-from utils.browser import get_html_screenshots
+
 from ..chat.data_source import get_reply_jx3, get_reply_qingyunke
-from .data_source import (
-    check_event,
-    set_robot_status,
-    get_all_data,
-    get_text_num,
-    change_status_all,
-    leave_group
-)
+from .data_source import (change_status_all, check_event, get_all_data,
+                          get_text_num, leave_group, set_robot_status)
 
 export = export()
 export.plugin_name = '超级用户管理'
@@ -43,7 +34,8 @@ async def _(bot: Bot, event: FriendAddNoticeEvent):
     msg = f"我添加了好友[{user_name}]({user_id})"
     admin_user_list = get_admin_list()
     for admin_id in admin_user_list:
-        await bot.send_private_msg(user_id=admin_id, message=msg)
+        user_id = int(admin_id)
+        await bot.send_private_msg(user_id=user_id, message=msg)
     await someone_add_me.finish()
 
 

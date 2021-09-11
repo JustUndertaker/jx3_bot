@@ -1,18 +1,14 @@
-import random
-import httpx
 import base64
+import random
 from datetime import date
-from nonebot.adapters.cqhttp import MessageSegment, Message
-from modules.user_info import UserInfo
+
+import httpx
 from modules.group_info import GroupInfo
+from modules.user_info import UserInfo
+from nonebot.adapters.cqhttp import Message, MessageSegment
 from utils.user_agent import get_user_agent
-from .config import (
-    LUCKY_MIN,
-    LUCKY_MAX,
-    FRIENDLY_ADD,
-    GOLD_BASE,
-    LUCKY_GOLD
-)
+
+from .config import FRIENDLY_ADD, GOLD_BASE, LUCKY_GOLD, LUCKY_MAX, LUCKY_MIN
 
 
 async def reset() -> list[int]:

@@ -1,7 +1,8 @@
-from configs.config import DEFAULT_SERVER, DEFAULT_STATUS, ROBOT_ACTIVE
 from typing import Optional
-from tortoise.models import Model
+
+from configs.config import DEFAULT_SERVER, DEFAULT_STATUS, ROBOT_ACTIVE
 from tortoise import fields
+from tortoise.models import Model
 
 
 class GroupInfo(Model):

@@ -3,8 +3,9 @@
 
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
-from utils.database import database_init
+
 from utils.ap_scheduler import start_scheduler
+from utils.database import database_init
 from utils.monkeypatch import monkeypatch
 
 nonebot.init()

@@ -1,32 +1,20 @@
-from nonebot import get_driver, on_regex, on_notice
-from nonebot.plugin import export
-from nonebot.adapters.cqhttp import (
-    Bot,
-    GroupMessageEvent,
-    GroupIncreaseNoticeEvent,
-    GroupDecreaseNoticeEvent,
-    MessageSegment,
-)
-from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS
-from nonebot.permission import SUPERUSER
+from configs.config import (DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS,
+                            DEFAULT_WELCOME)
+from nonebot import get_driver, on_notice, on_regex
+from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
+                                     GroupIncreaseNoticeEvent,
+                                     GroupMessageEvent, MessageSegment)
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
+from nonebot.permission import SUPERUSER
+from nonebot.plugin import export
 from utils.log import logger
-from ..plugins_manager.data_source import plugin_init
 from utils.utils import get_admin_list, nickname
-from .data_source import (
-    group_init,
-    user_init,
-    get_server_name,
-    change_server,
-    change_active,
-    check_event,
-    check_robot_status,
-    user_detele,
-    get_user_name,
-    group_detel,
-    set_robot_status,
-    get_group_name,
-)
+
+from ..plugins_manager.data_source import plugin_init
+from .data_source import (change_active, change_server, check_event,
+                          check_robot_status, get_group_name, get_server_name,
+                          get_user_name, group_detel, group_init,
+                          set_robot_status, user_detele, user_init)
 
 export = export()
 export.plugin_name = '群管理'

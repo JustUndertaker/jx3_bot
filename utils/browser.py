@@ -1,12 +1,12 @@
-from playwright.async_api import async_playwright
-from playwright.async_api import BrowserContext, Playwright
-from utils.log import logger
-import os
-import json
 import base64
-from configs.pathConfig import HTML_PATH
+import json
+import os
 from typing import Optional
 
+from configs.pathConfig import HTML_PATH
+from playwright.async_api import BrowserContext, Playwright, async_playwright
+
+from utils.log import logger
 
 _browser: Playwright
 

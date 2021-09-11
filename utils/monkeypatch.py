@@ -1,7 +1,8 @@
 import asyncio
 import platform
-from uvicorn.loops import asyncio as _asyncio
+
 from uvicorn import config
+from uvicorn.loops import asyncio as _asyncio
 
 
 def asyncio_setup():

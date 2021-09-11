@@ -1,9 +1,10 @@
+import time
+from typing import Optional, Union
+
 from nonebot.adapters import Event as BaseEvent
+from nonebot.adapters.cqhttp.message import Message
 from nonebot.typing import overrides
 from nonebot.utils import escape_tag
-from nonebot.adapters.cqhttp.message import Message
-from typing import Optional, Union
-import time
 
 
 class WS_ECHO():

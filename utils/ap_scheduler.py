@@ -1,6 +1,7 @@
-from .log import logger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from pydantic import Field, BaseSettings
+from pydantic import BaseSettings, Field
+
+from .log import logger
 
 
 class Config(BaseSettings):

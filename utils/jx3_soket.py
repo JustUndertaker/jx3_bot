@@ -1,16 +1,18 @@
-from nonebot.message import handle_event
-from nonebot import get_bots
-from .jx3_event import Jx3EventList, WS_ECHO
-from websockets.exceptions import ConnectionClosed, ConnectionClosedError, ConnectionClosedOK
-from asyncio import AbstractEventLoop
-from configs.config import MAX_RECON_TIMES
-import websockets
 import asyncio
 import json
+from asyncio import AbstractEventLoop
 from typing import Optional
+
+import websockets
+from configs.config import MAX_RECON_TIMES
+from nonebot import get_bots
+from nonebot.message import handle_event
+from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
+                                   ConnectionClosedOK)
 
 from utils.log import logger
 
+from .jx3_event import WS_ECHO, Jx3EventList
 
 ws_echo_list: list[WS_ECHO] = []
 '''

@@ -1,5 +1,6 @@
 from configs.pathConfig import DATABASE_PATH
 from tortoise import Tortoise
+
 from .log import logger
 
 

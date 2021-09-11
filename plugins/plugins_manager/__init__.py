@@ -1,24 +1,21 @@
-from nonebot import on_regex, get_driver
-from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment, GROUP_OWNER, GROUP_ADMIN
-from nonebot.adapters.cqhttp.permission import GROUP
-from nonebot.message import run_preprocessor
-from nonebot.plugin import Matcher
-from nonebot.permission import SUPERUSER
-from utils.log import logger
-from nonebot.typing import T_State
-from configs.pathConfig import HELP_IMG_PATH
 import os
-from .model import manager_init
-from nonebot.exception import IgnoredException
-from utils.browser import get_html_screenshots
-from .data_source import (
-    check_plugin_status,
-    plugin_init,
-    change_plugin_status,
-    check_group_init,
-    get_meau_data,
-)
 
+from configs.pathConfig import HELP_IMG_PATH
+from nonebot import get_driver, on_regex
+from nonebot.adapters.cqhttp import (GROUP_ADMIN, GROUP_OWNER, Bot,
+                                     GroupMessageEvent, MessageSegment)
+from nonebot.adapters.cqhttp.permission import GROUP
+from nonebot.exception import IgnoredException
+from nonebot.message import run_preprocessor
+from nonebot.permission import SUPERUSER
+from nonebot.plugin import Matcher
+from nonebot.typing import T_State
+from utils.browser import get_html_screenshots
+from utils.log import logger
+
+from .data_source import (change_plugin_status, check_group_init,
+                          check_plugin_status, get_meau_data, plugin_init)
+from .model import manager_init
 
 # 获取本模块名
 _, self_module = os.path.split(os.path.split(__file__)[0])

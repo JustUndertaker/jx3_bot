@@ -1,11 +1,11 @@
+import atexit
 import sys as sys
 from typing import Union
-import atexit
-from loguru import _defaults
-from loguru._logger import Core
-from loguru._logger import Logger
-from configs.pathConfig import LOG_PATH
+
 from configs.config import LOGGER_DEBUG
+from configs.pathConfig import LOG_PATH
+from loguru import _defaults
+from loguru._logger import Core, Logger
 
 logger = Logger(Core(), None, 0, False, False, False, False, True, None, {})
 

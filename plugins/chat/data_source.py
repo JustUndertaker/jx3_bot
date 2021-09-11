@@ -1,9 +1,10 @@
-from utils.log import logger
-from configs.config import CHAT_NLP
+from typing import Optional
+
 import httpx
+from configs.config import CHAT_NLP
+from utils.log import logger
 from utils.user_agent import get_user_agent
 from utils.utils import nickname
-from typing import Optional
 
 
 async def get_reply_jx3(question: str) -> Optional[str]:

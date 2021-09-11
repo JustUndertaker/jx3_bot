@@ -1,9 +1,10 @@
-from modules.group_info import GroupInfo
-from utils.user_agent import get_user_agent
-from utils.log import logger
-from configs.config import CHAT_VOICE
-import httpx
 from typing import Optional
+
+import httpx
+from configs.config import CHAT_VOICE
+from modules.group_info import GroupInfo
+from utils.log import logger
+from utils.user_agent import get_user_agent
 
 
 async def get_active(group_id: int) -> int:

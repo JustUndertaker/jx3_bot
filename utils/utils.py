@@ -1,6 +1,6 @@
 import nonebot
-from .ap_scheduler import APSscheduler
 
+from .ap_scheduler import APSscheduler
 
 scheduler = APSscheduler
 '''全局定时器对象'''

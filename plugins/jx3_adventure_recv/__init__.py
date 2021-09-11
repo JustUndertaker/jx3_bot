@@ -1,9 +1,9 @@
-from nonebot.plugin import on
 from nonebot.adapters.cqhttp import Bot
-from nonebot.plugin import export
-from .data_source import get_server, get_robot_status
-from utils.log import logger
+from nonebot.plugin import export, on
 from utils.jx3_event import AdventureRecvEvent
+from utils.log import logger
+
+from .data_source import get_robot_status, get_server
 
 export = export()
 export.plugin_name = '奇遇推送'
