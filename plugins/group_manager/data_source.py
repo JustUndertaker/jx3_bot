@@ -1,5 +1,6 @@
 from modules.group_info import GroupInfo
 from modules.user_info import UserInfo
+from modules.plugin_info import PluginInfo
 from typing import Optional
 import httpx
 from nonebot.typing import T_State
@@ -24,6 +25,7 @@ async def group_detel(group_id: int) -> None:
     '''删除群数据'''
     await GroupInfo.delete_one(group_id)
     await UserInfo.delete_group(group_id)
+    await PluginInfo.deltele_group(group_id)
 
 
 async def user_init(user_id: int, group_id: int, user_name: str) -> None:

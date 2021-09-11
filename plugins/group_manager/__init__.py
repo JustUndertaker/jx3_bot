@@ -11,6 +11,7 @@ from configs.config import DEFAULT_WELCOME, DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEF
 from nonebot.permission import SUPERUSER
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from utils.log import logger
+from ..plugins_manager.data_source import plugin_init
 from utils.utils import get_admin_list, nickname
 from .data_source import (
     group_init,
@@ -125,6 +126,8 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         await group_init(group_id, group_name)
         # 用户注册
         user_list = await bot.get_group_member_list(group_id=group_id)
+        # 插件注册
+        await plugin_init(group_id)
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
