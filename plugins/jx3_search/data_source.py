@@ -1,12 +1,14 @@
-from modules.group_info import GroupInfo
-from .config import zhiye_name
-from typing import Optional, Tuple
-from utils.user_agent import get_user_agent
-import httpx
 import re
+from typing import Optional, Tuple
+
+import httpx
+from modules.group_info import GroupInfo
+from utils.user_agent import get_user_agent
+
+from .config import zhiye_name
 
 
-async def get_server(group_id: int) -> str:
+async def get_server(group_id: int) -> Optional[str]:
     '''
     获取绑定服务器名称
     '''
@@ -103,7 +105,7 @@ def get_xinfa(name: str) -> str:
     return name
 
 
-async def get_flowers_server(text: str) -> str:
+async def get_flowers_server(text: str) -> Optional[str]:
     '''处理花价查询，返回url'''
     args = re.search(r'^花价 [\u4e00-\u9fa5]+$', text)
     if args is not None:
@@ -149,5 +151,29 @@ async def get_price(name: str) -> dict:
     url = "https://www.jx3api.com/service/price"
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         params = {"name": name}
+        req_url = await client.get(url, params=params)
+        return req_url.json()
+
+
+async def get_serendipity(server: str, name: str) -> dict:
+    '''获取奇遇url'''
+    url = "https://www.jx3api.com/service/serendipityInfo"
+    params = {
+        "server": server,
+        "name": name
+    }
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        req_url = await client.get(url, params=params)
+        return req_url.json()
+
+
+async def get_serendipity_list(server: str, name: str) -> dict:
+    '''获取奇遇url'''
+    url = "https://www.jx3api.com/service/serendipityList"
+    params = {
+        "server": server,
+        "serendipity": name
+    }
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
         req_url = await client.get(url, params=params)
         return req_url.json()

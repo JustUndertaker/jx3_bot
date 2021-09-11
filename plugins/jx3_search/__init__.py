@@ -1,25 +1,17 @@
+import time
+
+from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
-from nonebot import on_regex
-import time
 from utils.jx3_soket import send_ws_message
-from .data_source import (
-    get_server,
-    get_macro_name,
-    get_xinfa,
-    get_qixue_name,
-    get_medicine_name,
-    get_peizhuang_name,
-    get_gonglue_name,
-    get_equipquery_name,
-    get_open_server_name,
-    get_flowers_server,
-    get_flower_url,
-    get_update_url,
-    get_price
-)
 
+from .data_source import (get_equipquery_name, get_flower_url,
+                          get_flowers_server, get_gonglue_name, get_macro_name,
+                          get_medicine_name, get_open_server_name,
+                          get_peizhuang_name, get_price, get_qixue_name,
+                          get_serendipity, get_serendipity_list, get_server,
+                          get_update_url, get_xinfa)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -84,7 +76,13 @@ update_query = on_regex(pattern=update_regex, permission=GROUP, priority=5, bloc
 # 物价查询
 price_query = on_regex(pattern=r"^物价 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 # raiderse_search = pendant = on_regex(pattern=r'^奇遇 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)  # 奇遇查询
-# TODO：条件查询，器物谱查询，装饰查询，挂件查询，装备属性
+# TODO：器物谱查询，装饰查询
+
+# 奇遇查询
+serendipity = on_regex(pattern=r"^奇遇 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
+
+# 奇遇列表
+serendipityList = on_regex(pattern=r"^查询 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 
 
 @daily.handle()
@@ -325,3 +323,39 @@ async def _(bot: Bot, event: GroupMessageEvent):
     else:
         msg = data['msg']
     await flowers.finish(msg)
+
+
+@serendipity.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''奇遇查询'''
+    text = event.get_plaintext()
+    name = text.split(' ')[-1]
+    group_id = event.group_id
+    server = await get_server(group_id)
+    alldata = await get_serendipity(server, name)
+    if alldata['code'] == 200:
+        data = alldata['data']
+        img = data['url']
+        msg = MessageSegment.image(img)
+    else:
+        message = '查询失败，' + alldata.get('msg')
+        msg = MessageSegment.text(message)
+    await serendipity.finish(msg)
+
+
+@serendipityList.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''奇遇列表查询'''
+    text = event.get_plaintext()
+    name = text.split(' ')[-1]
+    group_id = event.group_id
+    server = await get_server(group_id)
+    alldata = await get_serendipity_list(server, name)
+    if alldata['code'] == 200:
+        data = alldata['data']
+        img = data['url']
+        msg = MessageSegment.image(img)
+    else:
+        message = "查询失败，" + alldata.get('msg')
+        msg = MessageSegment.text(message)
+    await serendipity.finish(msg)
