@@ -124,3 +124,10 @@ class PluginInfo(Model):
             reqdict['status'] = record.status
             req.append(reqdict)
         return req
+
+    @classmethod
+    async def deltele_group(cls, group_id: int) -> None:
+        '''删除一个群插件'''
+        record_list = await cls.filter(group_id=group_id)
+        for record in record_list:
+            await record.delete()
