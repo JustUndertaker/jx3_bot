@@ -4,7 +4,7 @@ from datetime import datetime
 from nonebot import get_driver
 from nonebot.adapters.cqhttp import Bot, MessageSegment
 from nonebot.plugin import export, on
-from src.utils.browser import get_html_screenshots
+from src.utils.browser import browser, get_html_screenshots
 from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
                                  EquipQueryEvent, ExamEvent, ExtraPointEvent,
                                  GoldQueryEvent, MacroEvent, MatchEquipEvent,
@@ -12,6 +12,7 @@ from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
                                  PendantEvent, RaiderseSearchEvent)
 from src.utils.jx3_soket import on_connect, ws_connect
 from src.utils.log import logger
+from tortoise import Tortoise
 
 from .data_source import handle_data
 
@@ -37,11 +38,18 @@ async def _():
 @driver.on_shutdown
 async def _():
     '''shut_down时关闭链接'''
-    global ws_connect
-    log = 'jx3_api > shut_down关闭链接。'
+    log = 'jx3_bot进程关闭，正在清理……'
+    logger.info(log)
+    log = '关闭无头浏览器'
+    logger.info(log)
+    if browser is not None:
+        await browser.close()
+    log = '关闭数据库'
+    logger.info(log)
+    await Tortoise.close_connections()
+    log = 'jx3_api > 关闭ws链接。'
     logger.info(log)
     ws_connect.close()
-    ws_connect = None
 
 
 daily = on(type="daily", priority=5, block=True)    # 日常查询
