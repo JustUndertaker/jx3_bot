@@ -46,17 +46,20 @@ pip install -r requirements.txt
 playwright install
 ```
 ### 配置设置
-#### configs.config.py
+#### config.yml
 ```
-CHAT_NLP = {
-    "secretId": "",  # 腾讯云API的secretId
-    "secretKey": ""  # 腾讯云API的secretKey
-}
-CHAT_VOICE = {
-    "appkey": "",  # 阿里云的语音接口appkey
-    "access": "",  # 阿里云的语音接口access
-    "secret": "",  # 阿里云的语音接口secret
-}
+chat_nlp:
+  # 腾讯云API的secretId
+  secretId: ~
+  # 腾讯云API的secretKey
+  secretKey: ~
+
+# 自动插话-语音合成配置
+chat_voice:
+  # 阿里云的语音接口
+  appkey: ~
+  access: ~
+  secret: ~
 
 # 其他设置参考打开文件自行修改
 ```
