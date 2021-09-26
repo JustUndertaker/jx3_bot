@@ -1,0 +1,67 @@
+# jx3_box的配置文件
+
+# 自动聊天插件配置
+chat_nlp:
+  # 腾讯云API的secretId，开通地址：https://console.cloud.tencent.com/cam/capi
+  secretId: yourid
+  # 腾讯云API的secretKey，NLP申请：https://console.cloud.tencent.com/nlp
+  secretKey: yourkey
+
+# 自动插话-语音合成配置
+chat_voice:
+  # 阿里云的语音接口，开通地址：https://usercenter.console.aliyun.com/
+  appkey: yourkey
+  # 阿里云的语音接口，NLP申请：https://nls-portal.console.aliyun.com/overview
+  access: youraccess
+  # 阿里云的语音接口
+  secret: yoursecret
+  # 发言人，文档：https://help.aliyun.com/knowledge_detail/84435.html?spm=a2c4g.11186631.2.1.67045663WlpL4n
+  voice: Aitong
+  # 编码格式，支持 PCM WAV MP3
+  format: mp3
+  # 采样率
+  sample_rate: 16000
+  # 音量，取值范围：0～100
+  volume: 50
+  # 语速，取值范围：-500～500
+  speech_rate: 0
+  # 音调，取值范围：-500～500
+  pitch_rate: 0
+
+# 默认设置
+default:
+  # ws链接最大重连次数
+  max-recon-times: 100
+  # 每个群默认绑定服务器
+  server: 幽月轮
+  # 是否接收添加好友请求
+  access-firend: true
+  # 是否接收加群请求
+  access-group: true
+  # 机器人在每个群默认开启状态
+  robot-status: true
+  # 机器人自动插话默认活跃度
+  robot-active: 10
+  # 插件debug日志是否显示在控制台
+  logger-debug: true
+  # 默认机器人的欢迎语
+  robot-welcome: 欢迎新同学来到这里。
+  # 默认成员离开说辞
+  robot-someone-left: 默默地离开了我们……
+  # 默认被踢说辞
+  robot-left-kick: 被管理员狠心地踢走了……
+  # 是否开启智能私聊，开启后私聊机器人会获得回复
+  private-chat: true
+  # 装备奇穴图标是否缓存本地
+  img-cache: true
+
+# 路径设置
+path:
+  # 数据库位置
+  database: ./data/data.db
+  # 日志位置
+  log: ./log/
+  # html文件路径
+  html: /resources/html/
+  # 查询帮助图片位置
+  img-help: /resources/img/help.jpg

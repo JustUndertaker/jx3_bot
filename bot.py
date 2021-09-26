@@ -4,9 +4,9 @@
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-from utils.ap_scheduler import start_scheduler
-from utils.database import database_init
-from utils.monkeypatch import monkeypatch
+from src.utils.ap_scheduler import start_scheduler
+from src.utils.database import database_init
+from src.utils.monkeypatch import monkeypatch
 
 nonebot.init()
 app = nonebot.get_asgi()
@@ -20,7 +20,7 @@ driver.on_startup(database_init)
 driver.on_startup(start_scheduler)
 
 # 加载插件
-nonebot.load_plugins("plugins")
+nonebot.load_plugins("src/plugins")
 # nonebot.load_plugin("nonebot_plugin_test")
 
 
