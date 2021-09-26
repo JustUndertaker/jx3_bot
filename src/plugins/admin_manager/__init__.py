@@ -1,15 +1,15 @@
 from datetime import datetime
 
-from configs.config import DEFAULT_FIREND_ADD, DEFAULT_GROUP_ADD, PRIVATE_CHAT
 from nonebot import on_message, on_notice, on_regex, on_request
 from nonebot.adapters.cqhttp import (Bot, FriendAddNoticeEvent,
                                      FriendRequestEvent, GroupRequestEvent,
                                      MessageSegment, PrivateMessageEvent)
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
-from utils.browser import get_html_screenshots
-from utils.log import logger
-from utils.utils import get_admin_list, nickname
+from src.utils.browser import get_html_screenshots
+from src.utils.config import config as baseconfig
+from src.utils.log import logger
+from src.utils.utils import get_admin_list, nickname
 
 from ..chat.data_source import get_reply_jx3, get_reply_qingyunke
 from .data_source import (change_status_all, check_event, get_all_data,
@@ -20,6 +20,7 @@ export.plugin_name = '超级用户管理'
 export.plugin_usage = '用于超级用户私聊机器人管理指令。'
 export.ignore = True  # 插件管理器忽略此插件
 
+config = baseconfig.get('default')
 
 check_firend_add = ['notice.friend_add']
 someone_add_me = on_notice(rule=check_event(check_firend_add), priority=3, block=True)
@@ -46,7 +47,8 @@ friend_add = on_request(rule=check_event(check_friend_add), priority=3, block=Tr
 @friend_add.handle()
 async def _(bot: Bot, event: FriendRequestEvent):
     '''加好友请求事件'''
-    if DEFAULT_FIREND_ADD:
+    access_firend = config.get('access-firend')
+    if access_firend:
         await event.approve(bot)
     await friend_add.finish()
 
@@ -57,7 +59,8 @@ group_add = on_request(rule=check_event(check_group_add), priority=3, block=True
 @group_add.handle()
 async def _(bot: Bot, event: GroupRequestEvent):
     '''加群请求事件'''
-    if DEFAULT_GROUP_ADD:
+    access_group = config.get('access-group')
+    if access_group:
         await event.approve(bot)
     await group_add.finish()
 
@@ -130,7 +133,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''其他人私聊消息
     自动根据确定API
     '''
-    if not PRIVATE_CHAT:
+    private_chat = config.get('private_chat')
+    if not private_chat:
         await chat.finish()
     # 获得聊天内容
     text = event.get_plaintext()

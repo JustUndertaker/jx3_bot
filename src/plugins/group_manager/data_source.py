@@ -1,13 +1,13 @@
 from typing import Optional
 
 import httpx
-from modules.group_info import GroupInfo
-from modules.plugin_info import PluginInfo
-from modules.user_info import UserInfo
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.rule import Rule
 from nonebot.typing import T_State
-from utils.user_agent import get_user_agent
+from src.modules.group_info import GroupInfo
+from src.modules.plugin_info import PluginInfo
+from src.modules.user_info import UserInfo
+from src.utils.user_agent import get_user_agent
 
 
 async def group_init(group_id: int, group_name: str) -> None:

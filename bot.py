@@ -4,10 +4,13 @@
 import nonebot
 from nonebot.adapters.cqhttp import Bot as CQHTTPBot
 
-from src.utils.ap_scheduler import start_scheduler
+from src.utils.config import config_init
 from src.utils.database import database_init
 from src.utils.monkeypatch import monkeypatch
+from src.utils.scheduler import start_scheduler
 
+# 注册配置
+config_init()
 nonebot.init()
 app = nonebot.get_asgi()
 

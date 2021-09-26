@@ -2,12 +2,13 @@ import atexit
 import sys as sys
 from typing import Union
 
-from configs.config import LOGGER_DEBUG
-from configs.pathConfig import LOG_PATH
 from loguru import _defaults
 from loguru._logger import Core, Logger
 
+from .config import config
+
 logger = Logger(Core(), None, 0, False, False, False, False, True, None, {})
+'''自定义的logger对象'''
 
 # 清理
 atexit.register(logger.remove)
@@ -35,7 +36,8 @@ console_format = (
     "{message}")
 
 # debug级别
-if LOGGER_DEBUG:
+loger_debug = config.get('default').get('logger-debug')
+if loger_debug:
     custom_level = 'DEBUG'
 else:
     custom_level = 'INFO'
@@ -51,7 +53,7 @@ class Filter:
         module = sys.modules.get(module_name)
         if module:
             module_name = getattr(module, "__module_name__", module_name)
-        record["name"] = module_name.split(".")[0]
+        record["name"] = module_name.split(".")[-1]
         levelno = logger.level(self.level).no if isinstance(self.level,
                                                             str) else self.level
         return record["level"].no >= levelno
@@ -70,8 +72,9 @@ if _defaults.LOGURU_AUTOINIT and sys.stderr:
                )
 
 # 添加到日志文件
+logger_path = config.get('path').get('log')
 logger.add(
-    LOG_PATH+"debug/{time:YYYY-MM-DD}.log",
+    logger_path+"debug/{time:YYYY-MM-DD}.log",
     rotation="00:00",
     retention="10 days",
     level="DEBUG",
@@ -81,7 +84,7 @@ logger.add(
 )
 
 logger.add(
-    LOG_PATH+"info/{time:YYYY-MM-DD}.log",
+    logger_path+"info/{time:YYYY-MM-DD}.log",
     rotation="00:00",
     retention="10 days",
     level="INFO",
@@ -91,7 +94,7 @@ logger.add(
 )
 
 logger.add(
-    LOG_PATH+"error/{time:YYYY-MM-DD}.log",
+    logger_path+"error/{time:YYYY-MM-DD}.log",
     rotation="00:00",
     retention="10 days",
     level="ERROR",

@@ -1,10 +1,10 @@
 from typing import Optional
 
 import httpx
-from configs.config import CHAT_NLP
-from utils.log import logger
-from utils.user_agent import get_user_agent
-from utils.utils import nickname
+from src.utils.config import config
+from src.utils.log import logger
+from src.utils.user_agent import get_user_agent
+from src.utils.utils import nickname
 
 
 async def get_reply_jx3(question: str) -> Optional[str]:
@@ -12,13 +12,14 @@ async def get_reply_jx3(question: str) -> Optional[str]:
     使用jx3_api获取回复
     '''
     # 判断参数是否完整
-    if CHAT_NLP['secretId'] == "" or CHAT_NLP['secretKey'] == "":
+    chat_nlp = config.get('chat_nlp')
+    if chat_nlp['secretId'] is None or chat_nlp['secretKey'] is None:
         log = 'jx3_api接口参数不足，无法请求。'
         logger.debug(log)
         return None
 
     url = "https://www.jx3api.com/extend/nlpchat"
-    params = CHAT_NLP.copy()
+    params = chat_nlp.copy()
     params['name'] = nickname
     params['question'] = question
     async with httpx.AsyncClient(headers=get_user_agent()) as client:

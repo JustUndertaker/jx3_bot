@@ -2,8 +2,9 @@ from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
-from utils.log import logger
-from utils.utils import get_bot, nickname, scheduler
+from src.utils.log import logger
+from src.utils.scheduler import scheduler
+from src.utils.utils import get_bot, nickname
 
 from .data_source import get_sign_in, reset
 

@@ -1,10 +1,10 @@
 from typing import Optional
 
 import httpx
-from configs.config import CHAT_VOICE
-from modules.group_info import GroupInfo
-from utils.log import logger
-from utils.user_agent import get_user_agent
+from src.modules.group_info import GroupInfo
+from src.utils.config import config
+from src.utils.log import logger
+from src.utils.user_agent import get_user_agent
 
 
 async def get_active(group_id: int) -> int:
@@ -58,12 +58,13 @@ async def get_voice(text: str) -> Optional[str]:
         * `None`：转换出错
     '''
     # 判断配置是否完整
-    if CHAT_VOICE['appkey'] == "" or CHAT_VOICE['access'] == "" or CHAT_VOICE['secret'] == "":
+    chat_voice = config.get('chat_voice')
+    if chat_voice['appkey'] is None or chat_voice['access'] is None or chat_voice['secret'] is None:
         return None
     log = f'请求语音合成：{text}'
     logger.debug(log)
     url = 'https://www.jx3api.com/extend/aliyun'
-    params = CHAT_VOICE.copy()
+    params = chat_voice.copy()
     params['text'] = text
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:

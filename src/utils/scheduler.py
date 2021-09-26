@@ -1,7 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from nonebot.log import logger
 from pydantic import BaseSettings, Field
-
-from .log import logger
 
 
 class Config(BaseSettings):
@@ -13,11 +12,13 @@ class Config(BaseSettings):
 
 
 plugin_config = Config()
-APSscheduler = AsyncIOScheduler(timezone="Asia/Shanghai")
+
+scheduler = AsyncIOScheduler(timezone="Asia/Shanghai")
+'''全局定时器对象'''
 
 
 async def start_scheduler():
-    if not APSscheduler.running:
-        APSscheduler.configure(plugin_config.apscheduler_config)
-        APSscheduler.start()
+    if not scheduler.running:
+        scheduler.configure(plugin_config.apscheduler_config)
+        scheduler.start()
         logger.opt(colors=True).info("<y>定时器模块已开启。</y>")

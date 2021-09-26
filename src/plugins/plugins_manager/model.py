@@ -1,7 +1,7 @@
 import os
 
 from nonebot.plugin import get_loaded_plugins
-from utils.log import logger
+from src.utils.log import logger
 
 
 class PluginBase():

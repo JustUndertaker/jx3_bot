@@ -1,5 +1,3 @@
-from configs.config import (DEFAULT_LEFT, DEFAULT_LEFT_KICK, DEFAULT_STATUS,
-                            DEFAULT_WELCOME)
 from nonebot import get_driver, on_notice, on_regex
 from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupIncreaseNoticeEvent,
@@ -7,8 +5,9 @@ from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
-from utils.log import logger
-from utils.utils import get_admin_list, nickname
+from src.utils.config import config as baseconfig
+from src.utils.log import logger
+from src.utils.utils import get_admin_list, nickname
 
 from ..plugins_manager.data_source import plugin_init
 from .data_source import (change_active, change_server, check_event,
@@ -21,6 +20,7 @@ export.plugin_name = '群管理'
 export.plugin_usage = '用于操作群相关管理。'
 export.ignore = True  # 插件管理器忽略此插件
 
+config = baseconfig.get('default')
 
 driver = get_driver()
 
@@ -126,7 +126,8 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         for admin_id in admin_user_list:
             await bot.send_private_msg(user_id=admin_id, message=msg)
         msg = None
-        if DEFAULT_STATUS:
+        defaule_status: bool = config.get('robot-status')
+        if defaule_status:
             msg = f'可爱的{nickname}驾到了，有什么问题尽管来问我吧！'
         await someone_in_group.finish(msg)
 
@@ -140,7 +141,8 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     user_name = user_info['nickname']
     await user_init(user_id, group_id, user_name)
     # 欢迎语
-    msg = MessageSegment.at(user_id)+DEFAULT_WELCOME
+    default_welcome: str = config.get('robot-welcome')
+    msg = MessageSegment.at(user_id)+default_welcome
     await someone_in_group.finish(msg)
 
 
@@ -179,12 +181,14 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     sub_type = event.sub_type
     if sub_type == "leave":
         # 有人主动退群
-        msg = f"{user_name}({user_id})"+DEFAULT_LEFT
+        default_left: str = config.get('robot-someone-left')
+        msg = f"{user_name}({user_id})"+default_left
         await someone_in_group.finish(msg)
 
     if sub_type == "kick":
         # 有人被踢出群
-        msg = f"{user_name}({user_id})"+DEFAULT_LEFT_KICK
+        default_kick: str = config.get('robot-left-kick')
+        msg = f"{user_name}({user_id})"+default_kick
         await someone_in_group.finish(msg)
 
     await someone_in_group.finish()

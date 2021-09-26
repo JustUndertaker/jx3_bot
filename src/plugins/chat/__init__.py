@@ -3,7 +3,7 @@ from nonebot.adapters.cqhttp import Bot, GroupMessageEvent
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from nonebot.rule import to_me
-from utils.log import logger
+from src.utils.log import logger
 
 from .data_source import get_reply_jx3, get_reply_qingyunke
 

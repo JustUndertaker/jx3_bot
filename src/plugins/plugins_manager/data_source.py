@@ -1,9 +1,9 @@
 from typing import Optional
 
-from modules.group_info import GroupInfo
-from modules.plugin_info import PluginInfo
 from nonebot.adapters.cqhttp import MessageSegment
-from utils.utils import nickname
+from src.modules.group_info import GroupInfo
+from src.modules.plugin_info import PluginInfo
+from src.utils.utils import nickname
 
 from .model import PluginManager
 

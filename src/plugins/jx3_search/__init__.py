@@ -4,7 +4,7 @@ from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
-from utils.jx3_soket import send_ws_message
+from src.utils.jx3_soket import send_ws_message
 
 from .data_source import (get_equipquery_name, get_flower_url,
                           get_flowers_server, get_gonglue_name, get_macro_name,

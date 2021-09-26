@@ -1,7 +1,7 @@
 import os
 
-from modules.group_info import GroupInfo
-from modules.plugin_info import PluginInfo
+from src.modules.group_info import GroupInfo
+from src.modules.plugin_info import PluginInfo
 
 
 async def get_server(group_id: int) -> str:

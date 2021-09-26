@@ -3,10 +3,10 @@ import json
 import os
 from typing import Optional
 
-from configs.pathConfig import HTML_PATH
 from playwright.async_api import BrowserContext, Playwright, async_playwright
 
-from utils.log import logger
+from .config import config
+from .log import logger
 
 _browser: Playwright
 
@@ -20,7 +20,7 @@ async def browser_init():
     global browser
     log = '初始化无头浏览器……'
     logger.info(log)
-    user_data_dir = "./database/"
+    user_data_dir = config.get('path').get('data')
     _browser = await async_playwright().start()
     browser = await _browser.chromium.launch_persistent_context(user_data_dir=user_data_dir, headless=True)
     log = "无头浏览器初始化完毕！"
@@ -44,7 +44,8 @@ async def get_html_screenshots(pagename: str, data: dict) -> str:
         await browser_init()
 
     page = await browser.new_page()
-    url = "file://"+os.getcwd()+HTML_PATH+pagename
+    html_path: str = config.get('path').get('html')
+    url = "file://"+os.getcwd()+html_path+pagename
 
     # 打开页面
     await page.goto(url)

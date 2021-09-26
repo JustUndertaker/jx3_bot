@@ -1,11 +1,10 @@
 import os
 
 import httpx
-from configs.config import IMG_CACHE
-from configs.pathConfig import HTML_PATH
-from modules.group_info import GroupInfo
-from utils.user_agent import get_user_agent
-from utils.utils import nickname
+from src.modules.group_info import GroupInfo
+from src.utils.config import config
+from src.utils.user_agent import get_user_agent
+from src.utils.utils import nickname
 
 from .config import shuxing, zhiye
 
@@ -87,7 +86,8 @@ async def handle_data(alldata: dict) -> dict:
     attribute = _handle_attributes(attribute)
     post_attribute = _handle_data(role, body, attribute, shuxing_data)
     # 判断是否需要缓存
-    if IMG_CACHE:
+    img_cache: bool = config.get('default').get('img-cache')
+    if img_cache:
         post_equip = await _handle_icon(post_equip)
         post_qixue = await _handle_icon(post_qixue)
 
@@ -125,7 +125,8 @@ def _handle_data(role: str, body: str, attribute: dict, shuxing_data: dict) -> l
 
 async def _handle_icon(data: list[dict]) -> dict:
     '''处理icon'''
-    icon_path = "."+HTML_PATH+"icons/"
+    html_path: str = config.get('path').get('html')
+    icon_path = "."+html_path+"icons/"
     icons_files = os.listdir(icon_path)
     for one_data in data:
         icon_url = one_data.get('icon')

@@ -2,8 +2,8 @@ import re
 from typing import Optional, Tuple
 
 import httpx
-from modules.group_info import GroupInfo
-from utils.user_agent import get_user_agent
+from src.modules.group_info import GroupInfo
+from src.utils.user_agent import get_user_agent
 
 from .config import zhiye_name
 

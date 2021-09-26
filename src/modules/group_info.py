@@ -1,8 +1,13 @@
 from typing import Optional
 
-from configs.config import DEFAULT_SERVER, DEFAULT_STATUS, ROBOT_ACTIVE
+from src.utils.config import config as baseconfig
 from tortoise import fields
 from tortoise.models import Model
+
+config = baseconfig.get('default')
+default_server: str = config.get('server')
+default_status: bool = config.get('robot-status')
+default_active: int = config.get('robot-active')
 
 
 class GroupInfo(Model):
@@ -21,15 +26,15 @@ class GroupInfo(Model):
     '''
     签到次数
     '''
-    server = fields.CharField(max_length=255, default=DEFAULT_SERVER)
+    server = fields.CharField(max_length=255, default=default_server)
     '''
     绑定服务器
     '''
-    robot_status = fields.BooleanField(default=DEFAULT_STATUS)
+    robot_status = fields.BooleanField(default=default_status)
     '''
     机器人状态
     '''
-    active = fields.IntField(default=ROBOT_ACTIVE)
+    active = fields.IntField(default=default_active)
 
     class Meta:
         table = "group_info"

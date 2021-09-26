@@ -3,18 +3,18 @@
 # 自动聊天插件配置
 chat_nlp:
   # 腾讯云API的secretId，开通地址：https://console.cloud.tencent.com/cam/capi
-  secretId: yourid
+  secretId: ~
   # 腾讯云API的secretKey，NLP申请：https://console.cloud.tencent.com/nlp
-  secretKey: yourkey
+  secretKey: ~
 
 # 自动插话-语音合成配置
 chat_voice:
   # 阿里云的语音接口，开通地址：https://usercenter.console.aliyun.com/
-  appkey: yourkey
+  appkey: ~
   # 阿里云的语音接口，NLP申请：https://nls-portal.console.aliyun.com/overview
-  access: youraccess
+  access: ~
   # 阿里云的语音接口
-  secret: yoursecret
+  secret: ~
   # 发言人，文档：https://help.aliyun.com/knowledge_detail/84435.html?spm=a2c4g.11186631.2.1.67045663WlpL4n
   voice: Aitong
   # 编码格式，支持 PCM WAV MP3
@@ -57,8 +57,8 @@ default:
 
 # 路径设置
 path:
-  # 数据库位置
-  database: ./data/data.db
+  # 数据位置
+  data: ./data/
   # 日志位置
   log: ./log/
   # html文件路径

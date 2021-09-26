@@ -1,6 +1,5 @@
 import os
 
-from configs.pathConfig import HELP_IMG_PATH
 from nonebot import get_driver, on_regex
 from nonebot.adapters.cqhttp import (GROUP_ADMIN, GROUP_OWNER, Bot,
                                      GroupMessageEvent, MessageSegment)
@@ -10,8 +9,9 @@ from nonebot.message import run_preprocessor
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import Matcher
 from nonebot.typing import T_State
-from utils.browser import get_html_screenshots
-from utils.log import logger
+from src.utils.browser import get_html_screenshots
+from src.utils.config import config
+from src.utils.log import logger
 
 from .data_source import (change_plugin_status, check_group_init,
                           check_plugin_status, get_meau_data, plugin_init)
@@ -158,6 +158,7 @@ help_info = on_regex(pattern=r"^帮助$", permission=GROUP, priority=2, block=Tr
 @help_info.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''帮助info'''
-    img_path = "file:///"+os.getcwd()+HELP_IMG_PATH
+    help_img_path = config.get('path').get('img-help')
+    img_path = "file:///"+os.getcwd()+help_img_path
     msg = MessageSegment.image(img_path)
     await help_info.finish(msg)

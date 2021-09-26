@@ -1,10 +1,10 @@
 from typing import Tuple
 
-from modules.group_info import GroupInfo
-from modules.user_info import UserInfo
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.rule import Rule
 from nonebot.typing import T_State
+from src.modules.group_info import GroupInfo
+from src.modules.user_info import UserInfo
 
 
 def check_event(event_list: list[str]):

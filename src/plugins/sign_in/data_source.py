@@ -3,10 +3,10 @@ import random
 from datetime import date
 
 import httpx
-from modules.group_info import GroupInfo
-from modules.user_info import UserInfo
 from nonebot.adapters.cqhttp import Message, MessageSegment
-from utils.user_agent import get_user_agent
+from src.modules.group_info import GroupInfo
+from src.modules.user_info import UserInfo
+from src.utils.user_agent import get_user_agent
 
 from .config import FRIENDLY_ADD, GOLD_BASE, LUCKY_GOLD, LUCKY_MAX, LUCKY_MIN
 
