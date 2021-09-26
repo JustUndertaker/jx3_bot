@@ -139,6 +139,14 @@ python bot.py
 |好友列表|获取机器人好友列表|
 |退群 [QQ群号]|机器人主动退群|
 |删除好友 [QQ号]|删除指定好友|
+
+## TODO
+- [x] 将源码迁移至src文件夹下
+- [x] 将所有配置使用yaml重写
+- [ ] 支持多个bot链接
+- [ ] 使用fastapi作为后台服务，提供dashborad接口
+- [ ] 创建dashborad文件夹，使用web进行管理
+
 ## 感谢
 * [onebot](https://github.com/howmanybots/onebot)：聊天机器人应用接口标准。
 * [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)：cqhttp的golang实现。
