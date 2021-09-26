@@ -23,7 +23,7 @@ export.ignore = False  # 插件管理器忽略此插件
 daily = on_regex(pattern=r"^日常$", permission=GROUP, priority=5, block=True)
 
 # 装备查询
-equipquery_regex = r"(^(装备)|(属性) [\u4e00-\u9fa5]+$)|(^(装备)|(属性) [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)"
+equipquery_regex = r"(^(装备)|(属性) [(\u4e00-\u9fa5)|(@)]+$)|(^(装备)|(属性) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
 equipquery = on_regex(pattern=equipquery_regex, permission=GROUP, priority=5, block=True)
 
 # 开服查询
@@ -79,7 +79,7 @@ price_query = on_regex(pattern=r"^物价 [\u4e00-\u9fa5]+$", permission=GROUP, p
 # TODO：器物谱查询，装饰查询
 
 # 奇遇查询
-serendipity = on_regex(pattern=r"^奇遇 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
+serendipity = on_regex(pattern=r"^奇遇 [(\u4e00-\u9fa5)|(@)]+$", permission=GROUP, priority=5, block=True)
 
 # 奇遇列表
 serendipityList = on_regex(pattern=r"^查询 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
