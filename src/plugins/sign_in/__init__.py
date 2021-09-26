@@ -1,3 +1,6 @@
+import asyncio
+import random
+
 from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
@@ -38,6 +41,7 @@ async def _():
         try:
             msg = f"{nickname}要去睡觉了，大家晚安……"
             await bot.send_group_msg(group_id=group_id, message=msg)
+            await asyncio.sleep(random.uniform(0.3, 0.5))
         except Exception:
             log = f'（{group_id}）群被禁言了，无法发送晚安……'
             logger.warning(log)
