@@ -14,7 +14,7 @@ from src.utils.jx3_soket import on_connect, ws_connect
 from src.utils.log import logger
 from tortoise import Tortoise
 
-from .data_source import handle_data
+from .data_source import close_bot, handle_data
 
 export = export()
 export.plugin_name = 'ws链接回复'
@@ -44,6 +44,9 @@ async def _():
     logger.info(log)
     if browser is not None:
         await browser.close()
+    log = '关闭所有bot链接'
+    logger.info(log)
+    await close_bot()
     log = '关闭数据库'
     logger.info(log)
     await Tortoise.close_connections()
