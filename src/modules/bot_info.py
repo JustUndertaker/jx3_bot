@@ -54,12 +54,6 @@ class BotInfo(Model):
             await record.save(update_fields=["last_left", "online"])
 
     @classmethod
-    async def bot_shoutdown(cls):
-        '''关闭所有机器人链接'''
-        now_time = datetime.now()
-        await cls.all().update(last_left=now_time, online=False)
-
-    @classmethod
     async def set_owner(cls, bot_id, owner_id):
         '''
         :说明

@@ -1,18 +1,12 @@
 import os
 
 import httpx
-from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.utils.config import config
 from src.utils.user_agent import get_user_agent
 from src.utils.utils import nickname
 
 from .config import shuxing, zhiye
-
-
-async def close_bot():
-    '''关闭所有bot链接'''
-    await BotInfo.bot_shoutdown()
 
 
 async def get_server(bot_id: int, group_id: int) -> str:
