@@ -143,7 +143,7 @@ python bot.py
 ## TODO
 - [x] 将源码迁移至src文件夹下
 - [x] 将所有配置使用yaml重写
-- [ ] 支持多个bot链接
+- [x] 支持多个bot链接
 - [ ] 使用fastapi作为后台服务，提供dashborad接口
 - [ ] 创建dashborad文件夹，使用web进行管理
 
