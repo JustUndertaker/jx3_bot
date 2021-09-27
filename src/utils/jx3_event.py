@@ -127,7 +127,7 @@ class SendEvent(BaseEvent):
 
     @overrides(BaseEvent)
     def get_user_id(self) -> str:
-        raise ValueError("Event has no message!")
+        return self.user_id
 
     @overrides(BaseEvent)
     def get_session_id(self) -> str:
@@ -639,9 +639,11 @@ class ExamEvent(SendEvent):
         super(ExamEvent, self).__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
-        data = all_data.get('data')[0]
-        self.question = data.get('question')
-        self.answer = data.get('answer')
+        onedata = all_data.get('data')
+        if onedata:
+            data = onedata[0]
+            self.question = data.get('question')
+            self.answer = data.get('answer')
 
     @classmethod
     def get_api_type(cls):
