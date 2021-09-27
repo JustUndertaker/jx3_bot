@@ -34,7 +34,8 @@ class BotInfo(Model):
         record, _ = await cls.get_or_create(bot_id=bot_id)
         now_time = datetime.now()
         record.last_sign = now_time
-        await record.save(update_fields=["last_sign"])
+        record.online = True
+        await record.save(update_fields=["last_sign", "online"])
 
     @classmethod
     async def bot_disconnect(cls, bot_id):
@@ -122,3 +123,11 @@ class BotInfo(Model):
             await record.delete()
             return True
         return False
+
+    @classmethod
+    async def get_disconnect_bot(cls) -> list[dict]:
+        '''
+        获取离线bot列表,dict["bot_id", "last_left"]
+        '''
+        record_list = await cls.filter(online=False).values("bot_id", "last_left")
+        return record_list

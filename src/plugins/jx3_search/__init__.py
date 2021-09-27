@@ -88,9 +88,10 @@ serendipityList = on_regex(pattern=r"^查询 [\u4e00-\u9fa5]+$", permission=GROU
 @daily.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''日常查询'''
+    bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(group_id)
+    server = await get_server(bot_id, group_id)
     data = {
         "type": 1001,
         "server": server,
@@ -103,12 +104,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @equipquery.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''装备查询'''
+    bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     server, name = get_equipquery_name(text)
     if server is None:
-        server = await get_server(group_id)
+        server = await get_server(bot_id, group_id)
     msg = {
         "type": 1025,
         "server": server,
@@ -122,12 +124,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @open_server_send.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''开服查询'''
+    bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     server = await get_open_server_name(text)
     if server is None:
-        server = await get_server(group_id)
+        server = await get_server(bot_id, group_id)
     msg = {
         "type": 1002,
         "server": server,
@@ -140,9 +143,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @gold_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''金价查询'''
+    bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(group_id)
+    server = await get_server(bot_id, group_id)
     msg = {
         "type": 1003,
         "server": server,
@@ -284,11 +288,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @flowers.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''花价查询'''
+    bot_id = int(bot.self_id)
     group_id = event.group_id
     text = event.get_plaintext()
     server = await get_flowers_server(text)
     if server is None:
-        server = await get_server(group_id)
+        server = await get_server(bot_id, group_id)
 
     data = await get_flower_url(server)
     if data['code'] == 200:
@@ -328,10 +333,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @serendipity.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''奇遇查询'''
+    bot_id = int(bot.self_id)
     text = event.get_plaintext()
     name = text.split(' ')[-1]
     group_id = event.group_id
-    server = await get_server(group_id)
+    server = await get_server(bot_id, group_id)
     alldata = await get_serendipity(server, name)
     if alldata['code'] == 200:
         data = alldata['data']
@@ -346,10 +352,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @serendipityList.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''奇遇列表查询'''
+    bot_id = int(bot.self_id)
     text = event.get_plaintext()
     name = text.split(' ')[-1]
     group_id = event.group_id
-    server = await get_server(group_id)
+    server = await get_server(bot_id, group_id)
     alldata = await get_serendipity_list(server, name)
     if alldata['code'] == 200:
         data = alldata['data']

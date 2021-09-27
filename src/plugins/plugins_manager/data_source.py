@@ -8,12 +8,13 @@ from src.utils.utils import nickname
 from .model import PluginManager
 
 
-async def check_group_init(group_id: int, module_name: str) -> bool:
+async def check_group_init(bot_id: int, group_id: int, module_name: str) -> bool:
     '''
     :说明
         检查群是否注册，会跳过忽略插件
 
     :参数
+        * bot_id：机器人QQ
         * group_id：QQ群号
         * module_name：模块名
 
@@ -24,15 +25,16 @@ async def check_group_init(group_id: int, module_name: str) -> bool:
         if module_name == plugin.module_name:
             if plugin.ignore:
                 return False
-    return await GroupInfo.check_group_init(group_id)
+    return await GroupInfo.check_group_init(bot_id, group_id)
 
 
-async def check_plugin_status(module_name: str, group_id: int) -> Optional[bool]:
+async def check_plugin_status(bot_id: int, module_name: str, group_id: int) -> Optional[bool]:
     '''
     :说明
         查看插件状态
 
     :参数
+        * bot_id：机器人QQ
         * module_name：插件模块名
         * group_id：QQ群号
 
@@ -40,14 +42,14 @@ async def check_plugin_status(module_name: str, group_id: int) -> Optional[bool]
         * bool:插件状态
     '''
     # 判断机器人开关
-    status = await GroupInfo.get_robot_status(group_id)
+    status = await GroupInfo.get_robot_status(bot_id, group_id)
     if status is None or status is False:
         return False
     # 返回插件开关
-    return await PluginInfo.get_status(module_name, group_id)
+    return await PluginInfo.get_status(bot_id, module_name, group_id)
 
 
-async def plugin_init(group_id: int) -> None:
+async def plugin_init(bot_id, group_id: int) -> None:
     '''
     :说明
         注册一个群的所有插件
@@ -58,15 +60,16 @@ async def plugin_init(group_id: int) -> None:
             continue
         module_name = plugin.module_name
         description = plugin.plugin_usage
-        await PluginInfo.append_or_update(module_name, description, group_id)
+        await PluginInfo.append_or_update(bot_id, module_name, description, group_id)
 
 
-async def change_plugin_status(plugin_name: str, group_id: int, status: bool) -> MessageSegment:
+async def change_plugin_status(bot_id: int, plugin_name: str, group_id: int, status: bool) -> MessageSegment:
     '''
     :说明
         设置插件状态
 
     :参数
+        * bot_id：机器人QQ
         * plugin_name：插件名
         * group_id：QQ群号
         * status：状态
@@ -82,7 +85,7 @@ async def change_plugin_status(plugin_name: str, group_id: int, status: bool) ->
             break
 
     if module_name is not None:
-        await PluginInfo.change_status(module_name, group_id, status)
+        await PluginInfo.change_status(bot_id, module_name, group_id, status)
         if status:
             msg = MessageSegment.text(f'插件[{plugin_name}]当前状态为：开启')
         else:
@@ -105,7 +108,7 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
     :返回
         * dict
     '''
-    plugin_list_db = await PluginInfo.get_all_status_from_group(group_id)
+    plugin_list_db = await PluginInfo.get_all_status_from_group(self_id, group_id)
 
     # 构造字典列表
     plugin_list: list[dict] = []
@@ -121,16 +124,16 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
     alldata = {}
     alldata['plugins'] = plugin_list
 
-    robot_status = await GroupInfo.get_robot_status(group_id)
+    robot_status = await GroupInfo.get_robot_status(self_id, group_id)
     if robot_status:
         alldata['robot_status'] = "开"
     else:
         alldata['robot_status'] = "关"
-    server = await GroupInfo.get_server(group_id)
+    server = await GroupInfo.get_server(self_id, group_id)
     alldata['server'] = server
-    sign_nums = await GroupInfo.get_sign_nums(group_id)
+    sign_nums = await GroupInfo.get_sign_nums(self_id, group_id)
     alldata['sign_nums'] = sign_nums
-    active = await GroupInfo.get_active(group_id)
+    active = await GroupInfo.get_active(self_id, group_id)
     alldata['active'] = active
 
     alldata['nickname'] = nickname

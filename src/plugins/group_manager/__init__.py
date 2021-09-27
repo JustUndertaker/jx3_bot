@@ -31,17 +31,18 @@ async def _(bot: Bot):
     初始化注册
     '''
     # 群注册
+    bot_id = int(bot.self_id)
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
         group_name = group['group_name']
-        await group_init(group_id=group_id, group_name=group_name)
+        await group_init(bot_id=bot_id, group_id=group_id, group_name=group_name)
         # 用户注册
         user_list = await bot.get_group_member_list(group_id=group_id)
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
-            await user_init(user_id, group_id, user_name)
+            await user_init(bot_id, user_id, group_id, user_name)
 
 server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
 server_useage = "[更换绑定服务器]\n群管理命令：绑定 XXX"
@@ -53,6 +54,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''
     管理员绑定服务器
     '''
+    bot_id = int(bot.self_id)
     regex = event.get_plaintext()
     name = regex.split(' ')[-1]
     playername = event.sender.nickname if event.sender.card == "" else event.sender.card
@@ -65,7 +67,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         log = '更换服务器出错，参数错误。'
         logger.info(log)
         await server_change.finish(msg)
-    await change_server(group_id=group_id, server=server)
+    await change_server(bot_id=bot_id, group_id=group_id, server=server)
     msg = f'当前绑定服务器为：{server}'
     log = f'更换服务器成功，绑定服务器为：{server}'
     logger.info(log)
@@ -82,6 +84,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''
     设置活跃值
     '''
+    bot_id = int(bot.self_id)
     regex = event.get_plaintext()
     active = int(regex.split(' ')[-1])
     if active < 1 or active > 99:
@@ -89,7 +92,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await active_change.finish(msg)
 
     group_id = event.group_id
-    await change_active(group_id, active)
+    await change_active(bot_id, group_id, active)
     msg = f"活跃值设为：{active}"
     await active_change.finish(msg)
 
@@ -103,6 +106,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     '''
     群成员增加事件
     '''
+    bot_id = int(bot.self_id)
     group_id = event.group_id
     user_id = event.user_id
     self_id = event.self_id
@@ -119,7 +123,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
-            await user_init(user_id, group_id, user_name)
+            await user_init(bot_id, user_id, group_id, user_name)
 
         msg = f'我加入了群[{group_name}]({group_id})'
         admin_user_list = get_admin_list()
@@ -132,14 +136,14 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         await someone_in_group.finish(msg)
 
     # 判断机器人是否开启
-    status = await check_robot_status(group_id)
+    status = await check_robot_status(bot_id, group_id)
     if status is None or status is False:
         await someone_in_group.finish()
 
     # 注册用户
     user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id, no_cache=True)
     user_name = user_info['nickname']
-    await user_init(user_id, group_id, user_name)
+    await user_init(bot_id, user_id, group_id, user_name)
     # 欢迎语
     default_welcome: str = config.get('robot-welcome')
     msg = MessageSegment.at(user_id)+default_welcome
@@ -155,11 +159,12 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     '''
     群成员减少事件
     '''
+    bot_id = int(bot.self_id)
     user_id = event.user_id
     group_id = event.group_id
-    user_name = await get_user_name(user_id, group_id)
+    user_name = await get_user_name(bot_id, user_id, group_id)
     # 删除数据
-    await user_detele(user_id, group_id)
+    await user_detele(bot_id, user_id, group_id)
 
     sub_type = event.sub_type
     if sub_type == "kick_me":
@@ -170,11 +175,11 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
         for admin_id in admin_user_list:
             await bot.send_private_msg(user_id=admin_id, message=msg)
         # 删除数据
-        await group_detel(group_id)
+        await group_detel(bot_id, group_id)
         await someone_in_group.finish()
 
     # 查看群是否开启
-    status = await check_robot_status(group_id)
+    status = await check_robot_status(bot_id, group_id)
     if status is None or status is False:
         await someone_in_group.finish()
 

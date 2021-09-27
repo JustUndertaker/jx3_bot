@@ -9,11 +9,11 @@ from src.utils.utils import nickname
 from .config import shuxing, zhiye
 
 
-async def get_server(group_id: int) -> str:
+async def get_server(bot_id: int, group_id: int) -> str:
     '''
     获取绑定服务器名称
     '''
-    return await GroupInfo.get_server(group_id)
+    return await GroupInfo.get_server(bot_id, group_id)
 
 
 def _handle_attributes(attribute: dict) -> dict:

@@ -22,8 +22,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
     处理自动插话
     '''
     # 是否随机插话
+    bot_id = int(bot.self_id)
     num = random.randrange(100)
-    active = await get_active(event.group_id)
+    active = await get_active(bot_id, event.group_id)
     if num > active:
         await message.finish()
 

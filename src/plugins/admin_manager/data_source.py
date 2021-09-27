@@ -18,9 +18,9 @@ def check_event(event_list: list[str]):
     return Rule(_check_event)
 
 
-async def set_robot_status(group_id: int, status: bool) -> bool:
+async def set_robot_status(bot_id: int, group_id: int, status: bool) -> bool:
     '''设置机器人开关'''
-    return await GroupInfo.set_robot_status(group_id, status)
+    return await GroupInfo.set_robot_status(bot_id, group_id, status)
 
 
 async def get_all_data() -> list[dict]:
@@ -45,18 +45,18 @@ def get_text_num(text: str) -> Tuple[bool, int]:
     return status, group_id
 
 
-async def change_status_all(status: bool) -> None:
+async def change_status_all(bot_id: int, status: bool) -> None:
     '''设置所有状态'''
-    await GroupInfo.change_status_all(status)
+    await GroupInfo.change_status_all(bot_id, status)
 
 
-async def leave_group(group_id: int) -> Tuple[bool, str]:
+async def leave_group(bot_id: int, group_id: int) -> Tuple[bool, str]:
     '''退群，返回[成功flag，群名]'''
-    group_name = await GroupInfo.get_group_name(group_id)
+    group_name = await GroupInfo.get_group_name(bot_id, group_id)
     if group_name is None:
         group_name = ""
         return False, group_name
 
-    await GroupInfo.delete_one(group_id=group_id)
-    await UserInfo.delete_group(group_id)
+    await GroupInfo.delete_one(bot_id=bot_id, group_id=group_id)
+    await UserInfo.delete_group(bot_id=bot_id, group_id=group_id)
     return True, group_name

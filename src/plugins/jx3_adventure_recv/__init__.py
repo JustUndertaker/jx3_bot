@@ -19,6 +19,7 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     '''
     奇遇推送事件
     '''
+    bot_id = int(bot.self_id)
     server = event.server
     msg = f'奇遇播报 {event.time}\n{event.serendipity} 被 {event.name} 抱走惹。'
     log = f'奇遇推送事件：[{server}]{event.serendipity} 触发者：{event.name} '
@@ -26,10 +27,10 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
-        group_server = await get_server(group_id)
+        group_server = await get_server(bot_id, group_id)
         if group_server == server:
             # 判断机器人开关
-            status = await get_robot_status(group_id)
+            status = await get_robot_status(bot_id, group_id)
             if status:
                 await bot.send_group_msg(group_id=group_id, message=msg)
     await adventure_recv.finish()

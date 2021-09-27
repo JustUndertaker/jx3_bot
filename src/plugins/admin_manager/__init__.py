@@ -96,9 +96,10 @@ set_group_status = on_regex(pattern=group_status_regex, rule=check_event(
 @set_group_status.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊打开关闭机器人'''
+    bot_id = int(bot.self_id)
     text = event.get_plaintext()
     status, group_id = get_text_num(text)
-    result = await set_robot_status(group_id, status)
+    result = await set_robot_status(bot_id, group_id, status)
     if result:
         msg = f"群（{group_id}）状态设置成功！"
     else:
@@ -114,9 +115,10 @@ change_all = on_regex(pattern=change_all_regex, rule=check_event(
 @change_all.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊打开关闭所有'''
+    bot_id = int(bot.self_id)
     text = event.get_plaintext()
     status = (text == "打开所有")
-    await change_status_all(status)
+    await change_status_all(bot_id, status)
     if status:
         msg = "所有群已打开机器人！"
     else:
@@ -167,8 +169,9 @@ set_group_leave = on_regex(pattern=set_group_leave_regex, rule=check_event(
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''私聊退群'''
     text = event.get_plaintext()
+    bot_id = int(bot.self_id)
     group_id = int(text.split(' ')[-1])
-    flag, group_name = await leave_group(group_id)
+    flag, group_name = await leave_group(bot_id, group_id)
     if flag:
         await bot.set_group_leave(group_id=group_id, is_dismiss=True)
         msg = f'成功，已退出群：[{group_name}]({group_id})'

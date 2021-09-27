@@ -8,11 +8,11 @@ from src.utils.user_agent import get_user_agent
 from .config import zhiye_name
 
 
-async def get_server(group_id: int) -> Optional[str]:
+async def get_server(bot_id: int, group_id: int) -> Optional[str]:
     '''
     获取绑定服务器名称
     '''
-    return await GroupInfo.get_server(group_id)
+    return await GroupInfo.get_server(bot_id, group_id)
 
 
 def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:

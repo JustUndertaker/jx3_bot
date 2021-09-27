@@ -54,6 +54,8 @@ default:
   private-chat: true
   # 装备奇穴图标是否缓存本地
   img-cache: true
+  # 离线bot数据清理时间，单位：小时
+  bot-outtime: 48
 
 # 路径设置
 path:

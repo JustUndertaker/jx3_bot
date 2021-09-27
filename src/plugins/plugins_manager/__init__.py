@@ -30,12 +30,13 @@ driver.on_startup(manager_init)
 # 链接bot时处理，自动为所有群注册插件
 @driver.on_bot_connect
 async def _(bot: Bot):
+    bot_id = int(bot.self_id)
     group_list = await bot.get_group_list()
     log = '开始自动为所有群注册插件信息……'
     logger.debug(log)
     for group in group_list:
         group_id = group['group_id']
-        await plugin_init(group_id)
+        await plugin_init(bot_id, group_id)
     log = '插件信息注册完毕。'
     logger.debug(log)
 
@@ -54,16 +55,17 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     group_id = event.group_id
     # 获取插件模块名
     module_name = matcher.plugin_name
+    bot_id = int(bot.self_id)
 
     # 判断是否注册
-    is_init = await check_group_init(group_id, module_name)
+    is_init = await check_group_init(bot_id, group_id, module_name)
     if is_init is False or module_name == self_module:
         log = '此插件不归管理器管理，跳过。'
         logger.debug(log)
         return
 
     # 管理器管理函数
-    status = await check_plugin_status(module_name, group_id)
+    status = await check_plugin_status(bot_id, module_name, group_id)
 
     if status is False:
         reason = f'[{module_name}]插件未开启'
@@ -81,12 +83,13 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''
     管理员手动更新群信息
     '''
+    bot_id = int(bot.self_id)
     # 群id
     group_id = event.group_id
     # 注册
     log = f'超级用户手动注册群插件：{group_id}'
     logger.info(log)
-    await plugin_init(group_id)
+    await plugin_init(bot_id, group_id)
 
 changeregex = r'^(打开|关闭) [\u4E00-\u9FA5A-Za-z0-9_]+$'
 change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
@@ -95,13 +98,14 @@ change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
 # =================================功能开关===============================
 @change.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
+    bot_id = int(bot.self_id)
     group_id = event.group_id
     text = event.get_plaintext()
     try:
         plugin_name, status = _get_change_params(text)
         log = f'（{group_id}）群尝试设置插件[{plugin_name}]的状态：[{status}]。'
         logger.info(log)
-        msg = await change_plugin_status(plugin_name, group_id, status)
+        msg = await change_plugin_status(bot_id, plugin_name, group_id, status)
         log = f'插件[{plugin_name}]状态设置成功。'
         logger.info(log)
     except Exception:
@@ -141,7 +145,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''
     显示功能开关状态
     '''
-    self_id = event.self_id
+    self_id = int(bot.self_id)
     group_id = event.group_id
     log = f'{event.sender.nickname}（{event.user_id}，{event.group_id}）请求功能菜单。'
     logger.info(log)

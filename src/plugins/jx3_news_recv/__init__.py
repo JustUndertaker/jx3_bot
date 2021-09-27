@@ -19,6 +19,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
     '''
     新闻推送事件
     '''
+    bot_id = int(bot.self_id)
     news_type = event.news_type
     news_tittle = event.news_tittle
     news_url = event.news_url
@@ -28,7 +29,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
-        status = await get_robot_status(group_id)
+        status = await get_robot_status(bot_id, group_id)
         if status:
             await bot.send_group_msg(group_id=group_id, message=msg)
     log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'

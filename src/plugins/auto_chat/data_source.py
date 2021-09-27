@@ -7,7 +7,7 @@ from src.utils.log import logger
 from src.utils.user_agent import get_user_agent
 
 
-async def get_active(group_id: int) -> int:
+async def get_active(bot_id: int, group_id: int) -> int:
     '''
     :说明
         获取群里机器人的活跃值
@@ -18,7 +18,7 @@ async def get_active(group_id: int) -> int:
     :返回
         * int：活跃度
     '''
-    active = await GroupInfo.get_active(group_id)
+    active = await GroupInfo.get_active(bot_id, group_id)
     return active
 
 
