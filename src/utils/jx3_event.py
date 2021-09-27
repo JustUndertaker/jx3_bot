@@ -127,7 +127,7 @@ class SendEvent(BaseEvent):
 
     @overrides(BaseEvent)
     def get_user_id(self) -> str:
-        raise ValueError("Event has no message!")
+        return self.user_id
 
     @overrides(BaseEvent)
     def get_session_id(self) -> str:
