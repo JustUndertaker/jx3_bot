@@ -15,10 +15,3 @@ async def _owner(bot: "Bot", event: "Event"):
 
 OWNER = Permission(_owner)
 '''匹配消息是否是机器人的管理员'''
-
-
-def get_bot():
-    '''
-    全局获取bot对象
-    '''
-    return list(nonebot.get_bots().values())[0]
