@@ -16,6 +16,22 @@ async def get_server(bot_id: int, group_id: int) -> str:
     return await GroupInfo.get_server(bot_id, group_id)
 
 
+def get_daily_week(week: str) -> str:
+    '''
+    根据星期几返回额外的日常结果
+    '''
+    daily_list = {
+        "一": "帮会跑商：阴山商路(10:00)\n阵营几天：出征祭祀(19:00)\n",
+        "二": "阵营攻防：逐鹿中原(20:00)\n",
+        "三": "世界首领：少林·乱世，七秀·乱世(20:00)\n",
+        "四": "阵营攻防：逐鹿中原(20:00)\n",
+        "五": "世界首领：藏剑·乱世，万花·乱世(20:00)\n",
+        "六": "攻防前置：南屏山(12:00)\n阵营攻防：浩气盟(13:00，19:00)\n",
+        "日": "攻防前置：昆仑(12:00)\n阵营攻防：恶人谷(13:00，19:00)\n"
+    }
+    return daily_list.get(week)
+
+
 def _handle_attributes(attribute: dict) -> dict:
     '''预处理attribute'''
     data = {}

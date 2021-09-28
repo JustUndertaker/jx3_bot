@@ -15,7 +15,7 @@ from src.utils.log import logger
 from src.utils.utils import OWNER
 from tortoise import Tortoise
 
-from .data_source import handle_data
+from .data_source import get_daily_week, handle_data
 
 export = export()
 export.plugin_name = 'ws链接回复'
@@ -118,6 +118,7 @@ async def _(bot: Bot, event: DailyEvent):
     msg += f'今日战场：{event.DayBattle}\n'
     msg += f'公共任务：{event.DayCommon}\n'
     msg += f'阵营任务：{event.DayCamp}\n'
+    msg += get_daily_week(event.Week)
     if event.DayDraw is not None:
         msg += f'美人画像：{event.DayDraw}\n'
     msg += f'\n武林通鉴·公共任务\n{event.WeekCommon}\n'
