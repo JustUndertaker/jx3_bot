@@ -118,8 +118,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         await bot.send_group_msg(group_id=group_id, message=msg)
         await asyncio.sleep(random.uniform(0.3, 0.5))
     time_end = time.time()
-    time_use = time_end-time_start
-    msg = f"发送完毕，共发送 {num} 个群，用时 {time_use} 。"
+    time_use = round(time_end-time_start, 2)
+    msg = f"发送完毕，共发送 {num} 个群，用时 {time_use} 秒。"
     await borodcast_all.finish(msg)
 
 
