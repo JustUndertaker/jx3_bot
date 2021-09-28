@@ -8,6 +8,7 @@ from nonebot import get_bots
 from nonebot.message import handle_event
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
+from websockets.legacy.client import WebSocketClientProtocol
 
 from .config import config
 from .jx3_event import WS_ECHO, Jx3EventList
@@ -18,10 +19,15 @@ ws_echo_list: list[WS_ECHO] = []
 消息池，用来维护发送后回复事件
 '''
 
-ws_connect = None
+ws_connect: WebSocketClientProtocol
 '''
 ws全局链接
 '''
+
+
+def get_ws_connect() -> WebSocketClientProtocol:
+    global ws_connect
+    return ws_connect
 
 
 async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
@@ -46,23 +52,24 @@ async def on_connect(loop: AbstractEventLoop):
         try:
             ws_connect = await websockets.connect("wss://socket.nicemoe.cn")
             logger.info('jx3_api > websockets链接成功！')
-            loop.create_task(_task(loop, ws_connect))
+            loop.create_task(_task(loop))
             return
         except (ConnectionRefusedError, OSError) as e:
             logger.info(f'jx3_api > [{count}] {e}')
             if count == max_recon_times:
                 return
+            ws_connect = None
             count += 1
             logger.info(f'jx3_api > [{count}] 尝试向 websockets 服务器建立链接！')
             await asyncio.sleep(10)
 
 
-async def _task(loop: AbstractEventLoop, ws: websockets):
+async def _task(loop: AbstractEventLoop):
     global ws_connect
     global ws_echo_list
     try:
         while True:
-            data_recv = await ws.recv()
+            data_recv = await ws_connect.recv()
             data = json.loads(data_recv)
             msg_type: int = data['type']
             event = None
@@ -91,5 +98,5 @@ async def _task(loop: AbstractEventLoop, ws: websockets):
             logger.error('jx3_api > 链接已断开！')
             loop.create_task(on_connect(loop))
         else:
-            logger.error('jx3_api > 链接被服务器关闭！')
+            logger.error('jx3_api > 链接被关闭！')
         logger.error(e)

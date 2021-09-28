@@ -1,8 +1,9 @@
 import asyncio
 from datetime import datetime
 
-from nonebot import get_driver
-from nonebot.adapters.cqhttp import Bot, MessageSegment
+import src.utils.jx3_soket as jx3_soket
+from nonebot import get_driver, on_regex
+from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.plugin import export, on
 from src.utils.browser import browser, get_html_screenshots
 from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
@@ -10,8 +11,8 @@ from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
                                  GoldQueryEvent, MacroEvent, MatchEquipEvent,
                                  MedicineEvent, OpenServerSendEvent,
                                  PendantEvent, RaiderseSearchEvent)
-from src.utils.jx3_soket import on_connect, ws_connect
 from src.utils.log import logger
+from src.utils.utils import OWNER
 from tortoise import Tortoise
 
 from .data_source import handle_data
@@ -32,7 +33,7 @@ async def _():
     log = 'jx3_api > 开始连接ws.'
     logger.info(log)
     loop = asyncio.get_event_loop()
-    loop.create_task(on_connect(loop))
+    loop.create_task(jx3_soket.on_connect(loop))
 
 
 @driver.on_shutdown
@@ -49,7 +50,43 @@ async def _():
     await Tortoise.close_connections()
     log = 'jx3_api > 关闭ws链接。'
     logger.info(log)
-    ws_connect.close()
+    ws_connect = jx3_soket.get_ws_connect()
+    await ws_connect.close()
+
+
+# 查看ws链接状态
+ws_check = on_regex(pattern=r"^查看链接$", permission=OWNER, priority=2, block=True)
+
+
+@ws_check.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    查询ws链接状态
+    '''
+    ws_connect = jx3_soket.get_ws_connect()
+    if ws_connect is None:
+        msg = 'jx3_api > 当前未链接。'
+    else:
+        msg = 'jx3_api > 当前链接正常。'
+    await ws_check.finish(msg)
+
+
+ws_re_connect = on_regex(pattern=r"^链接服务器$", permission=OWNER, priority=2, block=True)
+
+
+@ws_re_connect.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    重连ws链接
+    '''
+    ws_connect = jx3_soket.get_ws_connect()
+    if ws_connect is None:
+        loop = asyncio.get_event_loop()
+        loop.create_task(jx3_soket.on_connect(loop))
+        msg = 'jx3_api > 正在重连……'
+    else:
+        msg = 'jx3_api > 当前已链接，请勿重复链接。'
+    await ws_re_connect.finish(msg)
 
 
 daily = on(type="daily", priority=5, block=True)    # 日常查询
