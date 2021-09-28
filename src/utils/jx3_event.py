@@ -92,6 +92,8 @@ class SendEvent(BaseEvent):
     post_type: Optional[str]
     user_id: Optional[int]
     group_id: Optional[int]
+    server: Optional[str]
+    '''服务器'''
     echo: Optional[int]
     '''
     会话echo
@@ -104,6 +106,7 @@ class SendEvent(BaseEvent):
     def set_message_type(self, ws_econ: WS_ECHO):
         self.user_id = ws_econ.user_id
         self.group_id = ws_econ.group_id
+        self.server = ws_econ.server
 
     @classmethod
     def get_api_type(cls):
