@@ -6,12 +6,13 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from src.utils.jx3_soket import send_ws_message
 
-from .data_source import (get_equipquery_name, get_flower_url,
-                          get_flowers_server, get_gonglue_name, get_macro_name,
-                          get_medicine_name, get_open_server_name,
-                          get_peizhuang_name, get_price, get_qixue_name,
-                          get_serendipity, get_serendipity_list, get_server,
-                          get_update_url, get_xinfa)
+from .data_source import (ger_master_server, get_equipquery_name,
+                          get_flower_url, get_flowers_server, get_gonglue_name,
+                          get_macro_name, get_medicine_name,
+                          get_open_server_name, get_peizhuang_name, get_price,
+                          get_qixue_name, get_serendipity,
+                          get_serendipity_list, get_server, get_update_url,
+                          get_xinfa)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -20,7 +21,7 @@ export.ignore = False  # 插件管理器忽略此插件
 
 
 # 日常查询
-daily = on_regex(pattern=r"^日常$", permission=GROUP, priority=5, block=True)
+daily = on_regex(pattern=r"(^日常$)|(^日常 [\u4e00-\u9fa5]+$)", permission=GROUP, priority=5, block=True)
 
 # 装备查询
 equipquery_regex = r"(^(装备)|(属性) [(\u4e00-\u9fa5)|(@)]+$)|(^(装备)|(属性) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
@@ -91,13 +92,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(bot_id, group_id)
+    text = event.get_plaintext().split(" ")
+    if len(text) > 1:
+        server_text = text[-1]
+        server = await ger_master_server(server_text)
+        if server is None:
+            msg = "查询错误，请输入正确的服务器名。"
+            await daily.finish(msg)
+    else:
+        server = await get_server(bot_id, group_id)
     data = {
         "type": 1001,
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=data, echo=echo, group_id=group_id)
+    await send_ws_message(msg=data, echo=echo, group_id=group_id, server=server)
     await daily.finish()
 
 

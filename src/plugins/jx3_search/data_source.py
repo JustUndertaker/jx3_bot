@@ -18,6 +18,25 @@ async def get_server(bot_id: int, group_id: int) -> Optional[str]:
     return await GroupInfo.get_server(bot_id, group_id)
 
 
+async def ger_master_server(server: str) -> Optional[str]:
+    '''
+    获取主服务器名称
+    '''
+    url: str = config.get('master-server')
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        params = {
+            "name": server
+        }
+        try:
+            req_url = await client.get(url, params=params)
+            req = req_url.json()
+            if req['code'] == 200:
+                data = req['data']
+                return data['server']
+        except Exception:
+            return None
+
+
 def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:
     '''处理查询装备'''
     text_list = text.split(' ')
