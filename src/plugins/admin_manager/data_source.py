@@ -30,7 +30,7 @@ async def set_robot_status(bot_id: int, group_id: int, status: bool) -> bool:
     return await GroupInfo.set_robot_status(bot_id, group_id, status)
 
 
-async def get_all_data() -> list[dict]:
+async def get_all_data(bot_id: int) -> list[dict]:
     '''
         :返回所有数据,dict字段：
         * group_id：群号
@@ -40,7 +40,7 @@ async def get_all_data() -> list[dict]:
         * robot_status：运行状态
         * active：活跃值
     '''
-    return await GroupInfo.get_all_data()
+    return await GroupInfo.get_all_data(bot_id)
 
 
 def get_text_num(text: str) -> Tuple[bool, int]:

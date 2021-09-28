@@ -73,8 +73,9 @@ get_group_list = on_regex(pattern=r"(^状态$)|(^运行状态$)", rule=check_eve
 @get_group_list.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''超级用户私聊消息'''
+    bot_id = int(bot.self_id)
     data = {}
-    groups = await get_all_data()
+    groups = await get_all_data(bot_id)
     group_nums = len(groups)
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['time'] = time_now
