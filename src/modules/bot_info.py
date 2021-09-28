@@ -54,7 +54,7 @@ class BotInfo(Model):
             await record.save(update_fields=["last_left", "online"])
 
     @classmethod
-    async def set_owner(cls, bot_id, owner_id):
+    async def set_owner(cls, bot_id, owner_id) -> bool:
         '''
         :说明
             设置机器人管理员
@@ -62,11 +62,16 @@ class BotInfo(Model):
         :参数
             * bot_id：机器人QQ号
             * owner_id：管理员QQ号
+
+        :返回
+            * bool：是否成功
         '''
         record = await cls.get_or_none(bot_id=bot_id)
-        if record is not None:
-            record.owner_id = owner_id
-            await record.save(update_fields=["owner_id"])
+        if record is None:
+            return False
+        record.owner_id = owner_id
+        await record.save(update_fields=["owner_id"])
+        return True
 
     @classmethod
     async def get_owner(cls, bot_id) -> Optional[int]:
@@ -86,6 +91,25 @@ class BotInfo(Model):
         if record is not None:
             owner_id = record.owner_id
         return owner_id
+
+    @classmethod
+    async def clean_owner(cls, bot_id) -> bool:
+        '''
+        :说明
+            清除管理员
+
+        :参数
+            * bot_id：机器人QQ
+
+        :返回
+            * bool：是否清除成功
+        '''
+        record = await cls.get_or_none(bot_id=bot_id)
+        if record is None:
+            return False
+        record.owner_id = None
+        await record.save(update_fields=["owner_id"])
+        return True
 
     @classmethod
     async def get_online(cls, bot_id) -> Optional[bool]:
