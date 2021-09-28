@@ -1,3 +1,7 @@
+import asyncio
+import random
+import time
+
 from nonebot import get_driver, on_regex
 from nonebot.adapters.cqhttp import Bot, PrivateMessageEvent
 from nonebot.adapters.cqhttp.permission import PRIVATE_FRIEND
@@ -5,9 +9,11 @@ from nonebot.plugin import export
 from src.utils.config import config
 from src.utils.log import logger
 from src.utils.scheduler import scheduler
+from src.utils.utils import OWNER
 
 from .data_source import (bot_connect, bot_disconnect, clean_bot,
-                          clean_bot_owner, set_bot_owner)
+                          clean_bot_owner, get_bot_group_list,
+                          get_robot_status, set_bot_owner)
 
 export = export()
 export.plugin_name = 'bot管理插件'
@@ -90,3 +96,56 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = "清除失败惹，你不是管理员。"
     await clean_owner.finish(msg)
+
+
+# 管理员广播
+borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
+
+
+@borodcast_all.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    管理员广播，全体广播
+    '''
+    bot_id = int(bot.self_id)
+    text = event.get_plaintext()[5:]
+    msg = "管理员广播消息：\n\n"
+    msg += text
+    group_list = await get_bot_group_list(bot_id)
+    num = len(group_list)
+    time_start = time.time()
+    for group_id in group_list:
+        await bot.send_group_msg(group_id=group_id, message=msg)
+        await asyncio.sleep(random.uniform(0.3, 0.5))
+    time_end = time.time()
+    time_use = time_end-time_start
+    msg = f"发送完毕，共发送 {num} 个群，用时 {time_use} 。"
+    await borodcast_all.finish(msg)
+
+
+borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
+
+
+@borodcast.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    广播某个群
+    '''
+    bot_id = int(bot.self_id)
+    plaintext = event.get_plaintext()
+    text_list = plaintext.split(" ")
+    group_id = int(text_list[1])
+    loc = plaintext.find(" ", 3)
+    text = plaintext[loc+1:]
+    robot_status = await get_robot_status(bot_id, group_id)
+    if robot_status is None:
+        msg = f"广播失败，未找到群[{str(group_id)}]。"
+        await borodcast.finish(msg)
+    elif robot_status is False:
+        msg = f"广播失败，机器人在群[{str(group_id)}]处于关闭。"
+        await borodcast.finish(msg)
+    msg = "管理员广播消息：\n\n"
+    msg += text
+    await bot.send_group_msg(group_id=group_id, message=msg)
+    msg = f"广播已发送至群[{str(group_id)}]。"
+    await borodcast.finish(msg)
