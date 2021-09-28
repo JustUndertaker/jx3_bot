@@ -112,7 +112,7 @@ async def _(bot: Bot, event: DailyEvent):
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
         await daily.finish(msg)
-    msg = f'[{event.server}]日常\n'
+    msg = f'日常[{event.server}]\n'
     msg += f'当前时间：{event.DateTime} 星期{event.Week}\n'
     msg += f'今日大战：{event.DayWar}\n'
     msg += f'今日战场：{event.DayBattle}\n'

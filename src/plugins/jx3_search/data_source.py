@@ -49,28 +49,6 @@ def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:
     return server, name
 
 
-async def get_open_server_name(text: str) -> Optional[str]:
-    '''处理开服查询'''
-    args = re.search(r'^开服 [\u4e00-\u9fa5]+$', text)
-    if args is not None:
-        server = text.split(' ')[-1]
-        # 查询主服务器
-        async with httpx.AsyncClient(headers=get_user_agent()) as client:
-            url = config.get('master-server')
-            params = {
-                "name": server
-            }
-            try:
-                req_url = await client.get(url, params=params)
-                req = req_url.json()
-                if req['code'] == 200:
-                    data = req['data']
-                    return data['server']
-            except Exception:
-                return None
-    return None
-
-
 def get_macro_name(text: str) -> str:
     '''宏查询返回职业'''
     args = re.search(r'^[\u4e00-\u9fa5]+宏$', text)

@@ -31,7 +31,7 @@ open_server_regex = r"(^开服$)|(^开服 [\u4e00-\u9fa5]+$)"
 open_server_send = on_regex(pattern=open_server_regex, permission=GROUP, priority=5, block=True)
 
 # 金价查询
-gold_query = on_regex(pattern=r"^金价$", permission=GROUP, priority=5, block=True)
+gold_query = on_regex(pattern=r"(^金价$)|(^金价 [\u4e00-\u9fa5]+$)", permission=GROUP, priority=5, block=True)
 
 # 奇穴查询
 extra_point_regex = r"(^奇穴 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+奇穴$)"
@@ -159,13 +159,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    server = await get_server(bot_id, group_id)
+    text = event.get_plaintext().split(" ")
+    if len(text) > 1:
+        server_text = text[-1]
+        server = await ger_master_server(server_text)
+        if server is None:
+            msg = "查询错误，请输入正确的服务器名。"
+            await daily.finish(msg)
+    else:
+        server = await get_server(bot_id, group_id)
     msg = {
         "type": 1003,
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
