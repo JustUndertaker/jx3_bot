@@ -3,17 +3,16 @@ from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupIncreaseNoticeEvent,
                                      GroupMessageEvent, MessageSegment)
 from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
-from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
-from src.utils.utils import get_admin_list, nickname
+from src.utils.utils import OWNER, nickname
 
 from ..plugins_manager.data_source import plugin_init
 from .data_source import (change_active, change_server, check_event,
-                          check_robot_status, get_group_name, get_server_name,
-                          get_user_name, group_detel, group_init,
-                          set_robot_status, user_detele, user_init)
+                          check_robot_status, get_bot_owner, get_group_name,
+                          get_server_name, get_user_name, group_detel,
+                          group_init, set_robot_status, user_detele, user_init)
 
 export = export()
 export.plugin_name = '群管理'
@@ -46,7 +45,7 @@ async def _(bot: Bot):
 
 server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
 server_useage = "[更换绑定服务器]\n群管理命令：绑定 XXX"
-server_change = on_regex(pattern=server_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+server_change = on_regex(pattern=server_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 @server_change.handle()
@@ -76,7 +75,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 active_regex = r"^活跃值 [0-9]+$"
 active_usage = "[设置活跃值]\n群管理命令：活跃值 XX（1-99）"
-active_change = on_regex(pattern=active_regex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+active_change = on_regex(pattern=active_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 @active_change.handle()
@@ -126,9 +125,9 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
             await user_init(bot_id, user_id, group_id, user_name)
 
         msg = f'我加入了群[{group_name}]({group_id})'
-        admin_user_list = get_admin_list()
-        for admin_id in admin_user_list:
-            await bot.send_private_msg(user_id=admin_id, message=msg)
+        owner_id = await get_bot_owner(bot_id)
+        if owner_id is not None:
+            await bot.send_private_msg(user_id=owner_id, message=msg)
         msg = None
         defaule_status: bool = config.get('robot-status')
         if defaule_status:
@@ -171,9 +170,9 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
         # 机器人被踢了
         group_name = await get_group_name(group_id)
         msg = f'我在[{group_name}]({group_id})被管理员踹走了……'
-        admin_user_list = get_admin_list()
-        for admin_id in admin_user_list:
-            await bot.send_private_msg(user_id=admin_id, message=msg)
+        owner_id = await get_bot_owner(bot_id)
+        if owner_id is not None:
+            await bot.send_private_msg(user_id=owner_id, message=msg)
         # 删除数据
         await group_detel(bot_id, group_id)
         await someone_in_group.finish()
@@ -200,7 +199,7 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
 
 
 robotregex = r'^机器人 [开|关]$'
-robotchange = on_regex(pattern=robotregex, permission=SUPERUSER, priority=2, block=True)
+robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=True)
 
 
 @robotchange.handle()

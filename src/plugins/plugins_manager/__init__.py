@@ -6,12 +6,12 @@ from nonebot.adapters.cqhttp import (GROUP_ADMIN, GROUP_OWNER, Bot,
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.exception import IgnoredException
 from nonebot.message import run_preprocessor
-from nonebot.permission import SUPERUSER
 from nonebot.plugin import Matcher
 from nonebot.typing import T_State
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config
 from src.utils.log import logger
+from src.utils.utils import OWNER
 
 from .data_source import (change_plugin_status, check_group_init,
                           check_plugin_status, get_meau_data, plugin_init)
@@ -75,7 +75,7 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
 
 
 # =================================管理员手动更新==========================
-update = on_regex(r"^更新信息$", permission=SUPERUSER, priority=2, block=True)
+update = on_regex(r"^更新信息$", permission=OWNER, priority=2, block=True)
 
 
 @update.handle()
@@ -92,7 +92,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     await plugin_init(bot_id, group_id)
 
 changeregex = r'^(打开|关闭) [\u4E00-\u9FA5A-Za-z0-9_]+$'
-change = on_regex(changeregex, permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+change = on_regex(changeregex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 # =================================功能开关===============================

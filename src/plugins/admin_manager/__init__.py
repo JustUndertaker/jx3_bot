@@ -4,16 +4,16 @@ from nonebot import on_message, on_notice, on_regex, on_request
 from nonebot.adapters.cqhttp import (Bot, FriendAddNoticeEvent,
                                      FriendRequestEvent, GroupRequestEvent,
                                      MessageSegment, PrivateMessageEvent)
-from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
-from src.utils.utils import get_admin_list, nickname
+from src.utils.utils import OWNER, nickname
 
 from ..chat.data_source import get_reply_jx3, get_reply_qingyunke
 from .data_source import (change_status_all, check_event, get_all_data,
-                          get_text_num, leave_group, set_robot_status)
+                          get_bot_owner, get_text_num, leave_group,
+                          set_robot_status)
 
 export = export()
 export.plugin_name = '超级用户管理'
@@ -29,14 +29,14 @@ someone_add_me = on_notice(rule=check_event(check_firend_add), priority=3, block
 @someone_add_me.handle()
 async def _(bot: Bot, event: FriendAddNoticeEvent):
     '''添加好友'''
+    bot_id = int(bot.self_id)
     user_id = event.user_id
     user_info = await bot.get_stranger_info(user_id=user_id, no_cache=True)
     user_name = user_info['nickname']
     msg = f"我添加了好友[{user_name}]({user_id})"
-    admin_user_list = get_admin_list()
-    for admin_id in admin_user_list:
-        user_id = int(admin_id)
-        await bot.send_private_msg(user_id=user_id, message=msg)
+    owner_id = await get_bot_owner(bot_id)
+    if owner_id is not None:
+        await bot.send_private_msg(user_id=owner_id, message=msg)
     await someone_add_me.finish()
 
 
@@ -67,7 +67,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
 
 group_list_event = ['message.private.friend', 'message.private.group']
 get_group_list = on_regex(pattern=r"(^状态$)|(^运行状态$)", rule=check_event(
-    group_list_event), permission=SUPERUSER, priority=2, block=True)
+    group_list_event), permission=OWNER, priority=2, block=True)
 
 
 @get_group_list.handle()
@@ -90,7 +90,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 group_status_regex = r"^(打开|关闭) [0-9]+$"
 set_group_status = on_regex(pattern=group_status_regex, rule=check_event(
-    group_list_event), permission=SUPERUSER, priority=2, block=True)
+    group_list_event), permission=OWNER, priority=2, block=True)
 
 
 @set_group_status.handle()
@@ -109,7 +109,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 change_all_regex = r"^(打开|关闭)所有$"
 change_all = on_regex(pattern=change_all_regex, rule=check_event(
-    group_list_event), permission=SUPERUSER, priority=2, block=True)
+    group_list_event), permission=OWNER, priority=2, block=True)
 
 
 @change_all.handle()
@@ -162,7 +162,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 set_group_leave_regex = r"^退群 [0-9]+$"
 set_group_leave = on_regex(pattern=set_group_leave_regex, rule=check_event(
-    chat_event), permission=SUPERUSER, priority=2, block=True)
+    chat_event), permission=OWNER, priority=2, block=True)
 
 
 @set_group_leave.handle()
@@ -182,7 +182,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 get_friend_regex = r"^好友列表$"
 get_friend = on_regex(pattern=get_friend_regex, rule=check_event(
-    chat_event), permission=SUPERUSER, priority=2, block=True)
+    chat_event), permission=OWNER, priority=2, block=True)
 
 
 @get_friend.handle()
@@ -210,7 +210,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 detele_friend_regex = r"^删除好友 [0-9]+$"
 detele_friend = on_regex(pattern=detele_friend_regex, rule=check_event(
-    chat_event), permission=SUPERUSER, priority=2, block=True)
+    chat_event), permission=OWNER, priority=2, block=True)
 
 
 @detele_friend.handle()

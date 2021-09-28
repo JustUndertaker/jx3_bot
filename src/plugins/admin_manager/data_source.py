@@ -1,8 +1,9 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.rule import Rule
 from nonebot.typing import T_State
+from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.user_info import UserInfo
 
@@ -16,6 +17,12 @@ def check_event(event_list: list[str]):
         return event.get_event_name() in event_list
 
     return Rule(_check_event)
+
+
+async def get_bot_owner(bot_id: int) -> Optional[int]:
+    '''获取机器人管理员账号'''
+    owner = await BotInfo.get_owner(bot_id)
+    return owner
 
 
 async def set_robot_status(bot_id: int, group_id: int, status: bool) -> bool:
