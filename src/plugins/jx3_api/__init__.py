@@ -5,7 +5,7 @@ import src.utils.jx3_soket as jx3_soket
 from nonebot import get_driver, on_regex
 from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.plugin import export, on
-from src.utils.browser import browser, get_html_screenshots
+from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
                                  EquipQueryEvent, ExamEvent, ExtraPointEvent,
                                  GoldQueryEvent, MacroEvent, MatchEquipEvent,
@@ -43,8 +43,9 @@ async def _():
     logger.info(log)
     log = '关闭无头浏览器'
     logger.info(log)
+    browser = get_broser()
     if browser is not None:
-        await browser.close()
+        await close_browser()
     log = '关闭数据库'
     logger.info(log)
     await Tortoise.close_connections()

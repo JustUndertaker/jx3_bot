@@ -3,26 +3,43 @@ import json
 import os
 from typing import Optional
 
-from playwright.async_api import BrowserContext, Playwright, async_playwright
+from playwright.async_api import BrowserContext, async_playwright
+from playwright.async_api._generated import Playwright as AsyncPlaywright
 
 from .config import config
 from .log import logger
 
-_browser: Playwright
+playwright: AsyncPlaywright
+'''全局playwright进程'''
 
 browser: Optional[BrowserContext] = None
 '''全局browser'''
 
 
+def get_broser() -> Optional[BrowserContext]:
+    global browser
+    return browser
+
+
+async def close_browser():
+    '''
+    关闭浏览器进程
+    '''
+    global playwright
+    global browser
+    await playwright.stop()
+    browser = None
+
+
 async def browser_init():
     '''初始化playwright'''
-    global _browser
+    global playwright
     global browser
     log = '初始化无头浏览器……'
     logger.info(log)
     user_data_dir = config.get('path').get('data')
-    _browser = await async_playwright().start()
-    browser = await _browser.chromium.launch_persistent_context(user_data_dir=user_data_dir, headless=True)
+    playwright = await async_playwright().start()
+    browser = await playwright.chromium.launch_persistent_context(user_data_dir=user_data_dir, headless=True)
     log = "无头浏览器初始化完毕！"
     logger.info(log)
 
