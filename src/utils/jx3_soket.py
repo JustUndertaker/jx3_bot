@@ -30,13 +30,13 @@ def get_ws_connect() -> WebSocketClientProtocol:
     return ws_connect
 
 
-async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
+async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
     '''
     使用ws连接发送一条消息
     '''
     global ws_connect
     global ws_echo_list
-    ws_echo = WS_ECHO(echo, user_id, group_id)
+    ws_echo = WS_ECHO(echo, user_id, group_id, server)
     ws_echo_list.append(ws_echo)
     if ws_connect is not None:
         data = json.dumps(msg)

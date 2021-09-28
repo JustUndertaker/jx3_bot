@@ -23,11 +23,16 @@ class WS_ECHO():
     '''
     群消息：QQ群号
     '''
+    server: Optional[str]
+    '''
+    服务器
+    '''
 
-    def __init__(self, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None):
+    def __init__(self, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
         self.echo = echo
         self.user_id = user_id
         self.group_id = group_id
+        self.server = server
 
 
 class RecvEvent(BaseEvent):
