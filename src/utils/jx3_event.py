@@ -127,7 +127,7 @@ class SendEvent(BaseEvent):
 
     @overrides(BaseEvent)
     def get_user_id(self) -> str:
-        return self.user_id
+        return str(self.user_id)
 
     @overrides(BaseEvent)
     def get_session_id(self) -> str:
