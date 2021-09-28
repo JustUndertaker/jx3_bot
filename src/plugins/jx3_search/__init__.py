@@ -9,10 +9,9 @@ from src.utils.jx3_soket import send_ws_message
 from .data_source import (ger_master_server, get_equipquery_name,
                           get_flower_url, get_flowers_server, get_gonglue_name,
                           get_macro_name, get_medicine_name,
-                          get_open_server_name, get_peizhuang_name, get_price,
-                          get_qixue_name, get_serendipity,
-                          get_serendipity_list, get_server, get_update_url,
-                          get_xinfa)
+                          get_peizhuang_name, get_price, get_qixue_name,
+                          get_serendipity, get_serendipity_list, get_server,
+                          get_update_url, get_xinfa)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -136,16 +135,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    text = event.get_plaintext()
-    server = await get_open_server_name(text)
-    if server is None:
+    text = event.get_plaintext().split(" ")
+    if len(text) > 1:
+        server_text = text[-1]
+        server = await ger_master_server(server_text)
+        if server is None:
+            msg = "查询错误，请输入正确的服务器名。"
+            await daily.finish(msg)
+    else:
         server = await get_server(bot_id, group_id)
     msg = {
         "type": 1002,
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
