@@ -46,11 +46,12 @@ async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, g
 async def on_connect(loop: AbstractEventLoop):
     count = 0
     global ws_connect
+    ws_path: str = config.get('jx3-api').get('ws-path')
     max_recon_times: int = config.get('default').get('max-recon-times')
 
     while True:
         try:
-            ws_connect = await websockets.connect("wss://socket.nicemoe.cn")
+            ws_connect = await websockets.connect(ws_path)
             logger.info('jx3_api > websockets链接成功！')
             loop.create_task(_task(loop))
             return

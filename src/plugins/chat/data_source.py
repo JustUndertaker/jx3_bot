@@ -18,7 +18,7 @@ async def get_reply_jx3(question: str) -> Optional[str]:
         logger.debug(log)
         return None
 
-    url = "https://www.jx3api.com/extend/nlpchat"
+    url: str = config.get('jx3-api').get('chat')
     params = chat_nlp.copy()
     params['name'] = nickname
     params['question'] = question

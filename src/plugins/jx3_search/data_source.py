@@ -3,9 +3,12 @@ from typing import Optional, Tuple
 
 import httpx
 from src.modules.group_info import GroupInfo
+from src.utils.config import config as baseconfig
 from src.utils.user_agent import get_user_agent
 
 from .config import zhiye_name
+
+config = baseconfig.get('jx3-api')
 
 
 async def get_server(bot_id: int, group_id: int) -> Optional[str]:
@@ -34,7 +37,7 @@ async def get_open_server_name(text: str) -> Optional[str]:
         server = text.split(' ')[-1]
         # 查询主服务器
         async with httpx.AsyncClient(headers=get_user_agent()) as client:
-            url = "https://www.jx3api.com/app/master"
+            url = config.get('master-server')
             params = {
                 "name": server
             }

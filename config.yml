@@ -57,6 +57,21 @@ default:
   # 离线bot数据清理时间，单位：小时
   bot-outtime: 48
 
+# jx3_api网站设置
+jx3-api:
+  # ws链接地址
+  ws-path: wss://socket.nicemoe.cn
+  # 主服务器查询地址
+  master-server: https://www.jx3api.com/app/master
+  # 随机骚话
+  random-say: https://www.jx3api.com/app/random
+  # 随机图片地址
+  random-image: https://www.jx3api.com/extend/stickers
+  # 智能闲聊地址
+  chat: https://www.jx3api.com/extend/nlpchat
+  # 语音合成地址
+  voice: https://www.jx3api.com/extend/aliyun
+
 # 路径设置
 path:
   # 数据位置
