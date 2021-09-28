@@ -122,9 +122,9 @@ async def check_robot_status(bot_id: int, group_id: int) -> Optional[bool]:
     return await GroupInfo.get_robot_status(bot_id, group_id)
 
 
-async def set_robot_status(group_id: int, status: bool) -> bool:
+async def set_robot_status(bot_id: int, group_id: int, status: bool) -> bool:
     '''设置机器人开关'''
-    return await GroupInfo.set_robot_status(group_id, status)
+    return await GroupInfo.set_robot_status(bot_id, group_id, status)
 
 
 async def get_bot_owner(bot_id: int) -> Optional[int]:

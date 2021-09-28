@@ -207,6 +207,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''
     设置机器人状态
     '''
+    bot_id = int(bot.self_id)
     get_status = event.get_plaintext().split(" ")[-1]
     group_id = event.group_id
     if get_status == "开":
@@ -215,6 +216,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
         status = False
 
     # 设置开关
-    await set_robot_status(group_id, status)
+    await set_robot_status(bot_id, group_id, status)
     msg = f"{nickname} 当前状态为：[{get_status}]"
     await robotchange.finish(msg)
