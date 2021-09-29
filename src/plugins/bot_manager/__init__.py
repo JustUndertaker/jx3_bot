@@ -117,12 +117,18 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     group_list = await get_bot_group_list(bot_id)
     num = len(group_list)
     time_start = time.time()
+    count_success = 0
+    count_failed = 0
     for group_id in group_list:
-        await bot.send_group_msg(group_id=group_id, message=msg)
-        await asyncio.sleep(random.uniform(0.3, 0.5))
+        try:
+            await bot.send_group_msg(group_id=group_id, message=msg)
+            await asyncio.sleep(random.uniform(0.3, 0.5))
+            count_success += 1
+        except Exception:
+            count_failed += 1
     time_end = time.time()
     time_use = round(time_end-time_start, 2)
-    msg = f"发送完毕，共发送 {num} 个群，用时 {time_use} 秒。"
+    msg = f"发送完毕，共发送 {num} 个群\n成功 {count_success} 个\n失败 {count_failed} 个\n用时 {time_use} 秒"
     await borodcast_all.finish(msg)
 
 

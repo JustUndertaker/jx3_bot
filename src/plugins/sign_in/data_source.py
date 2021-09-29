@@ -1,9 +1,11 @@
 import base64
 import random
 from datetime import date
+from typing import Optional
 
 import httpx
 from nonebot.adapters.cqhttp import Message, MessageSegment
+from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.user_info import UserInfo
 from src.utils.user_agent import get_user_agent
@@ -105,3 +107,11 @@ async def _get_qq_img(user_id: int) -> str:
     base64_str = base64.b64encode(req_bytes)
     req_str = 'base64://'+base64_str.decode()
     return req_str
+
+
+async def get_bot_owner(bot_id: int) -> Optional[int]:
+    '''
+    获取bot主人id
+    '''
+    owner_id = await BotInfo.get_owner(bot_id)
+    return owner_id
