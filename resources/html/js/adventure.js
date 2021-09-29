@@ -14,8 +14,8 @@ function handle(data) {
 }
 
 function get_string(data) {
-    var one_string = "<tr><td class='text-center'>" + data['serendipity'] + '</td>'
-    one_string += "<td class='text-center'>" + data['name'] + "</td>"
-    one_string += "<td class='text-center'>" + data['time'] + "</td></tr>"
+    var one_string = "<tr><td class='text-center text-primary'>" + data['serendipity'] + '</td>'
+    one_string += "<td class='text-center text-success'>" + data['name'] + "</td>"
+    one_string += "<td class='text-center text-danger'>" + data['time'] + "</td></tr>"
     return one_string
 }

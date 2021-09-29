@@ -750,8 +750,7 @@ class AdventureSearchEvent(SendEvent):
         super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
-        data = all_data.get('data')
-        self.data = data.get('data')
+        self.data = all_data.get('data')
 
     @classmethod
     def get_api_type(cls):
