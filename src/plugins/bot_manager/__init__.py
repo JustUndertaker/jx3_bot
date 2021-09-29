@@ -1,19 +1,22 @@
 import asyncio
 import random
 import time
+from datetime import datetime
 
 from nonebot import get_driver, on_regex
-from nonebot.adapters.cqhttp import Bot, PrivateMessageEvent
+from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.adapters.cqhttp.permission import PRIVATE_FRIEND
+from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
+from src.utils.browser import get_html_screenshots
 from src.utils.config import config
 from src.utils.log import logger
 from src.utils.scheduler import scheduler
 from src.utils.utils import OWNER
 
 from .data_source import (bot_connect, bot_disconnect, clean_bot,
-                          clean_bot_owner, get_bot_group_list,
-                          get_robot_status, set_bot_owner)
+                          clean_bot_owner, get_all_bot, get_bot_group_list,
+                          get_robot_status, set_bot_owner, set_permission)
 
 export = export()
 export.plugin_name = 'bot管理插件'
@@ -149,3 +152,67 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await bot.send_group_msg(group_id=group_id, message=msg)
     msg = f"广播已发送至群[{str(group_id)}]。"
     await borodcast.finish(msg)
+
+
+server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, priority=2, block=True)
+
+
+@server_list.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    查看所有链接机器人
+    '''
+    data = await get_all_bot()
+    for one_data in data:
+        if one_data['owner_id'] is None:
+            one_data['owner_id'] = "无"
+        last_sign: datetime = one_data['last_sign']
+        one_data['last_sign'] = last_sign.strftime("%Y-%m-%d %H:%M:%S")
+        if one_data['last_left'] is None:
+            one_data['last_left'] = "无记录"
+        else:
+            last_left: datetime = one_data['last_left']
+            one_data['last_left'] = last_left.strftime("%Y-%m-%d %H:%M:%S")
+    alldata = {}
+    alldata['data'] = data
+    alldata['robot_nums'] = len(data)
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    alldata['time'] = now_time
+    pagename = "robot.html"
+    img = await get_html_screenshots(pagename=pagename, data=alldata)
+    msg = MessageSegment.image(img)
+    await server_list.finish(msg)
+
+
+open_permission = on_regex(pattern=r"^授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
+
+
+@open_permission.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    私聊授权高级功能
+    '''
+    bot_id = int(event.get_plaintext().split(" ")[-1])
+    req = await set_permission(bot_id, True)
+    if req:
+        msg = f"授权成功，机器人[{bot_id}]已开启高级功能。"
+    else:
+        msg = f"授权失败，未找到机器人[{bot_id}]。"
+    await open_permission.finish(msg)
+
+
+close_permission = on_regex(pattern=r"^取消授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
+
+
+@close_permission.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    私聊取消高级功能
+    '''
+    bot_id = int(event.get_plaintext().split(" ")[-1])
+    req = await set_permission(bot_id, False)
+    if req:
+        msg = f"机器人[{bot_id}]已关闭高级功能。"
+    else:
+        msg = f"失败，未找到机器人[{bot_id}]。"
+    await close_permission.finish(msg)

@@ -190,3 +190,11 @@ class BotInfo(Model):
         '''
         record_list = await cls.filter(online=False).values("bot_id", "last_left")
         return record_list
+
+    @classmethod
+    async def get_all_bot(cls) -> list[dict]:
+        '''
+        获取所有数据
+        '''
+        record_list = await cls.all().values("bot_id", "owner_id", "permission", "last_sign", "last_left", "online")
+        return record_list

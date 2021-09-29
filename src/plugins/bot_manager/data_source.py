@@ -105,3 +105,15 @@ async def clean_bot_owner(bot_id: int, owner_id: int) -> Optional[bool]:
         return False
     await BotInfo.clean_owner(bot_id)
     return True
+
+
+async def get_all_bot() -> list[dict]:
+    '''返回bot所有数据'''
+    data = await BotInfo.get_all_bot()
+    return data
+
+
+async def set_permission(bot_id: int, permission: bool) -> bool:
+    '''授权一个机器人'''
+    req = await BotInfo.set_permission(bot_id, permission)
+    return req
