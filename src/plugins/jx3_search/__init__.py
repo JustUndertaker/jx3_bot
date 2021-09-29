@@ -8,8 +8,8 @@ from src.utils.jx3_soket import send_ws_message
 
 from .data_source import (ger_master_server, get_equipquery_name,
                           get_gonglue_name, get_macro_name, get_medicine_name,
-                          get_peizhuang_name, get_price, get_qixue_name,
-                          get_server, get_update_url, get_xinfa)
+                          get_peizhuang_name, get_qixue_name, get_server,
+                          get_update_url, get_xinfa)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -343,15 +343,17 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @price_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''物价查询'''
+    echo = int(time.time())
+    group_id = event.group_id
     text = event.get_plaintext()
     name = text.split(' ')[-1]
-    data = await get_price(name)
-    if data['code'] == 200:
-        img = data['data']['url']
-        msg = MessageSegment.image(img)
-    else:
-        msg = data['msg']
-    await flowers.finish(msg)
+    msg = {
+        "type": 1012,
+        "name": name,
+        "echo": echo
+    }
+    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await open_server_send.finish()
 
 
 @serendipity.handle()

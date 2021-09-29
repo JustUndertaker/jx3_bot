@@ -111,12 +111,3 @@ async def get_update_url() -> dict:
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         req_url = await client.get(url)
         return req_url.json()
-
-
-async def get_price(name: str) -> dict:
-    '''获取物价'''
-    url = "https://www.jx3api.com/service/price"
-    async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        params = {"name": name}
-        req_url = await client.get(url, params=params)
-        return req_url.json()

@@ -9,9 +9,10 @@ from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.jx3_event import (AdventureConditionEvent, AdventureSearchEvent,
                                  DailyEvent, EquipQueryEvent, ExamEvent,
                                  ExtraPointEvent, FlowerQueryEvent,
-                                 GoldQueryEvent, MacroEvent, MatchEquipEvent,
-                                 MedicineEvent, OpenServerSendEvent,
-                                 PendantEvent, RaiderseSearchEvent)
+                                 GoldQueryEvent, ItemPriceEvent, MacroEvent,
+                                 MatchEquipEvent, MedicineEvent,
+                                 OpenServerSendEvent, PendantEvent,
+                                 RaiderseSearchEvent)
 from src.utils.log import logger
 from src.utils.utils import OWNER
 from tortoise import Tortoise
@@ -105,6 +106,7 @@ exam = on(type='exam', priority=5, block=True)  # 科举查询
 pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
 raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 攻略查询
 adventure_query = on(type="adventuresearch", priority=5, block=True)  # 奇遇查询
+itemprice_query = on(type="itemprice", priority=5, block=True)  # 物价查询
 
 
 @daily.handle()
@@ -323,6 +325,19 @@ async def _(bot: Bot, event: AdventureSearchEvent):
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['time'] = now_time
     pagename = "adventure.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
+
+
+@itemprice_query.handle()
+async def _(bot: Bot, event: ItemPriceEvent):
+    '''物价查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await extra_point.finish(msg)
+    data = event.data
+    pagename = "itemprice.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await equip_query.finish(msg)
