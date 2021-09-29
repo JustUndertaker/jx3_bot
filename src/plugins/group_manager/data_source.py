@@ -8,6 +8,7 @@ from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
 from src.modules.user_info import UserInfo
+from src.utils.config import config
 from src.utils.user_agent import get_user_agent
 
 
@@ -75,17 +76,20 @@ async def get_server_name(name: str) -> Optional[str]:
     '''
     根据服务器获取主服务器名
     '''
-    url = 'https://www.jx3api.com/app/master'
+    url: str = config.get('jx3-api').get('master-server')
     params = {"name": name}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url=url, params=params)
-        req = req_url.json()
-    code = req.get('code')
-    if code == 200:
-        data = req['data']
-        return data['server']
-    else:
-        return None
+        try:
+            req_url = await client.get(url=url, params=params)
+            req = req_url.json()
+            code = req.get('code')
+            if code == 200:
+                data = req['data']
+                return data['server']
+            else:
+                return None
+        except Exception:
+            return None
 
 
 async def change_active(bot_id: int, group_id: int, active: int) -> None:
