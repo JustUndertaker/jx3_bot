@@ -120,27 +120,3 @@ async def get_price(name: str) -> dict:
         params = {"name": name}
         req_url = await client.get(url, params=params)
         return req_url.json()
-
-
-async def get_serendipity(server: str, name: str) -> dict:
-    '''获取奇遇url'''
-    url = "https://www.jx3api.com/service/serendipityInfo"
-    params = {
-        "server": server,
-        "name": name
-    }
-    async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url, params=params)
-        return req_url.json()
-
-
-async def get_serendipity_list(server: str, name: str) -> dict:
-    '''获取奇遇url'''
-    url = "https://www.jx3api.com/service/serendipityList"
-    params = {
-        "server": server,
-        "serendipity": name
-    }
-    async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url, params=params)
-        return req_url.json()

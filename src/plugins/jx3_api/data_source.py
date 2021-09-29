@@ -1,4 +1,5 @@
 import os
+import time
 
 import httpx
 from src.modules.group_info import GroupInfo
@@ -30,6 +31,19 @@ def get_daily_week(week: str) -> str:
         "日": "攻防前置：昆仑(12:00)\n阵营攻防：恶人谷(13:00，19:00)\n"
     }
     return daily_list.get(week)
+
+
+def hand_adventure_data(data: list[dict]) -> list[dict]:
+    '''处理奇遇数据，转换时间'''
+    for one_data in data:
+        get_time = one_data.get('time')
+        if get_time == 0:
+            one_data['time'] = "未知"
+        else:
+            timeArray = time.localtime(get_time)
+            one_data['time'] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+    return data
 
 
 def _handle_attributes(attribute: dict) -> dict:

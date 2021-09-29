@@ -6,17 +6,17 @@ from nonebot import get_driver, on_regex
 from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.plugin import export, on
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
-from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
-                                 EquipQueryEvent, ExamEvent, ExtraPointEvent,
-                                 FlowerQueryEvent, GoldQueryEvent, MacroEvent,
-                                 MatchEquipEvent, MedicineEvent,
-                                 OpenServerSendEvent, PendantEvent,
-                                 RaiderseSearchEvent)
+from src.utils.jx3_event import (AdventureConditionEvent, AdventureSearchEvent,
+                                 DailyEvent, EquipQueryEvent, ExamEvent,
+                                 ExtraPointEvent, FlowerQueryEvent,
+                                 GoldQueryEvent, MacroEvent, MatchEquipEvent,
+                                 MedicineEvent, OpenServerSendEvent,
+                                 PendantEvent, RaiderseSearchEvent)
 from src.utils.log import logger
 from src.utils.utils import OWNER
 from tortoise import Tortoise
 
-from .data_source import get_daily_week, handle_data
+from .data_source import get_daily_week, hand_adventure_data, handle_data
 
 export = export()
 export.plugin_name = 'ws链接回复'
@@ -103,7 +103,8 @@ macro = on(type='macro', priority=5, block=True)  # 宏查询
 adventurecondition = on(type='adventurecondition', priority=5, block=True)  # 奇遇条件查询
 exam = on(type='exam', priority=5, block=True)  # 科举查询
 pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
-raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 奇遇查询
+raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 攻略查询
+adventure_query = on(type="adventuresearch", priority=5, block=True)  # 奇遇查询
 
 
 @daily.handle()
@@ -308,3 +309,20 @@ async def _(bot: Bot, event: MatchEquipEvent):
     msg = MessageSegment.text(f'{event.name}配装：\nPve装备：\n')+MessageSegment.image(event.pveUrl) + \
         MessageSegment.text("Pvp装备：\n")+MessageSegment.image(event.pvpUrl)
     await equip_group_query.finish(msg)
+
+
+@adventure_query.handle()
+async def _(bot: Bot, event: AdventureSearchEvent):
+    '''奇遇查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await extra_point.finish(msg)
+    data = {}
+    data["server"] = event.server
+    data["data"] = hand_adventure_data(event.data)
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['time'] = now_time
+    pagename = "adventure.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
