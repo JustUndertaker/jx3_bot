@@ -155,8 +155,11 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         await borodcast.finish(msg)
     msg = "管理员广播消息：\n\n"
     msg += text
-    await bot.send_group_msg(group_id=group_id, message=msg)
-    msg = f"广播已发送至群[{str(group_id)}]。"
+    try:
+        await bot.send_group_msg(group_id=group_id, message=msg)
+        msg = f"广播已发送至群[{str(group_id)}]。"
+    except Exception:
+        msg = f"广播失败至群[{str(group_id)}]失败，可能被禁言。"
     await borodcast.finish(msg)
 
 
