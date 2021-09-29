@@ -8,9 +8,10 @@ from nonebot.plugin import export, on
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.jx3_event import (AdventureConditionEvent, DailyEvent,
                                  EquipQueryEvent, ExamEvent, ExtraPointEvent,
-                                 GoldQueryEvent, MacroEvent, MatchEquipEvent,
-                                 MedicineEvent, OpenServerSendEvent,
-                                 PendantEvent, RaiderseSearchEvent)
+                                 FlowerQueryEvent, GoldQueryEvent, MacroEvent,
+                                 MatchEquipEvent, MedicineEvent,
+                                 OpenServerSendEvent, PendantEvent,
+                                 RaiderseSearchEvent)
 from src.utils.log import logger
 from src.utils.utils import OWNER
 from tortoise import Tortoise
@@ -93,6 +94,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 daily = on(type="daily", priority=5, block=True)    # 日常查询
 open_server_send = on(type='open_server_send', priority=5, block=True)  # 开服查询
 gold_query = on(type='gold_query', priority=5, block=True)  # 金价查询
+flower_query = on(type="flower_query", priority=5, block=True)  # 花价查询
 equip_query = on(type="equipquery", priority=5, block=True)  # 角色装备查询
 equip_group_query = on(type="match_equip", priority=5, block=True)  # 配装查询
 extra_point = on(type='extra_point', priority=5, block=True)  # 奇穴查询
@@ -155,6 +157,25 @@ async def _(bot: Bot, event: GoldQueryEvent):
     msg += f'嘟嘟平台：1元={event.price_dd373}金\n'
     msg += f'其他平台：1元={event.price_5173}金'
     await gold_query.finish(msg)
+
+
+@flower_query.handle()
+async def _(bot: Bot, event: FlowerQueryEvent):
+    '''
+    花价查询
+    '''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await extra_point.finish(msg)
+    data = {}
+    data["server"] = event.server
+    data["data"] = event.data
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['time'] = now_time
+    pagename = "flower.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
 
 
 @extra_point.handle()

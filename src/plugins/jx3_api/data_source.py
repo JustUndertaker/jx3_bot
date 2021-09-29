@@ -74,7 +74,7 @@ def _handle_attributes(attribute: dict) -> dict:
 
 
 async def handle_data(alldata: dict) -> dict:
-    '''预处理数据'''
+    '''预处理装备数据'''
     sectName = alldata.get("sectName")
     role = f'{alldata.get("forceName")}|{alldata.get("sectName")}'
     body = alldata.get("bodilyName")

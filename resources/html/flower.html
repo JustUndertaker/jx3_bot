@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>花价</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-bordered table-striped h5" id="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center" id="server">长安城</th>
+                            <th class="text-center">花价查询</th>
+                            <th class="text-center">广陵邑</th>
+                            <th class="text-center">枫叶泊·乐苑</th>
+                            <th class="text-center">枫叶泊·天苑</th>
+                            <th class="text-center">九寨沟·镜海</th>
+                        </tr>
+                        <tr>
+                            <td class="text-center">花名</td>
+                            <td class="text-center">颜色</td>
+                            <td class="text-center">1.5倍最高价收购线路</td>
+                            <td class="text-center">1.5倍最高价收购线路</td>
+                            <td class="text-center">1.5倍最高价收购线路</td>
+                            <td class="text-center">1.5倍最高价收购线路</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级绣球花</td>
+                            <td class="text-center text-info" id="一级绣球花-color"></td>
+                            <td class="text-center text-danger" id="一级绣球花-广陵邑"></td>
+                            <td class="text-center text-success" id="一级绣球花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级绣球花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级绣球花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级绣球花</td>
+                            <td class="text-center text-info" id="二级绣球花-color"></td>
+                            <td class="text-center text-danger" id="二级绣球花-广陵邑"></td>
+                            <td class="text-center text-success" id="二级绣球花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级绣球花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级绣球花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级郁金香</td>
+                            <td class="text-center text-info" id="一级郁金香-color"></td>
+                            <td class="text-center text-danger" id="一级郁金香-广陵邑"></td>
+                            <td class="text-center text-success" id="一级郁金香-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级郁金香-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级郁金香-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级郁金香</td>
+                            <td class="text-center text-info" id="二级郁金香-color"></td>
+                            <td class="text-center text-danger" id="二级郁金香-广陵邑"></td>
+                            <td class="text-center text-success" id="二级郁金香-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级郁金香-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级郁金香-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级牵牛花</td>
+                            <td class="text-center text-info" id="一级牵牛花-color"></td>
+                            <td class="text-center text-danger" id="一级牵牛花-广陵邑"></td>
+                            <td class="text-center text-success" id="一级牵牛花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级牵牛花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级牵牛花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级牵牛花</td>
+                            <td class="text-center text-info" id="二级牵牛花-color"></td>
+                            <td class="text-center text-danger" id="二级牵牛花-广陵邑"></td>
+                            <td class="text-center text-success" id="二级牵牛花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级牵牛花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级牵牛花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级荧光菌</td>
+                            <td class="text-center text-info" id="一级荧光菌-color"></td>
+                            <td class="text-center text-danger" id="一级荧光菌-广陵邑"></td>
+                            <td class="text-center text-success" id="一级荧光菌-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级荧光菌-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级荧光菌-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级荧光菌</td>
+                            <td class="text-center text-info" id="二级荧光菌-color"></td>
+                            <td class="text-center text-danger" id="二级荧光菌-广陵邑"></td>
+                            <td class="text-center text-success" id="二级荧光菌-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级荧光菌-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级荧光菌-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级百合</td>
+                            <td class="text-center text-info" id="一级百合-color"></td>
+                            <td class="text-center text-danger" id="一级百合-广陵邑"></td>
+                            <td class="text-center text-success" id="一级百合-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级百合-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级百合-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级百合</td>
+                            <td class="text-center text-info" id="二级百合-color"></td>
+                            <td class="text-center text-danger" id="二级百合-广陵邑"></td>
+                            <td class="text-center text-success" id="二级百合-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级百合-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级百合-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级玫瑰</td>
+                            <td class="text-center text-info" id="一级玫瑰-color"></td>
+                            <td class="text-center text-danger" id="一级玫瑰-广陵邑"></td>
+                            <td class="text-center text-success" id="一级玫瑰-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级玫瑰-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级玫瑰-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级玫瑰</td>
+                            <td class="text-center text-info" id="二级玫瑰-color"></td>
+                            <td class="text-center text-danger" id="二级玫瑰-广陵邑"></td>
+                            <td class="text-center text-success" id="二级玫瑰-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级玫瑰-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级玫瑰-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">三级玫瑰</td>
+                            <td class="text-center text-info" id="三级玫瑰-color"></td>
+                            <td class="text-center text-danger" id="三级玫瑰-广陵邑"></td>
+                            <td class="text-center text-success" id="三级玫瑰-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="三级玫瑰-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="三级玫瑰-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">一级羽扇豆花</td>
+                            <td class="text-center text-info" id="一级羽扇豆花-color"></td>
+                            <td class="text-center text-danger" id="一级羽扇豆花-广陵邑"></td>
+                            <td class="text-center text-success" id="一级羽扇豆花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="一级羽扇豆花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="一级羽扇豆花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">二级羽扇豆花</td>
+                            <td class="text-center text-info" id="二级羽扇豆花-color"></td>
+                            <td class="text-center text-danger" id="二级羽扇豆花-广陵邑"></td>
+                            <td class="text-center text-success" id="二级羽扇豆花-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="二级羽扇豆花-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="二级羽扇豆花-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">葫芦</td>
+                            <td class="text-center text-info" id="葫芦-color"></td>
+                            <td class="text-center text-danger" id="葫芦-广陵邑"></td>
+                            <td class="text-center text-success" id="葫芦-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="葫芦-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="葫芦-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">麦子</td>
+                            <td class="text-center text-info" id="麦子-color"></td>
+                            <td class="text-center text-danger" id="麦子-广陵邑"></td>
+                            <td class="text-center text-success" id="麦子-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="麦子-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="麦子-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">青菜</td>
+                            <td class="text-center text-info" id="青菜-color"></td>
+                            <td class="text-center text-danger" id="青菜-广陵邑"></td>
+                            <td class="text-center text-success" id="青菜-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="青菜-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="青菜-九寨沟·镜海"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">芜菁</td>
+                            <td class="text-center text-info" id="芜菁-color"></td>
+                            <td class="text-center text-danger" id="芜菁-广陵邑"></td>
+                            <td class="text-center text-success" id="芜菁-枫叶泊·乐苑"></td>
+                            <td class="text-center text-warning" id="芜菁-枫叶泊·天苑"></td>
+                            <td class="text-center text-primary" id="芜菁-九寨沟·镜海"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <font color="#FF0000">
+                    <h6 class="text-center">时间：<a id="time">2018-20-20 19:00:00</a></h6>
+                </font>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/flower.js"></script>
+</body>
+
+</html>

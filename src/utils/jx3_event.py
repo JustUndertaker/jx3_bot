@@ -165,7 +165,7 @@ class OpenServerRecvEvent(RecvEvent):
         '''
         重写初始化函数
         '''
-        super(OpenServerRecvEvent, self).__init__()
+        super().__init__()
         data: dict = all_data.get('data')
         self.server = data.get('server')
         status = data.get('status')
@@ -203,7 +203,7 @@ class NewsRecvEvent(RecvEvent):
         '''
         重写初始化函数
         '''
-        super(NewsRecvEvent, self).__init__()
+        super().__init__()
         data: dict = all_data.get('data')
         self.news_type = data.get('type')
         self.news_tittle = data.get('title')
@@ -242,7 +242,7 @@ class AdventureRecvEvent(RecvEvent):
         '''
         重写初始化函数
         '''
-        super(AdventureRecvEvent, self).__init__()
+        super().__init__()
         data: dict = all_data.get('data')
         self.server = data.get('server')
         self.name = data.get('name')
@@ -307,7 +307,7 @@ class DailyEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(DailyEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
@@ -350,7 +350,7 @@ class OpenServerSendEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(OpenServerSendEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
@@ -399,7 +399,7 @@ class GoldQueryEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(GoldQueryEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data: dict = all_data.get('data')
@@ -413,6 +413,29 @@ class GoldQueryEvent(SendEvent):
     @classmethod
     def get_api_type(cls):
         return 1003
+
+
+class FlowerQueryEvent(SendEvent):
+    '''
+    返回花价查询结果
+    '''
+    __event__ = "flower_query"
+    post_type = "flower_query"
+    data: Optional[dict]
+    '''花价数据'''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        self.data = all_data.get('data')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1004
 
 
 class MatchEquipEvent(SendEvent):
@@ -438,7 +461,7 @@ class MatchEquipEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(MatchEquipEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -474,7 +497,7 @@ class ExtraPointEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(ExtraPointEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -518,7 +541,7 @@ class MedicineEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(MedicineEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -560,7 +583,7 @@ class MacroEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(MacroEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -589,7 +612,7 @@ class ItemPriceEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(ItemPriceEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
@@ -614,7 +637,7 @@ class AdventureConditionEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(AdventureConditionEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -644,7 +667,7 @@ class ExamEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(ExamEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         onedata = all_data.get('data')
@@ -673,7 +696,7 @@ class FurnitureMapEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(FurnitureMapEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -699,7 +722,7 @@ class FurnitureEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(FurnitureEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
@@ -724,7 +747,7 @@ class AdventureSearchEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(AdventureSearchEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -766,7 +789,7 @@ class PendantEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(PendantEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -800,7 +823,7 @@ class RaiderseSearchEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(RaiderseSearchEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         data = all_data.get('data')
@@ -827,7 +850,7 @@ class EquipQueryEvent(SendEvent):
         '''
         重写初始化函数
         '''
-        super(EquipQueryEvent, self).__init__()
+        super().__init__()
         self.echo = all_data.get('echo')
         self.msg_success = all_data.get('msg')
         self.data = all_data.get('data')
@@ -843,6 +866,7 @@ Jx3EventType = Union[
     NewsRecvEvent,
     AdventureRecvEvent,
     DailyEvent,
+    FlowerQueryEvent,
     OpenServerSendEvent,
     GoldQueryEvent,
     MatchEquipEvent,
@@ -865,6 +889,7 @@ Jx3EventList = [
     NewsRecvEvent,
     AdventureRecvEvent,
     DailyEvent,
+    FlowerQueryEvent,
     OpenServerSendEvent,
     GoldQueryEvent,
     MatchEquipEvent,
