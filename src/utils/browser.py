@@ -80,3 +80,34 @@ async def get_html_screenshots(pagename: str, data: dict) -> str:
     req_str = 'base64://'+base64_str.decode()
     await page.close()
     return req_str
+
+
+async def get_web_screenshot(url: str, width: int) -> str:
+    '''
+    :说明
+        获取网络页面截图
+
+    :参数
+        * url：网页地址
+        * width：页面宽度
+
+    :返回
+        * str：截图数据base64编码数据
+    '''
+    global browser
+    if browser is None:
+        await browser_init()
+
+    page = await browser.new_page()
+    # 打开页面
+    viewport_size = {
+        "width": width, "height": 480
+    }
+    await page.set_viewport_size(viewport_size)
+    await page.goto(url)
+    await page.wait_for_load_state("networkidle")
+    screenshot_bytes = await page.screenshot(type="jpeg", quality=100, full_page=True)
+    base64_str = base64.b64encode(screenshot_bytes)
+    req_str = 'base64://'+base64_str.decode()
+    await page.close()
+    return req_str

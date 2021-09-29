@@ -103,11 +103,3 @@ def get_xinfa(name: str) -> str:
 
     # 未找到，返回原值
     return name
-
-
-async def get_update_url() -> dict:
-    '''获取更新公告'''
-    url = "https://www.jx3api.com/service/update"
-    async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url)
-        return req_url.json()

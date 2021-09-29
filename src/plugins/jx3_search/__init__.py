@@ -4,12 +4,13 @@ from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
+from src.utils.browser import get_web_screenshot
 from src.utils.jx3_soket import send_ws_message
 
 from .data_source import (ger_master_server, get_equipquery_name,
                           get_gonglue_name, get_macro_name, get_medicine_name,
                           get_peizhuang_name, get_qixue_name, get_server,
-                          get_update_url, get_xinfa)
+                          get_xinfa)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -331,12 +332,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
 @update_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''更新公告'''
-    data = await get_update_url()
-    if data['code'] == 200:
-        img = data['data']['url']
-        msg = MessageSegment.image(img)
-    else:
-        msg = data['msg']
+    url = "https://jx3.xoyo.com/launcher/update/latest.html"
+    img = await get_web_screenshot(url=url, width=130)
+    msg = MessageSegment.image(img)
     await flowers.finish(msg)
 
 
