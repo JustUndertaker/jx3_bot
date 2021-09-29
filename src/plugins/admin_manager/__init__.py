@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from nonebot import on_message, on_notice, on_regex, on_request
@@ -238,3 +239,15 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = f'失败，未找到好友：({user_id})。'
     await detele_friend.finish(msg)
+
+
+owner_help = on_regex(pattern=r"^帮助$", permission=OWNER, priority=2, block=True)
+
+
+@owner_help.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''管理员私聊帮助'''
+    help_img_path = baseconfig.get('path').get('owner-help')
+    img_path = "file:///"+os.getcwd()+help_img_path
+    msg = MessageSegment.image(img_path)
+    await owner_help.finish(msg)

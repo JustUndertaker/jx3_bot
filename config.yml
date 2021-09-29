@@ -84,3 +84,5 @@ path:
   html: /resources/html/
   # 查询帮助图片位置
   img-help: /resources/img/help.jpg
+  # 管理帮助图片位置
+  owner-help: /resources/img/owner_help.jpg
