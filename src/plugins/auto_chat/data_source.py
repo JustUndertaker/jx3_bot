@@ -92,15 +92,20 @@ async def get_image() -> Optional[str]:
     url: str = config.get('jx3-api').get('random-image')
     params = {"format": "json"}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        req_url = await client.get(url=url, params=params)
-        req = req_url.json()
-        if req['code'] == 200:
-            data = req['data']
-            img_url = data['url']
-            log = 'jx3_api请求图片成功'
-            logger.debug(log)
-            return img_url
-        else:
-            log = f'jx3_api请求图片失败：{req["msg"]}'
+        try:
+            req_url = await client.get(url=url, params=params)
+            req = req_url.json()
+            if req['code'] == 200:
+                data = req['data']
+                img_url = data['url']
+                log = 'jx3_api请求图片成功'
+                logger.debug(log)
+                return img_url
+            else:
+                log = f'jx3_api请求图片失败：{req["msg"]}'
+                logger.debug(log)
+                return None
+        except Exception as e:
+            log = f'jx3_api请求图片失败：{e}'
             logger.debug(log)
             return None
