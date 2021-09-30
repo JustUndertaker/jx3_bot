@@ -137,7 +137,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''其他人私聊消息
     自动根据确定API
     '''
-    private_chat = config.get('private_chat')
+    private_chat = config.get('private-chat')
     if not private_chat:
         await chat.finish()
     # 获得聊天内容
