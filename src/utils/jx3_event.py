@@ -15,6 +15,10 @@ class WS_ECHO():
     '''
     认证echo
     '''
+    bot_id: str
+    '''
+    机器人id，适配nb2，使用str
+    '''
     user_id: Optional[int]
     '''
     私聊消息：QQ号
@@ -28,8 +32,9 @@ class WS_ECHO():
     服务器
     '''
 
-    def __init__(self, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
+    def __init__(self, echo: int,  bot_id: str, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
         self.echo = echo
+        self.bot_id = bot_id
         self.user_id = user_id
         self.group_id = group_id
         self.server = server

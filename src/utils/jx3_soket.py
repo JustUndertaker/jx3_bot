@@ -4,7 +4,7 @@ from asyncio import AbstractEventLoop
 from typing import Optional
 
 import websockets
-from nonebot import get_bots
+from nonebot import get_bot, get_bots
 from nonebot.message import handle_event
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
@@ -30,13 +30,13 @@ def get_ws_connect() -> WebSocketClientProtocol:
     return ws_connect
 
 
-async def send_ws_message(msg: dict, echo: int, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
+async def send_ws_message(msg: dict, echo: int, bot_id: str, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
     '''
     使用ws连接发送一条消息
     '''
     global ws_connect
     global ws_echo_list
-    ws_echo = WS_ECHO(echo, user_id, group_id, server)
+    ws_echo = WS_ECHO(echo, bot_id, user_id, group_id, server)
     ws_echo_list.append(ws_echo)
     if ws_connect is not None:
         data = json.dumps(msg)
@@ -81,17 +81,25 @@ async def _task(loop: AbstractEventLoop):
 
             if event is not None:
                 if msg_type < 2000:
+                    # 请求返回事件，对专门bot返回
                     # 处理发送事件，设置user_id或group_id
                     echo = data['echo']
+                    bot_id = None
                     for i, echo_one in enumerate(ws_echo_list):
                         if echo == echo_one.echo:
+                            bot_id = echo_one.bot_id
                             event.set_message_type(echo_one)
                             del ws_echo_list[i]
+                            break
+                    if bot_id is not None:
+                        bot = get_bot(self_id=bot_id)
+                        await handle_event(bot, event)
 
-                # 广播事件
-                bots = get_bots()
-                for _, one_bot in bots.items():
-                    await handle_event(one_bot, event)
+                else:
+                    # 服务器推送，对所有机器人广播事件
+                    bots = get_bots()
+                    for _, one_bot in bots.items():
+                        await handle_event(one_bot, event)
 
     except (ConnectionClosed, ConnectionClosedError, ConnectionClosedOK) as e:
         ws_connect = None

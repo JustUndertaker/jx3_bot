@@ -104,7 +104,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=data, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=data, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await daily.finish()
 
 
@@ -124,7 +124,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await equipquery.finish()
 
 
@@ -148,7 +148,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
@@ -172,7 +172,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
@@ -189,7 +189,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -206,7 +206,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -223,7 +223,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -238,7 +238,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -253,7 +253,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "question": question,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -268,7 +268,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -285,7 +285,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -301,7 +301,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -325,7 +325,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
@@ -350,7 +350,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
 
@@ -378,7 +378,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
 
@@ -406,5 +406,5 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "serendipity": serendipity,
         "echo": echo
     }
-    await send_ws_message(msg=msg, echo=echo, group_id=group_id, server=server)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await serendipityList.finish()
