@@ -32,5 +32,8 @@ async def _(bot: Bot, event: AdventureRecvEvent):
             # 判断机器人开关
             status = await get_robot_status(bot_id, group_id)
             if status:
-                await bot.send_group_msg(group_id=group_id, message=msg)
+                try:
+                    await bot.send_group_msg(group_id=group_id, message=msg)
+                except Exception:
+                    pass
     await adventure_recv.finish()

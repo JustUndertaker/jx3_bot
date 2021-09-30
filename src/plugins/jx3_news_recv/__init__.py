@@ -31,7 +31,10 @@ async def _(bot: Bot, event: NewsRecvEvent):
         group_id = group['group_id']
         status = await get_robot_status(bot_id, group_id)
         if status:
-            await bot.send_group_msg(group_id=group_id, message=msg)
+            try:
+                await bot.send_group_msg(group_id=group_id, message=msg)
+            except Exception:
+                pass
     log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
     logger.info(log)
     await news_recv.finish()

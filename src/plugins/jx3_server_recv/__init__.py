@@ -38,7 +38,10 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
             # 判断机器人是否开启
             status = await get_robot_status(bot_id, group_id)
             if status:
-                await bot.send_group_msg(group_id=group_id, message=msg)
+                try:
+                    await bot.send_group_msg(group_id=group_id, message=msg)
+                except Exception:
+                    pass
     log = f'开服推送事件：[{server}]，时间[{time_now}]'
     logger.info(log)
     await open_server_recv.finish()
