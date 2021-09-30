@@ -114,11 +114,11 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         # 注册群
         group_info = await bot.get_group_info(group_id=group_id, no_cache=True)
         group_name = group_info['group_name']
-        await group_init(group_id, group_name)
+        await group_init(bot_id, group_id, group_name)
         # 用户注册
         user_list = await bot.get_group_member_list(group_id=group_id)
         # 插件注册
-        await plugin_init(group_id)
+        await plugin_init(bot_id, group_id)
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
