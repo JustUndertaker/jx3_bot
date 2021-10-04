@@ -1,3 +1,5 @@
+import asyncio
+import random
 from datetime import datetime
 
 from nonebot.adapters.cqhttp import Bot
@@ -40,6 +42,7 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
             if status:
                 try:
                     await bot.send_group_msg(group_id=group_id, message=msg)
+                    await asyncio.sleep(random.uniform(0.3, 0.5))
                 except Exception:
                     pass
     log = f'开服推送事件：[{server}]，时间[{time_now}]'

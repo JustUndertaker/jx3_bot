@@ -1,3 +1,6 @@
+import asyncio
+import random
+
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import AdventureRecvEvent
@@ -34,6 +37,7 @@ async def _(bot: Bot, event: AdventureRecvEvent):
             if status:
                 try:
                     await bot.send_group_msg(group_id=group_id, message=msg)
+                    await asyncio.sleep(random.uniform(0.3, 0.5))
                 except Exception:
                     pass
     await adventure_recv.finish()

@@ -1,3 +1,6 @@
+import asyncio
+import random
+
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import NewsRecvEvent
@@ -33,6 +36,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
         if status:
             try:
                 await bot.send_group_msg(group_id=group_id, message=msg)
+                await asyncio.sleep(random.uniform(0.3, 0.5))
             except Exception:
                 pass
     log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
