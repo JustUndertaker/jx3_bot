@@ -168,7 +168,7 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     sub_type = event.sub_type
     if sub_type == "kick_me":
         # 机器人被踢了
-        group_name = await get_group_name(group_id)
+        group_name = await get_group_name(bot_id, group_id)
         msg = f'我在[{group_name}]({group_id})被管理员踹走了……'
         owner_id = await get_bot_owner(bot_id)
         if owner_id is not None:

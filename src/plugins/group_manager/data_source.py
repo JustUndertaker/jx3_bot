@@ -19,9 +19,9 @@ async def group_init(bot_id: int, group_id: int, group_name: str) -> None:
     await GroupInfo.append_or_update(bot_id, group_id, group_name)
 
 
-async def get_group_name(group_id: int) -> str:
+async def get_group_name(bot_id: int, group_id: int) -> str:
     '''获取群名'''
-    return await GroupInfo.get_group_name(group_id)
+    return await GroupInfo.get_group_name(bot_id, group_id)
 
 
 async def group_detel(bot_id: int, group_id: int) -> None:
