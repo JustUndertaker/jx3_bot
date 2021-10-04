@@ -5,7 +5,6 @@ from datetime import datetime
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import OpenServerRecvEvent
-from src.utils.log import logger
 
 from .data_source import get_robot_status, get_server
 
@@ -45,6 +44,4 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
                     await asyncio.sleep(random.uniform(0.3, 0.5))
                 except Exception:
                     pass
-    log = f'开服推送事件：[{server}]，时间[{time_now}]'
-    logger.info(log)
     await open_server_recv.finish()

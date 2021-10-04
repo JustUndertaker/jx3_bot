@@ -4,7 +4,6 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import AdventureRecvEvent
-from src.utils.log import logger
 
 from .data_source import get_robot_status, get_server
 
@@ -25,8 +24,6 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     bot_id = int(bot.self_id)
     server = event.server
     msg = f'奇遇推送 {event.time}\n{event.serendipity} 被 {event.name} 抱走惹。'
-    log = f'奇遇推送事件：[{server}]{event.serendipity} 触发者：{event.name} '
-    logger.debug(log)
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']

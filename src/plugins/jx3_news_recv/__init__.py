@@ -4,7 +4,6 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import NewsRecvEvent
-from src.utils.log import logger
 
 from .data_source import get_robot_status
 
@@ -39,6 +38,4 @@ async def _(bot: Bot, event: NewsRecvEvent):
                 await asyncio.sleep(random.uniform(0.3, 0.5))
             except Exception:
                 pass
-    log = f'新闻推送事件：[{news_type}]，标题[{news_tittle}]'
-    logger.info(log)
     await news_recv.finish()
