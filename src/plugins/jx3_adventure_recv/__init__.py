@@ -24,7 +24,7 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     '''
     bot_id = int(bot.self_id)
     server = event.server
-    msg = f'奇遇播报 {event.time}\n{event.serendipity} 被 {event.name} 抱走惹。'
+    msg = f'奇遇推送 {event.time}\n{event.serendipity} 被 {event.name} 抱走惹。'
     log = f'奇遇推送事件：[{server}]{event.serendipity} 触发者：{event.name} '
     logger.debug(log)
     group_list = await bot.get_group_list()
