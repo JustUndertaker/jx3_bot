@@ -11,6 +11,7 @@ from src.utils.user_agent import get_user_agent
 config = baseconfig.get('yiqing')
 background_img = config.get('background')
 font_path = config.get('font')
+url = config.get('url')
 
 
 async def get_yiqing_card(province: str, city: str = None) -> MessageSegment:
@@ -51,7 +52,6 @@ async def _get_yiqing_data(province: str, city: str = None) -> dict:
     :返回
         * dict：疫情数据字典
     '''
-    url = "https://api.yimian.xyz/coro"
 
     if city is None:
         params = {"province": province}

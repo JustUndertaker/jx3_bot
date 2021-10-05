@@ -43,7 +43,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         log = f'{name}（{event.user_id}，{event.group_id}） - 查询疫情：{city}'
         logger.info(log)
     else:
-        msg = MessageSegment.text('参数不对，不对！')
+        msg = MessageSegment.text('疫情查询失败，参数可能不正确！')
 
     await yiqing.finish(msg)
 
