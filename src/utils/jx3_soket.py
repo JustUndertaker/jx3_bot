@@ -40,7 +40,13 @@ async def send_ws_message(msg: dict, echo: int, bot_id: str, user_id: Optional[i
     ws_echo_list.append(ws_echo)
     if ws_connect is not None:
         data = json.dumps(msg)
-        await ws_connect.send(data)
+        try:
+            await ws_connect.send(data)
+        except Exception:
+            await ws_connect.close()
+            loop = asyncio.get_event_loop()
+            loop.create_task(on_connect(loop))
+            await ws_connect.send(data)
 
 
 async def on_connect(loop: AbstractEventLoop):
@@ -62,7 +68,7 @@ async def on_connect(loop: AbstractEventLoop):
             ws_connect = None
             count += 1
             logger.info(f'jx3_api > [{count}] 尝试向 websockets 服务器建立链接！')
-            await asyncio.sleep(10)
+            await asyncio.sleep(1)
 
 
 async def _task(loop: AbstractEventLoop):
