@@ -126,7 +126,7 @@ class PluginInfo(Model):
 
             * list[dict]：dict字段：module_name，description，status
         '''
-        req = await cls.filter(bot_id=bot_id, group_id=group_id).values("module_name", "description", "status")
+        req = await cls.filter(bot_id=bot_id, group_id=group_id).order_by("module_name").values("module_name", "description", "status")
         return req
 
     @classmethod

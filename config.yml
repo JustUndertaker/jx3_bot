@@ -28,6 +28,29 @@ chat_voice:
   # 音调，取值范围：-500～500
   pitch_rate: 0
 
+# 天气插件设置
+weather:
+  # 和风天气api-key
+  api-key: ~
+  # 天气api地址
+  url-weather: https://devapi.qweather.com/v7/weather/
+  # 城市api地址
+  url-geoapi: https://geoapi.qweather.com/v2/city/
+  # 天气字体位置
+  font: ./resources/font/font.ttc
+  # 图标位置
+  icon-dir: ./resources/img/weather/icon/
+  # 背景图标位置
+  background: ./resources/img/weather/backgroud.png
+
+# 疫情插件设置
+yiqing:
+  # 字体位置
+  font: ./resources/font/font.ttc
+  # 背景图片位置
+  background: ./resources/img/yiqing/backgroud.png
+
+
 # 默认设置
 default:
   # ws链接最大重连次数
@@ -83,6 +106,6 @@ path:
   # html文件路径
   html: /resources/html/
   # 查询帮助图片位置
-  img-help: /resources/img/help.jpg
+  img-help: /resources/img/help/help.jpg
   # 管理帮助图片位置
-  owner-help: /resources/img/owner_help.jpg
+  owner-help: /resources/img/help/owner_help.jpg
