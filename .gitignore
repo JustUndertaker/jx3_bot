@@ -151,4 +151,4 @@ pyproject.toml
 *.db-wal
 .idea/
 .env.dev
-*.png
+resources/html/icons/
