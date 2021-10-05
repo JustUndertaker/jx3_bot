@@ -58,7 +58,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     name = regex.split(' ')[-1]
     playername = event.sender.nickname if event.sender.card == "" else event.sender.card
     group_id = event.group_id
-    log = f'[{playername}]({event.user_id},{group_id})更换服务器，参数：{name}'
+    log = f'Bot({bot.self_id}) | [{playername}]({event.user_id},{group_id})更换服务器，参数：{name}'
     logger.info(log)
     server = await get_server_name(name)
     if server is None:
@@ -93,6 +93,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
     group_id = event.group_id
     await change_active(bot_id, group_id, active)
     msg = f"活跃值设为：{active}"
+    log = f"Bot({bot.self_id}) | 群[{group_id}]设置活跃值：{active}"
+    logger.info(log)
     await active_change.finish(msg)
 
 

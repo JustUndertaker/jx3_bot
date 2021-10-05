@@ -24,7 +24,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     # 获得聊天内容
     text = event.get_plaintext()
     name = event.sender.nickname if event.sender.card == "" else event.sender.card
-    log = f'{name}（{event.user_id}，{event.group_id}）闲聊：{text}'
+    log = f'Bot({bot.self_id}) | {name}（{event.user_id}，{event.group_id}）闲聊：{text}'
     logger.info(log)
 
     # 使用jx3api访问

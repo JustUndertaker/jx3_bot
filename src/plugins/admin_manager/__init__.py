@@ -36,6 +36,8 @@ async def _(bot: Bot, event: FriendAddNoticeEvent):
     user_name = user_info['nickname']
     msg = f"我添加了好友[{user_name}]({user_id})"
     owner_id = await get_bot_owner(bot_id)
+    log = f"Bot({bot.self_id}) | 添加了好友[{user_name}]({user_id})"
+    logger.info(log)
     if owner_id is not None:
         await bot.send_private_msg(user_id=owner_id, message=msg)
     await someone_add_me.finish()
@@ -87,6 +89,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     pagename = "status.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
+    log = f"Bot({bot.self_id}) | 管理员获取运行状态"
+    logger.info(log)
     await get_group_list.finish(msg)
 
 
@@ -106,6 +110,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         msg = f"群（{group_id}）状态设置成功！"
     else:
         msg = f"未找到群（{group_id}），设置失败！"
+
+    log = f"Bot({bot.self_id}) | 管理员命令：{msg}"
+    logger.info(log)
     await set_group_status.finish(msg)
 
 
@@ -125,6 +132,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         msg = "所有群已打开机器人！"
     else:
         msg = "所有群已关闭机器人！"
+
+    log = f"Bot({bot.self_id}) | 管理员命令：{msg}"
+    logger.info(log)
     await change_all.finish(msg)
 
 
@@ -143,7 +153,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     # 获得聊天内容
     text = event.get_plaintext()
     name = event.sender.nickname
-    log = f'{name}（{event.user_id}）私聊闲聊：{text}'
+    log = f'Bot({bot.self_id}) | {name}（{event.user_id}）私聊闲聊：{text}'
     logger.info(log)
 
     # 使用jx3api访问
@@ -179,6 +189,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         msg = f'成功，已退出群：[{group_name}]({group_id})'
     else:
         msg = f'失败，未找到群：({group_id})。'
+
+    log = f"Bot({bot.self_id}) | 管理员命令：{msg}"
+    logger.info(log)
     await set_group_leave.finish(msg)
 
 
@@ -207,6 +220,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     pagename = "friend.html"
     img = await get_html_screenshots(pagename, data)
     msg = MessageSegment.image(img)
+
+    log = f"Bot({bot.self_id}) | 管理员获取好友列表"
+    logger.info(log)
     await get_friend.finish(msg)
 
 
@@ -238,6 +254,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
             msg = f'删除好友失败：{e}'
     else:
         msg = f'失败，未找到好友：({user_id})。'
+
+    log = f"Bot({bot.self_id}) | 管理员命令：{msg}"
+    logger.info(log)
     await detele_friend.finish(msg)
 
 
@@ -250,4 +269,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     help_img_path = baseconfig.get('path').get('owner-help')
     img_path = "file:///"+os.getcwd()+help_img_path
     msg = MessageSegment.image(img_path)
+
+    log = f"Bot({bot.self_id}) | 管理员私聊帮助"
+    logger.info(log)
     await owner_help.finish(msg)

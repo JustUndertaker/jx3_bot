@@ -6,6 +6,7 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from src.utils.browser import get_web_screenshot
 from src.utils.jx3_soket import send_ws_message
+from src.utils.log import logger
 
 from .data_source import (ger_master_server, get_equipquery_name,
                           get_gonglue_name, get_macro_name, get_medicine_name,
@@ -104,6 +105,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询日常：server：{server}"
+    logger.info(log)
     await send_ws_message(msg=data, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await daily.finish()
 
@@ -124,6 +127,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询装备：server：{server}，name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await equipquery.finish()
 
@@ -148,6 +153,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询开服：server：{server}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
@@ -172,6 +179,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
@@ -189,6 +198,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -206,6 +217,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -223,6 +236,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询宏：name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -238,6 +253,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{get_name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -253,6 +270,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "question": question,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询科举：question：{question}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -268,6 +287,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询挂件：name：{get_name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -285,6 +306,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询配装：name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -301,6 +324,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": get_name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{get_name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -325,6 +350,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "server": server,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询花价：server：{server}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
@@ -335,6 +362,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url = "https://jx3.xoyo.com/launcher/update/latest.html"
     img = await get_web_screenshot(url=url, width=130)
     msg = MessageSegment.image(img)
+    log = f"Bot({bot.self_id}) | 群[{event.group_id}]查询更新公告"
+    logger.info(log)
     await flowers.finish(msg)
 
 
@@ -350,6 +379,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询物价：name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await open_server_send.finish()
 
@@ -378,6 +409,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "name": name,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await open_server_send.finish()
 
@@ -406,5 +439,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "serendipity": serendipity,
         "echo": echo
     }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
+    logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await serendipityList.finish()

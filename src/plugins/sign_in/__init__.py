@@ -27,7 +27,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     user_name = event.sender.nickname if event.sender.card == "" else event.sender.card
     group_id = event.group_id
 
-    log = f'{user_name}（{user_id}，{group_id}）请求：签到'
+    log = f'Bot({bot.self_id}) | {user_name}（{user_id}，{group_id}）请求：签到'
     logger.info(log)
     msg_req = await get_sign_in(bot_id, user_id, group_id, user_name)
     msg = MessageSegment.at(user_id)+msg_req
@@ -51,7 +51,7 @@ async def _():
                 await asyncio.sleep(random.uniform(0.3, 0.5))
                 count_success += 1
             except Exception:
-                log = f'（{group_id}）群被禁言了，无法发送晚安……'
+                log = f'Bot({bot.self_id}) | （{group_id}）群被禁言了，无法发送晚安……'
                 logger.warning(log)
                 count_failed += 1
         # 获取owner
