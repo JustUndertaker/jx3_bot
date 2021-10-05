@@ -16,7 +16,7 @@ export.plugin_usage = '查询疫情情况。'
 export.ignore = False  # 插件管理器忽略此插件
 
 
-yiqing = on_regex(r"([\u4e00-\u9fa5]+[疫情]$)|(^疫情 [\u4e00-\u9fa5]+$)", permission=GROUP,  priority=5, block=True)
+yiqing = on_regex(r"([\u4e00-\u9fa5]+疫情$)|(^疫情 [\u4e00-\u9fa5]+$)", permission=GROUP,  priority=5, block=True)
 
 
 @yiqing.handle()
