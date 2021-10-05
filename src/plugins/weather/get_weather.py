@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+
 from httpx import AsyncClient
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
@@ -26,12 +28,18 @@ async def get_WeatherInfo(api_type: str, city_id: str) -> dict:
         return res.json()
 
 
-async def get_City_Weather(city: str):
+async def get_City_Weather(city: str) -> Tuple[str, Optional[dict[str, str]]]:
     # global city_id
     city_info = await get_Location(city)
-    logger.debug(city_info)
+    code = city_info['code']
+    if code != "200":
+        log = f"获取城市id失败，参数：{city}"
+        logger.debug(log)
+        return code, None
     city_id = city_info["location"][0]["id"]
     city_name = city_info["location"][0]["name"]
+    log = f"获取城市id成功，name：{city_name} id：{city_id}"
+    logger.debug(log)
 
     # 3天天气
     daily_info = await get_WeatherInfo("3d", city_id)
@@ -43,5 +51,6 @@ async def get_City_Weather(city: str):
     # 实时天气
     now_info = await get_WeatherInfo("now", city_id)
     now = now_info["now"]
+    req_data = {"city": city_name, "now": now, "day1": day1, "day2": day2, "day3": day3}
 
-    return {"city": city_name, "now": now, "day1": day1, "day2": day2, "day3": day3}
+    return code, req_data
