@@ -24,6 +24,20 @@ ws_connect: WebSocketClientProtocol
 ws全局链接
 '''
 
+loop: AbstractEventLoop
+'''
+事件循环池
+'''
+
+
+def init():
+    '''
+    初始化
+    '''
+    global loop
+    loop = asyncio.get_event_loop()
+    loop.create_task(on_connect())
+
 
 def get_ws_connect() -> WebSocketClientProtocol:
     global ws_connect
@@ -38,42 +52,40 @@ async def send_ws_message(msg: dict, echo: int, bot_id: str, user_id: Optional[i
     global ws_echo_list
     ws_echo = WS_ECHO(echo, bot_id, user_id, group_id, server)
     ws_echo_list.append(ws_echo)
-    if ws_connect is not None:
-        data = json.dumps(msg)
-        try:
-            await ws_connect.send(data)
-        except Exception:
-            await ws_connect.close()
-            loop = asyncio.get_event_loop()
-            loop.create_task(on_connect(loop))
-            await ws_connect.send(data)
+    if ws_connect.closed:
+        log = f"jx3_api > 链接已关闭，代码：{ws_connect.close_code}"
+        logger.debug(log)
+        loop.create_task(on_connect())
+    data = json.dumps(msg)
+    await ws_connect.send(data)
 
 
-async def on_connect(loop: AbstractEventLoop):
-    count = 0
+async def on_connect():
     global ws_connect
+    global loop
+
     ws_path: str = config.get('jx3-api').get('ws-path')
     max_recon_times: int = config.get('default').get('max-recon-times')
 
-    while True:
+    for count in range(max_recon_times):
         try:
-            ws_connect = await websockets.connect(ws_path)
+            ws_connect = await websockets.connect(uri=ws_path,
+                                                  ping_interval=20,
+                                                  ping_timeout=20,
+                                                  close_timeout=10)
             logger.info('jx3_api > websockets链接成功！')
-            loop.create_task(_task(loop))
+            loop.create_task(_task())
             return
         except (ConnectionRefusedError, OSError) as e:
             logger.info(f'jx3_api > [{count}] {e}')
-            if count == max_recon_times:
-                return
-            ws_connect = None
-            count += 1
             logger.info(f'jx3_api > [{count}] 尝试向 websockets 服务器建立链接！')
             await asyncio.sleep(1)
 
 
-async def _task(loop: AbstractEventLoop):
+async def _task():
     global ws_connect
     global ws_echo_list
+    global loop
     try:
         while True:
             data_recv = await ws_connect.recv()
@@ -113,7 +125,7 @@ async def _task(loop: AbstractEventLoop):
         ws_connect = None
         if e.code != 1000:
             logger.error('jx3_api > 链接已断开！')
-            loop.create_task(on_connect(loop))
+            loop.create_task(on_connect())
         else:
             logger.error('jx3_api > 链接被关闭！')
         logger.error(e)
