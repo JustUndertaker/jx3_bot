@@ -53,7 +53,11 @@ class Filter:
         module = sys.modules.get(module_name)
         if module:
             module_name = getattr(module, "__module_name__", module_name)
-        record["name"] = module_name.split(".")[0]
+        name_list = module_name.split(".")
+        if name_list[0] == "src":
+            record["name"] = name_list[1]
+        else:
+            record["name"] = name_list[0]
         levelno = logger.level(self.level).no if isinstance(self.level,
                                                             str) else self.level
         return record["level"].no >= levelno
