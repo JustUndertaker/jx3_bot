@@ -720,7 +720,7 @@ class FurnitureEvent(SendEvent):
     post_type = "furniture"
     data: Optional[dict]
     '''
-    装饰名称
+    装饰数据
     '''
 
     def __init__(self, all_data: dict):
