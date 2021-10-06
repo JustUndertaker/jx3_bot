@@ -4,7 +4,7 @@ from datetime import datetime
 
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
-from src.utils.jx3_event import OpenServerRecvEvent
+from src.server.jx3_event import OpenServerRecvEvent
 
 from .data_source import get_robot_status, get_server
 

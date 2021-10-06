@@ -6,13 +6,13 @@ from typing import Optional
 import websockets
 from nonebot import get_bot, get_bots
 from nonebot.message import handle_event
+from src.utils.config import config
+from src.utils.log import logger
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
 from websockets.legacy.client import WebSocketClientProtocol
 
-from .config import config
 from .jx3_event import WS_ECHO, Jx3EventList
-from .log import logger
 
 ws_echo_list: list[WS_ECHO] = []
 '''
@@ -53,7 +53,7 @@ async def send_ws_message(msg: dict, echo: int, bot_id: str, user_id: Optional[i
     ws_echo = WS_ECHO(echo, bot_id, user_id, group_id, server)
     ws_echo_list.append(ws_echo)
     if ws_connect.closed:
-        log = f"jx3_api > 链接已关闭，代码：{ws_connect.close_code}"
+        log = f"jx3_api > 链接已关闭，代码：{str(ws_connect.close_code)}"
         logger.debug(log)
         loop.create_task(on_connect())
     data = json.dumps(msg)

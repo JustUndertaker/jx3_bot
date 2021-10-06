@@ -4,8 +4,8 @@ from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
+from src.server.jx3_soket import send_ws_message
 from src.utils.browser import get_web_screenshot
-from src.utils.jx3_soket import send_ws_message
 from src.utils.log import logger
 
 from .data_source import (ger_master_server, get_equipquery_name,

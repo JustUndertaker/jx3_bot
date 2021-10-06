@@ -3,7 +3,7 @@ import random
 
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
-from src.utils.jx3_event import AdventureRecvEvent
+from src.server.jx3_event import AdventureRecvEvent
 
 from .data_source import get_robot_status, get_server
 
