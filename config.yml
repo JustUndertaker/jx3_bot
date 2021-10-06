@@ -78,7 +78,7 @@ default:
   # 是否开启智能私聊，开启后私聊机器人会获得回复
   private-chat: true
   # 装备奇穴图标是否缓存本地
-  img-cache: true
+  img-cache: false
   # 离线bot数据清理时间，单位：小时
   bot-outtime: 48
 
