@@ -31,13 +31,23 @@ class WS_ECHO():
     '''
     服务器
     '''
+    params: Optional[str]
+    '''
+    额外参数
+    '''
 
-    def __init__(self, echo: int,  bot_id: str, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
+    def __init__(self, echo: int,
+                 bot_id: str,
+                 user_id: Optional[int] = None,
+                 group_id: Optional[int] = None,
+                 server: Optional[str] = None,
+                 params: Optional[str] = None):
         self.echo = echo
         self.bot_id = bot_id
         self.user_id = user_id
         self.group_id = group_id
         self.server = server
+        self.params = params
 
 
 class RecvEvent(BaseEvent):
@@ -107,11 +117,16 @@ class SendEvent(BaseEvent):
     '''
     是否查询成功，成功为sucess，失败为其他
     '''
+    params: Optional[str]
+    '''
+    额外参数
+    '''
 
     def set_message_type(self, ws_econ: WS_ECHO):
         self.user_id = ws_econ.user_id
         self.group_id = ws_econ.group_id
         self.server = ws_econ.server
+        self.params = ws_econ.params
 
     @classmethod
     def get_api_type(cls):
@@ -889,6 +904,43 @@ class EquipQueryEvent(SendEvent):
         return 1025
 
 
+class IndicatorQueryEvent(SendEvent):
+    '''
+    返回战绩查询结果
+    '''
+    __event__ = "indicator"
+    post_type = "indicator"
+    role_info: Optional[dict]
+    '''
+    角色信息
+    '''
+    role_performance: Optional[dict]
+    '''
+    总览数据
+    '''
+    role_history: Optional[list[dict]]
+    '''
+    近期记录
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        data = all_data.get('data')
+        if data is not None:
+            self.role_info = data.get('role_info')
+            self.role_performance = data.get('role_performance')
+            self.role_history = data.get('role_history')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1026
+
+
 Jx3EventType = Union[
     None,
     OpenServerRecvEvent,
@@ -911,7 +963,8 @@ Jx3EventType = Union[
     AdventureSearchEvent,
     PendantEvent,
     SeniorityQueryEvent,
-    EquipQueryEvent
+    EquipQueryEvent,
+    IndicatorQueryEvent
 ]
 
 Jx3EventList = [
@@ -935,5 +988,6 @@ Jx3EventList = [
     AdventureSearchEvent,
     PendantEvent,
     SeniorityQueryEvent,
-    EquipQueryEvent
+    EquipQueryEvent,
+    IndicatorQueryEvent
 ]

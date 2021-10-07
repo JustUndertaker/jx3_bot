@@ -185,3 +185,15 @@ async def _get_icon(url: str, filename: str) -> None:
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         req = await client.get(url)
         open(filename, 'wb').write(req.content)
+
+
+def indicator_query_hanld(data: list[dict]) -> list[dict]:
+    '''
+    历史战绩预处理数据
+    '''
+    for one_data in data:
+        get_time = one_data.get('start_time')
+        timeArray = time.localtime(get_time)
+        one_data['time'] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+    return data

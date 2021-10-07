@@ -9,15 +9,17 @@ from src.server.jx3_event import (AdventureConditionEvent,
                                   AdventureSearchEvent, DailyEvent,
                                   EquipQueryEvent, ExamEvent, ExtraPointEvent,
                                   FlowerQueryEvent, FurnitureEvent,
-                                  GoldQueryEvent, ItemPriceEvent, MacroEvent,
-                                  MatchEquipEvent, MedicineEvent,
-                                  OpenServerSendEvent, PendantEvent,
-                                  RaiderseSearchEvent, SeniorityQueryEvent)
+                                  GoldQueryEvent, IndicatorQueryEvent,
+                                  ItemPriceEvent, MacroEvent, MatchEquipEvent,
+                                  MedicineEvent, OpenServerSendEvent,
+                                  PendantEvent, RaiderseSearchEvent,
+                                  SeniorityQueryEvent)
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.log import logger
 from tortoise import Tortoise
 
-from .data_source import get_daily_week, hand_adventure_data, handle_data
+from .data_source import (get_daily_week, hand_adventure_data, handle_data,
+                          indicator_query_hanld)
 
 export = export()
 export.plugin_name = 'ws链接回复'
@@ -108,6 +110,7 @@ adventure_query = on(type="adventuresearch", priority=5, block=True)  # 奇遇�
 itemprice_query = on(type="itemprice", priority=5, block=True)  # 物价查询
 furniture_query = on(type="furniture", priority=5, block=True)  # 装饰查询
 seniority_query = on(type="seniority", priority=5, block=True)  # 资历查询
+indicator_query = on(type="indicator", priority=5, block=True)  # 战绩查询
 
 
 @daily.handle()
@@ -368,6 +371,26 @@ async def _(bot: Bot, event: SeniorityQueryEvent):
     for i in range(10):
         data.append(get_data[i])
     pagename = "seniority.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
+
+
+@indicator_query.handle()
+async def _(bot: Bot, event: IndicatorQueryEvent):
+    '''战绩查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await extra_point.finish(msg)
+    data = {}
+    data['role_info'] = event.role_info
+    if event.params == "overview":
+        # 总览查询
+        data['data'] = event.role_performance
+        pagename = "indicator_overview.html"
+    else:
+        data['data'] = indicator_query_hanld(event.role_history)
+        pagename = "indicator_history.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await equip_query.finish(msg)

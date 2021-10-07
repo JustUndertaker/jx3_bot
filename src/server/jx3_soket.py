@@ -44,13 +44,19 @@ def get_ws_connect() -> WebSocketClientProtocol:
     return ws_connect
 
 
-async def send_ws_message(msg: dict, echo: int, bot_id: str, user_id: Optional[int] = None, group_id: Optional[int] = None, server: Optional[str] = None):
+async def send_ws_message(msg: dict,
+                          echo: int,
+                          bot_id: str,
+                          user_id: Optional[int] = None,
+                          group_id: Optional[int] = None,
+                          server: Optional[str] = None,
+                          params: Optional[str] = None):
     '''
     使用ws连接发送一条消息
     '''
     global ws_connect
     global ws_echo_list
-    ws_echo = WS_ECHO(echo, bot_id, user_id, group_id, server)
+    ws_echo = WS_ECHO(echo, bot_id, user_id, group_id, server, params)
     ws_echo_list.append(ws_echo)
     if ws_connect.closed:
         log = f"jx3_api > 链接已关闭，代码：{str(ws_connect.close_code)}"
