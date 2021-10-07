@@ -64,8 +64,6 @@ raiderse = on_regex(pattern=raiderse, permission=GROUP, priority=5, block=True)
 # 挂件查询
 pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)
 
-
-# -----使用jx3pai-----
 # 花价查询
 flowers_regex = r"(^花价$)|(^花价 [\u4e00-\u9fa5]+$)"
 flowers = on_regex(pattern=flowers_regex, permission=GROUP, priority=5, block=True)
@@ -87,6 +85,9 @@ serendipityList = on_regex(pattern=r"(^查询 [\u4e00-\u9fa5]+$)|(^查询 [\u4e0
 
 # 装饰查询
 furniture_query = on_regex(pattern=r"^装饰 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
+
+# 资历查询
+seniority_query = on_regex(pattern=r"(^资历排行 [\u4e00-\u9fa5]+$)|(^资历排行 [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)")
 
 
 @daily.handle()
@@ -465,3 +466,38 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await furniture_query.finish()
+
+
+@seniority_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''奇遇列表查询'''
+    bot_id = int(bot.self_id)
+    echo = int(time.time())
+    group_id = event.group_id
+    text = event.get_plaintext()
+    text_list = text.split(' ')
+    if len(text_list) == 2:
+        server = await get_server(bot_id, group_id)
+        sect = text_list[1]
+    else:
+        text_server = text_list[1]
+        sect = text_list[2]
+        if sect == "全门派" or sect == "全职业":
+            sect = "all"
+        if text_server == "全区服":
+            server = "全区服"
+        else:
+            server = await ger_master_server(text_server)
+        if server is None:
+            msg = "查询出错，请输入正确的服务器名."
+            await seniority_query.finish(msg)
+    msg = {
+        "type": 1022,
+        "server": server,
+        "sect": sect,
+        "echo": echo
+    }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
+    logger.info(log)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
+    await seniority_query.finish()

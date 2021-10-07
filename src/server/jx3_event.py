@@ -808,6 +808,31 @@ class PendantEvent(SendEvent):
         return 1021
 
 
+class SeniorityQueryEvent(SendEvent):
+    '''
+    返回资历查询结果
+    '''
+    __event__ = "seniority"
+    post_type = "seniority"
+    data: Optional[list[dict]]
+    '''
+    资历数据，是一个列表
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        self.data = all_data.get('data')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1022
+
+
 class RaiderseSearchEvent(SendEvent):
     '''
     返回攻略查询结果
@@ -885,6 +910,7 @@ Jx3EventType = Union[
     FurnitureEvent,
     AdventureSearchEvent,
     PendantEvent,
+    SeniorityQueryEvent,
     EquipQueryEvent
 ]
 
@@ -908,5 +934,6 @@ Jx3EventList = [
     FurnitureEvent,
     AdventureSearchEvent,
     PendantEvent,
+    SeniorityQueryEvent,
     EquipQueryEvent
 ]

@@ -12,7 +12,7 @@ from src.server.jx3_event import (AdventureConditionEvent,
                                   GoldQueryEvent, ItemPriceEvent, MacroEvent,
                                   MatchEquipEvent, MedicineEvent,
                                   OpenServerSendEvent, PendantEvent,
-                                  RaiderseSearchEvent)
+                                  RaiderseSearchEvent, SeniorityQueryEvent)
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.log import logger
 from tortoise import Tortoise
@@ -106,7 +106,8 @@ pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
 raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 攻略查询
 adventure_query = on(type="adventuresearch", priority=5, block=True)  # 奇遇查询
 itemprice_query = on(type="itemprice", priority=5, block=True)  # 物价查询
-furniture_query = on(type="furniture", priority=5, block=True)  # 物价查询
+furniture_query = on(type="furniture", priority=5, block=True)  # 装饰查询
+seniority_query = on(type="seniority", priority=5, block=True)  # 资历查询
 
 
 @daily.handle()
@@ -351,6 +352,22 @@ async def _(bot: Bot, event: FurnitureEvent):
         await extra_point.finish(msg)
     data = event.data
     pagename = "furniture.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equip_query.finish(msg)
+
+
+@seniority_query.handle()
+async def _(bot: Bot, event: SeniorityQueryEvent):
+    '''资历查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await extra_point.finish(msg)
+    get_data = event.data
+    data = []
+    for i in range(10):
+        data.append(get_data[i])
+    pagename = "seniority.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await equip_query.finish(msg)
