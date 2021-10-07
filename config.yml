@@ -98,6 +98,8 @@ jx3-api:
   chat: https://www.jx3api.com/extend/nlpchat
   # 语音合成地址
   voice: https://www.jx3api.com/extend/aliyun
+  # 舔狗日记地址
+  tiangou: https://www.jx3api.com/extend/flatterer
 
 # 路径设置
 path:
