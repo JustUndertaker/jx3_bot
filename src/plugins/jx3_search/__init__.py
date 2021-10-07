@@ -87,7 +87,8 @@ serendipityList = on_regex(pattern=r"(^查询 [\u4e00-\u9fa5]+$)|(^查询 [\u4e0
 furniture_query = on_regex(pattern=r"^装饰 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 
 # 资历查询
-seniority_query = on_regex(pattern=r"(^资历排行 [\u4e00-\u9fa5]+$)|(^资历排行 [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)")
+seniority_regex = r"(^资历排行 [\u4e00-\u9fa5]+$)|(^资历排行 [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)"
+seniority_query = on_regex(pattern=seniority_regex, permission=GROUP, priority=5, block=True)
 
 
 @daily.handle()
