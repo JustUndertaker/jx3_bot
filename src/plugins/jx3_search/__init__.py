@@ -98,6 +98,10 @@ indicator_overview = on_regex(pattern=indicator_overview_regex, permission=GROUP
 indicator_history_regex = r"(^历史战绩 [(\u4e00-\u9fa5)|(@)]+$)|(^历史战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
 indicator_history = on_regex(pattern=indicator_history_regex, permission=GROUP, priority=5, block=True)
 
+# 名剑排行查询
+awesome_query_regex = r"(^名剑排行 [0-9]+$)|(^名剑排行$)"
+awesome_query = on_regex(pattern=awesome_query_regex, permission=GROUP, priority=5, block=True)
+
 
 @daily.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
@@ -572,4 +576,37 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server, params=params)
+    await indicator_history.finish()
+
+
+@awesome_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''名剑排行查询'''
+    echo = int(time.time())
+    group_id = event.group_id
+    text = event.get_plaintext()
+    text_list = text.split(' ')
+    if len(text_list) == 1:
+        match = 22
+    else:
+        _match = text_list[1]
+        if _match == "22":
+            match = 22
+        elif _match == "33":
+            match = 33
+        elif _match == "55":
+            match = 55
+        else:
+            msg = "查询出错，请输入正确的参数。"
+            await awesome_query.finish(msg)
+    params = str(match)
+    msg = {
+        "type": 1027,
+        "match": match,
+        "limit": 10,
+        "echo": echo
+    }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
+    logger.info(log)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
     await indicator_history.finish()

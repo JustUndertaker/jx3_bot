@@ -887,7 +887,7 @@ class EquipQueryEvent(SendEvent):
     post_type = "equipquery"
     data: Optional[dict]
     '''
-    资历数据，是一个列表
+    装备数据，是一个字典
     '''
 
     def __init__(self, all_data: dict):
@@ -941,6 +941,31 @@ class IndicatorQueryEvent(SendEvent):
         return 1026
 
 
+class AwesomeQueryEvent(SendEvent):
+    '''
+    返回名剑排行结果
+    '''
+    __event__ = "awesomequery"
+    post_type = "awesomequery"
+    data: Optional[dict]
+    '''
+    排行数据，是一个字典
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        self.data = all_data.get('data')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1027
+
+
 Jx3EventType = Union[
     None,
     OpenServerRecvEvent,
@@ -964,7 +989,8 @@ Jx3EventType = Union[
     PendantEvent,
     SeniorityQueryEvent,
     EquipQueryEvent,
-    IndicatorQueryEvent
+    IndicatorQueryEvent,
+    AwesomeQueryEvent
 ]
 
 Jx3EventList = [
@@ -989,5 +1015,6 @@ Jx3EventList = [
     PendantEvent,
     SeniorityQueryEvent,
     EquipQueryEvent,
-    IndicatorQueryEvent
+    IndicatorQueryEvent,
+    AwesomeQueryEvent
 ]
