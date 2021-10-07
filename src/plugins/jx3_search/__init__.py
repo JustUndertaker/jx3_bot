@@ -102,6 +102,10 @@ indicator_history = on_regex(pattern=indicator_history_regex, permission=GROUP, 
 awesome_query_regex = r"(^名剑排行 [0-9]+$)|(^名剑排行$)"
 awesome_query = on_regex(pattern=awesome_query_regex, permission=GROUP, priority=5, block=True)
 
+# 团本记录查询
+teamcdlist_regex = r"(^副本记录 [(\u4e00-\u9fa5)|(@)]+$)|(^副本记录 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+teamcdlist = on_regex(pattern=teamcdlist_regex, permission=GROUP, priority=5, block=True)
+
 
 @daily.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
@@ -609,4 +613,34 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await indicator_history.finish()
+    await awesome_query.finish()
+
+
+@teamcdlist.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''副本记录查询'''
+    bot_id = int(bot.self_id)
+    echo = int(time.time())
+    group_id = event.group_id
+    text = event.get_plaintext()
+    text_list = text.split(' ')
+    if len(text_list) == 2:
+        server = await get_server(bot_id, group_id)
+        name = text_list[1]
+    else:
+        text_server = text_list[1]
+        name = text_list[2]
+        server = await ger_master_server(text_server)
+        if server is None:
+            msg = "查询出错，请输入正确的服务器名."
+            await teamcdlist.finish(msg)
+    msg = {
+        "type": 1029,
+        "server": server,
+        "name": name,
+        "echo": echo
+    }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询副本记录：server：{server}，name：{name}"
+    logger.info(log)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
+    await teamcdlist.finish()

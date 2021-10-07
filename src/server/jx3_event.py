@@ -966,6 +966,31 @@ class AwesomeQueryEvent(SendEvent):
         return 1027
 
 
+class TeamCdListEvent(SendEvent):
+    '''
+    返回团本记录查询结果
+    '''
+    __event__ = "teamcdlist"
+    post_type = "teamcdlist"
+    data: Optional[dict]
+    '''
+    记录数据，是一个字典
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        self.data = all_data.get('data')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1029
+
+
 Jx3EventType = Union[
     None,
     OpenServerRecvEvent,
@@ -990,7 +1015,8 @@ Jx3EventType = Union[
     SeniorityQueryEvent,
     EquipQueryEvent,
     IndicatorQueryEvent,
-    AwesomeQueryEvent
+    AwesomeQueryEvent,
+    TeamCdListEvent
 ]
 
 Jx3EventList = [
@@ -1016,5 +1042,6 @@ Jx3EventList = [
     SeniorityQueryEvent,
     EquipQueryEvent,
     IndicatorQueryEvent,
-    AwesomeQueryEvent
+    AwesomeQueryEvent,
+    TeamCdListEvent
 ]
