@@ -12,6 +12,7 @@ from .data_source import get_yiqing_card
 
 export = export()
 export.plugin_name = '疫情查询'
+export.plugin_command = "XX疫情|疫情 XX"
 export.plugin_usage = '查询疫情情况。'
 export.ignore = False  # 插件管理器忽略此插件
 

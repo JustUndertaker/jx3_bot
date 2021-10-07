@@ -20,6 +20,7 @@ from .data_source import (bot_connect, bot_disconnect, clean_bot,
 
 export = export()
 export.plugin_name = 'bot管理插件'
+export.plugin_command = ""
 export.plugin_usage = '用于bot的管理'
 export.ignore = True  # 插件管理器忽略此插件
 

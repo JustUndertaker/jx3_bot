@@ -10,6 +10,7 @@ from .data_source import get_robot_status, get_server
 
 export = export()
 export.plugin_name = '开服推送'
+export.plugin_command = "无"
 export.plugin_usage = '推送开服信息。'
 export.ignore = False  # 插件管理器忽略此插件
 

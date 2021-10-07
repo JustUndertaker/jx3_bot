@@ -15,6 +15,7 @@ from .data_source import (ger_master_server, get_equipquery_name,
 
 export = export()
 export.plugin_name = '查询功能'
+export.plugin_command = "参考“帮助”"
 export.plugin_usage = '提供各种剑网三的查询功能。'
 export.ignore = False  # 插件管理器忽略此插件
 

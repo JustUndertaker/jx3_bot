@@ -16,6 +16,7 @@ from .data_source import (change_active, change_server, check_event,
 
 export = export()
 export.plugin_name = '群管理'
+export.plugin_command = ""
 export.plugin_usage = '用于操作群相关管理。'
 export.ignore = True  # 插件管理器忽略此插件
 

@@ -9,6 +9,7 @@ from .data_source import get_voice
 
 export = export()
 export.plugin_name = '语音说'
+export.plugin_command = "@机器人+说XXX"
 export.plugin_usage = '让机器人说话。'
 export.ignore = False  # 插件管理器忽略此插件
 

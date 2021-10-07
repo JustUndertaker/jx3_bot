@@ -8,6 +8,7 @@ from .data_source import get_tiangou
 
 export = export()
 export.plugin_name = '舔狗日记'
+export.plugin_command = "舔狗|日记|舔狗日记"
 export.plugin_usage = '返回一条舔狗日记。'
 export.ignore = False  # 插件管理器忽略此插件
 

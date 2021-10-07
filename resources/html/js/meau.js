@@ -20,9 +20,9 @@ function handle(data) {
 function get_string(data) {
     plugin_status = data['status']
     if (plugin_status) {
-        var one_string = '<tr><td>' + data['name'] + '</td><td>' + data['des'] + '</td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></td></tr>'
+        var one_string = '<tr><td>' + data['name'] + '</td><td>' + data['command'] + '</td><td>' + data['des'] + '</td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox" checked></div></td></tr>'
     } else {
-        var one_string = '<tr><td>' + data['name'] + '</td><td>' + data['des'] + '</td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div></td></tr>'
+        var one_string = '<tr><td>' + data['name'] + '</td><td>' + data['command'] + '</td><td>' + data['des'] + '</td><td><div class="form-check form-switch"><input class="form-check-input" type="checkbox"></div></td></tr>'
     }
     return one_string
 }

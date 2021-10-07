@@ -9,6 +9,7 @@ from .data_source import get_reply_jx3, get_reply_qingyunke
 
 export = export()
 export.plugin_name = '智能闲聊'
+export.plugin_command = "@机器人+XXX"
 export.plugin_usage = '让机器人开启聊天功能。'
 export.ignore = False  # 插件管理器忽略此插件
 

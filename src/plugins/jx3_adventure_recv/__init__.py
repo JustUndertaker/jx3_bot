@@ -9,6 +9,7 @@ from .data_source import get_robot_status, get_server
 
 export = export()
 export.plugin_name = '奇遇推送'
+export.plugin_command = "无"
 export.plugin_usage = '推送奇遇消息。'
 export.ignore = False  # 插件管理器忽略此插件
 

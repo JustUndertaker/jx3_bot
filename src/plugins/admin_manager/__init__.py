@@ -19,6 +19,7 @@ from .data_source import (change_status_all, check_event, get_all_data,
 export = export()
 export.plugin_name = '超级用户管理'
 export.plugin_usage = '用于超级用户私聊机器人管理指令。'
+export.plugin_command = ""
 export.ignore = True  # 插件管理器忽略此插件
 
 config = baseconfig.get('default')

@@ -9,6 +9,7 @@ from .data_source import get_active, get_image, get_saohua, get_voice
 
 export = export()
 export.plugin_name = '自动插话'
+export.plugin_command = "无"
 export.plugin_usage = '让机器人自动插话。'
 export.ignore = False  # 插件管理器忽略此插件
 

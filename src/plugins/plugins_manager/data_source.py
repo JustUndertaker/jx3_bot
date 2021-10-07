@@ -117,6 +117,7 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
         for plugin_manager in PluginManager:
             if plugin_manager.module_name == plugin_db['module_name']:
                 data['name'] = plugin_manager.plugin_name
+                data['command'] = plugin_manager.plugin_command
                 data['des'] = plugin_db['description']
                 data['status'] = plugin_db['status']
         plugin_list.append(data)

@@ -21,6 +21,7 @@ from .data_source import get_daily_week, hand_adventure_data, handle_data
 
 export = export()
 export.plugin_name = 'ws链接回复'
+export.plugin_command = ""
 export.plugin_usage = '用于jx3_api的ws链接，处理服务器主动发送后回复的信息。'
 export.ignore = True  # 插件管理器忽略此插件
 

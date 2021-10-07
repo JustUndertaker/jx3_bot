@@ -13,6 +13,7 @@ from .get_weather import get_City_Weather
 
 export = export()
 export.plugin_name = '天气查询'
+export.plugin_command = "XX天气|天气 XX"
 export.plugin_usage = '查询城市天气。'
 export.ignore = False  # 插件管理器忽略此插件
 
