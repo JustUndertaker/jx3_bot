@@ -13,7 +13,8 @@ from src.server.jx3_event import (AdventureConditionEvent,
                                   IndicatorQueryEvent, ItemPriceEvent,
                                   MacroEvent, MatchEquipEvent, MedicineEvent,
                                   OpenServerSendEvent, PendantEvent,
-                                  RaiderseSearchEvent, SeniorityQueryEvent)
+                                  RaiderseSearchEvent, SeniorityQueryEvent,
+                                  TeamCdListEvent)
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.log import logger
 from tortoise import Tortoise
@@ -93,25 +94,26 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await ws_re_connect.finish(msg)
 
 
-daily = on(type="daily", priority=5, block=True)    # 日常查询
-open_server_send = on(type='open_server_send', priority=5, block=True)  # 开服查询
-gold_query = on(type='gold_query', priority=5, block=True)  # 金价查询
-flower_query = on(type="flower_query", priority=5, block=True)  # 花价查询
-equip_query = on(type="equipquery", priority=5, block=True)  # 角色装备查询
-equip_group_query = on(type="match_equip", priority=5, block=True)  # 配装查询
-extra_point = on(type='extra_point', priority=5, block=True)  # 奇穴查询
-medicine = on(type='medicine', priority=5, block=True)  # 小药查询
-macro = on(type='macro', priority=5, block=True)  # 宏查询
-adventurecondition = on(type='adventurecondition', priority=5, block=True)  # 奇遇条件查询
-exam = on(type='exam', priority=5, block=True)  # 科举查询
-pendant = on(type='pendant', priority=5, block=True)  # 挂件查询
-raiderse_search = on(type='raidersesearch', priority=5, block=True)  # 攻略查询
-adventure_query = on(type="adventuresearch", priority=5, block=True)  # 奇遇查询
-itemprice_query = on(type="itemprice", priority=5, block=True)  # 物价查询
-furniture_query = on(type="furniture", priority=5, block=True)  # 装饰查询
-seniority_query = on(type="seniority", priority=5, block=True)  # 资历查询
-indicator_query = on(type="indicator", priority=5, block=True)  # 战绩查询
-awesome_query = on(type="awesomequery", priority=5, block=True)  # 名剑排行查询
+daily = on(type="daily", priority=6, block=True)    # 日常查询
+open_server_send = on(type='open_server_send', priority=6, block=True)  # 开服查询
+gold_query = on(type='gold_query', priority=6, block=True)  # 金价查询
+flower_query = on(type="flower_query", priority=6, block=True)  # 花价查询
+equip_query = on(type="equipquery", priority=6, block=True)  # 角色装备查询
+equip_group_query = on(type="match_equip", priority=6, block=True)  # 配装查询
+extra_point = on(type='extra_point', priority=6, block=True)  # 奇穴查询
+medicine = on(type='medicine', priority=6, block=True)  # 小药查询
+macro = on(type='macro', priority=6, block=True)  # 宏查询
+adventurecondition = on(type='adventurecondition', priority=6, block=True)  # 奇遇条件查询
+exam = on(type='exam', priority=6, block=True)  # 科举查询
+pendant = on(type='pendant', priority=6, block=True)  # 挂件查询
+raiderse_search = on(type='raidersesearch', priority=6, block=True)  # 攻略查询
+adventure_query = on(type="adventuresearch", priority=6, block=True)  # 奇遇查询
+itemprice_query = on(type="itemprice", priority=6, block=True)  # 物价查询
+furniture_query = on(type="furniture", priority=6, block=True)  # 装饰查询
+seniority_query = on(type="seniority", priority=6, block=True)  # 资历查询
+indicator_query = on(type="indicator", priority=6, block=True)  # 战绩查询
+awesome_query = on(type="awesomequery", priority=6, block=True)  # 名剑排行查询
+teamcdlist_query = on(type="teamcdlist", priority=6, block=True)  # 团本记录查询
 
 
 @daily.handle()
@@ -301,7 +303,7 @@ async def _(bot: Bot, event: RaiderseSearchEvent):
     '''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await equip_query.finish(msg)
+        await raiderse_search.finish(msg)
     img = event.url
     msg = MessageSegment.image(img)
     await raiderse_search.finish(msg)
@@ -312,7 +314,7 @@ async def _(bot: Bot, event: MatchEquipEvent):
     '''配装查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await equip_query.finish(msg)
+        await equip_group_query.finish(msg)
     msg = MessageSegment.text(f'{event.name}配装：\nPve装备：\n')+MessageSegment.image(event.pveUrl) + \
         MessageSegment.text("Pvp装备：\n")+MessageSegment.image(event.pvpUrl)
     await equip_group_query.finish(msg)
@@ -323,7 +325,7 @@ async def _(bot: Bot, event: AdventureSearchEvent):
     '''奇遇查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await adventure_query.finish(msg)
     data = {}
     data["server"] = event.server
     data["data"] = hand_adventure_data(event.data)
@@ -332,7 +334,7 @@ async def _(bot: Bot, event: AdventureSearchEvent):
     pagename = "adventure.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
-    await equip_query.finish(msg)
+    await adventure_query.finish(msg)
 
 
 @itemprice_query.handle()
@@ -340,12 +342,12 @@ async def _(bot: Bot, event: ItemPriceEvent):
     '''物价查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await itemprice_query.finish(msg)
     data = event.data
     pagename = "itemprice.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
-    await equip_query.finish(msg)
+    await itemprice_query.finish(msg)
 
 
 @furniture_query.handle()
@@ -353,12 +355,12 @@ async def _(bot: Bot, event: FurnitureEvent):
     '''装饰查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await furniture_query.finish(msg)
     data = event.data
     pagename = "furniture.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
-    await equip_query.finish(msg)
+    await furniture_query.finish(msg)
 
 
 @seniority_query.handle()
@@ -366,7 +368,7 @@ async def _(bot: Bot, event: SeniorityQueryEvent):
     '''资历查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await seniority_query.finish(msg)
     get_data = event.data
     data = []
     for i in range(10):
@@ -374,7 +376,7 @@ async def _(bot: Bot, event: SeniorityQueryEvent):
     pagename = "seniority.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
-    await equip_query.finish(msg)
+    await seniority_query.finish(msg)
 
 
 @indicator_query.handle()
@@ -382,7 +384,7 @@ async def _(bot: Bot, event: IndicatorQueryEvent):
     '''战绩查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await indicator_query.finish(msg)
     data = {}
     data['role_info'] = event.role_info
     if event.params == "overview":
@@ -394,17 +396,30 @@ async def _(bot: Bot, event: IndicatorQueryEvent):
         pagename = "indicator_history.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
-    await equip_query.finish(msg)
+    await indicator_query.finish(msg)
 
 
 @awesome_query.handle()
 async def _(bot: Bot, event: AwesomeQueryEvent):
-    '''战绩查询'''
+    '''名剑排行查询'''
     if event.msg_success != "success":
         msg = f'查询失败，{event.msg_success}。'
-        await extra_point.finish(msg)
+        await awesome_query.finish(msg)
     data = event.data
     pagename = "awesome_query.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await equip_query.finish(msg)
+
+
+@teamcdlist_query.handle()
+async def _(bot: Bot, event: TeamCdListEvent):
+    '''团本记录查询'''
+    if event.msg_success != "success":
+        msg = f'查询失败，{event.msg_success}。'
+        await teamcdlist_query.finish(msg)
+    data = event.data
+    pagename = "teamcdlist.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await teamcdlist_query.finish(msg)
