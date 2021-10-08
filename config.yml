@@ -84,7 +84,7 @@ default:
 
 # jx3_api网站设置
 jx3-api:
-  # 网站token，需要加群158918036，找群主获取
+  # 网站token，需要加群158918036，找群主获取，目前不需要填写
   token: ~
   # ws链接地址
   ws-path: wss://socket.nicemoe.cn

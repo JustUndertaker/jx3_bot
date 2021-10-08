@@ -68,10 +68,6 @@ weather:
   # 和风天气api-key，申请地址：https://id.qweather.com/#/login，选择网页api
   api-key: ~
 
-# jx3api.com设置
-jx3-api:
-  # 网站token，需要加群158918036，找群主获取
-  token: ~
 
 # 其他设置参考打开文件自行修改
 ```
