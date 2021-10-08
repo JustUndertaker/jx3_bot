@@ -17,9 +17,11 @@ function get_string(data) {
     if (won) {
         var color = 'class= "text-success"'
         var won_str = "胜利"
+        var mmr_str = " ↑"
     } else {
         var color = 'class= "text-danger"'
         var won_str = "失败"
+        var mmr_str = " ↓"
     }
     var one_string = "<tr><td " + color + ">" + data['time']
 
@@ -37,7 +39,7 @@ function get_string(data) {
     one_string += "</td><td " + color + ">" + type_str
     one_string += "</td><td " + color + ">" + data['total_mmr']
     one_string += "</td><td " + color + ">" + data['avg_grade']
-    one_string += "</td><td " + color + ">" + data['mmr'] + " ↑"
+    one_string += "</td><td " + color + ">" + data['mmr'] + mmr_str
     one_string += "</td><td " + color + ">" + won_str + '</td></tr>'
 
     return one_string
