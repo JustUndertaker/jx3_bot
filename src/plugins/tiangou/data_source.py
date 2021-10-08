@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import httpx
@@ -29,7 +30,10 @@ async def get_tiangou() -> Optional[str]:
                 text = data['text']
                 log = f"请求日记成功：{text}"
                 logger.debug(log)
-                return text
+                date_now = datetime.now()
+                date_str = date_now.strftime('%Y年%m月%d日')
+                req_text = date_str+"\n"+text
+                return req_text
             else:
                 log = f'请求日记出错：{req["msg"]}'
                 logger.debug(log)
