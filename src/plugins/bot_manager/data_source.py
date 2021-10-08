@@ -38,6 +38,7 @@ async def clean_bot(outtime: int) -> int:
     for bot in bot_list:
         bot_id = bot.get('bot_id')
         last_left: datetime = bot.get('last_left')+timedelta(hours=outtime)
+        last_left = last_left.replace(tzinfo=None)
         if nowtime > last_left:
             await _clean_bot(bot_id)
             count += 1
