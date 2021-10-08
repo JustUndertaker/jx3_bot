@@ -58,7 +58,8 @@ async def _(bot: Bot):
 async def _():
     log = '正在清理离线bot'
     logger.info(log)
-    count = await clean_bot()
+    outtime = config.get('default').get('bot-outtime')
+    count = await clean_bot(outtime)
     log = f'清理完毕，本次共清理 {count} 个机器人数据'
     logger.info(log)
 
@@ -226,3 +227,23 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = f"失败，未找到机器人[{bot_id}]。"
     await close_permission.finish(msg)
+
+
+clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
+
+
+@clean_outline_bot.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    私聊清理离线bot
+    '''
+    text_list = event.get_plaintext().split(" ")
+    if len(text_list) == 1:
+        outtime = 0
+    else:
+        outtime = int(text_list[-1])
+    log = f"管理员清理机器人，参数：{outtime}"
+    logger.info(log)
+    count = await clean_bot(outtime)
+    msg = f"清理完毕，共清理 {str(count)} 个机器人。"
+    await clean_outline_bot.finish(msg)
