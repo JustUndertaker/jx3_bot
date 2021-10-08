@@ -777,6 +777,33 @@ class AdventureSearchEvent(SendEvent):
         return 1018
 
 
+class SaohuaQueryEvent(SendEvent):
+    '''
+    返回骚话查询结果
+    '''
+    __event__ = "saohuaquery"
+    post_type = "saohuaquery"
+    text: Optional[str]
+    '''
+    骚话内容
+    '''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        self.echo = all_data.get('echo')
+        self.msg_success = all_data.get('msg')
+        data = all_data.get('data')
+        if data is not None:
+            self.text = data.get('text')
+
+    @classmethod
+    def get_api_type(cls):
+        return 1019
+
+
 class PendantEvent(SendEvent):
     '''
     返回挂件查询结果
@@ -1010,6 +1037,7 @@ Jx3EventType = Union[
     ExamEvent,
     FurnitureMapEvent,
     FurnitureEvent,
+    SaohuaQueryEvent,
     AdventureSearchEvent,
     PendantEvent,
     SeniorityQueryEvent,
@@ -1037,6 +1065,7 @@ Jx3EventList = [
     ExamEvent,
     FurnitureMapEvent,
     FurnitureEvent,
+    SaohuaQueryEvent,
     AdventureSearchEvent,
     PendantEvent,
     SeniorityQueryEvent,

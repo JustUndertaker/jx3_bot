@@ -83,6 +83,9 @@ serendipity = on_regex(pattern=r"(^奇遇 [(\u4e00-\u9fa5)|(@)]+$)|(^奇遇 [\u4
 serendipityList = on_regex(pattern=r"(^查询 [\u4e00-\u9fa5]+$)|(^查询 [\u4e00-\u9fa5]+ [\u4e00-\u9fa5]+$)",
                            permission=GROUP, priority=5, block=True)
 
+# 骚话
+saohua_query = on_regex(pattern=r"^骚话$", permission=GROUP, priority=5, block=True)
+
 # 装饰查询
 furniture_query = on_regex(pattern=r"^装饰 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 
@@ -465,6 +468,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
     await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
     await serendipityList.finish()
+
+
+@saohua_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''骚话'''
+    echo = int(time.time())
+    group_id = event.group_id
+    msg = {
+        "type": 1019,
+        "echo": echo
+    }
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询请求骚话"
+    logger.info(log)
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
+    await saohua_query.finish()
 
 
 @furniture_query.handle()

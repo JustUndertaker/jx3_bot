@@ -13,8 +13,8 @@ from src.server.jx3_event import (AdventureConditionEvent,
                                   IndicatorQueryEvent, ItemPriceEvent,
                                   MacroEvent, MatchEquipEvent, MedicineEvent,
                                   OpenServerSendEvent, PendantEvent,
-                                  RaiderseSearchEvent, SeniorityQueryEvent,
-                                  TeamCdListEvent)
+                                  RaiderseSearchEvent, SaohuaQueryEvent,
+                                  SeniorityQueryEvent, TeamCdListEvent)
 from src.utils.browser import close_browser, get_broser, get_html_screenshots
 from src.utils.log import logger
 from tortoise import Tortoise
@@ -108,6 +108,7 @@ exam = on(type='exam', priority=6, block=True)  # 科举查询
 pendant = on(type='pendant', priority=6, block=True)  # 挂件查询
 raiderse_search = on(type='raidersesearch', priority=6, block=True)  # 攻略查询
 adventure_query = on(type="adventuresearch", priority=6, block=True)  # 奇遇查询
+saohua_query = on(type="saohuaquery", priority=6, block=True)  # 骚话
 itemprice_query = on(type="itemprice", priority=6, block=True)  # 物价查询
 furniture_query = on(type="furniture", priority=6, block=True)  # 装饰查询
 seniority_query = on(type="seniority", priority=6, block=True)  # 资历查询
@@ -335,6 +336,16 @@ async def _(bot: Bot, event: AdventureSearchEvent):
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await adventure_query.finish(msg)
+
+
+@saohua_query.handle()
+async def _(bot: Bot, event: SaohuaQueryEvent):
+    '''骚话'''
+    if event.msg_success != "success":
+        msg = f'请求失败，{event.msg_success}。'
+        await saohua_query.finish(msg)
+    msg = event.text
+    await saohua_query.finish(msg)
 
 
 @itemprice_query.handle()
