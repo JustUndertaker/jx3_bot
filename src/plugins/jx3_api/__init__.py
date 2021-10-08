@@ -20,7 +20,7 @@ from src.utils.log import logger
 from tortoise import Tortoise
 
 from .data_source import (get_daily_week, hand_adventure_data, handle_data,
-                          indicator_query_hanld)
+                          indicator_query_hanlde)
 
 export = export()
 export.plugin_name = 'ws链接回复'
@@ -397,14 +397,11 @@ async def _(bot: Bot, event: IndicatorQueryEvent):
         msg = f'查询失败，{event.msg_success}。'
         await indicator_query.finish(msg)
     data = {}
-    data['role_info'] = event.role_info
-    if event.params == "overview":
-        # 总览查询
-        data['data'] = event.role_performance
-        pagename = "indicator_overview.html"
-    else:
-        data['data'] = indicator_query_hanld(event.role_history)
-        pagename = "indicator_history.html"
+    role_info = event.role_info
+    data['name'] = role_info['server']+"-"+role_info['name']
+    data['role_performance'] = event.role_performance
+    data['history'] = indicator_query_hanlde(event.role_history)
+    pagename = "indicator.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await indicator_query.finish(msg)

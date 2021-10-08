@@ -15,22 +15,22 @@
         <div class="card">
             <div class="card-header">
                 <font color="green">
-                    <h6 class="text-center"><a id="name"></a> 名剑大会</h6>
+                    <h6 class="text-center fs-2"><a id="name"></a> 名剑大会</h6>
                 </font>
             </div>
             <div class="card-body">
-                <table class="table table-striped h5" id="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">类型</th>
-                            <th scope="col">段位</th>
-                            <th scope="col">场次</th>
-                            <th scope="col">评分</th>
-                            <th scope="col">胜利</th>
-                            <th scope="col">失败</th>
-                            <th scope="col">胜率</th>
-                            <th scope="col">最佳</th>
-                            <th scope="col">本周排名</th>
+                <div class="alert alert-primary text-center fs-3">战绩总览</div>
+                <div id="card-body"></div>
+                <div class="alert alert-info text-center fs-3">历史战绩</div>
+                <table class="table h5" id="table">
+                    <thead class="table-dark">
+                        <tr class="text-center">
+                            <th scope="col">心法</th>
+                            <th scope="col">比赛模式</th>
+                            <th scope="col">评分变化</th>
+                            <th scope="col">比赛时长</th>
+                            <th scope="col">结束时间</th>
+                            <th scope="col">比赛结果</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <script src="js/indicator_overview.js"></script>
+    <script src="js/indicator.js"></script>
 </body>
 
 </html>

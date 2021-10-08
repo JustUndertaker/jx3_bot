@@ -94,12 +94,8 @@ seniority_regex = r"(^资历排行 [\u4e00-\u9fa5]+$)|(^资历排行 [\u4e00-\u9
 seniority_query = on_regex(pattern=seniority_regex, permission=GROUP, priority=5, block=True)
 
 # 战绩总览查询
-indicator_overview_regex = r"(^战绩 [(\u4e00-\u9fa5)|(@)]+$)|(^战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
-indicator_overview = on_regex(pattern=indicator_overview_regex, permission=GROUP, priority=5, block=True)
-
-# 历史战绩查询
-indicator_history_regex = r"(^历史战绩 [(\u4e00-\u9fa5)|(@)]+$)|(^历史战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
-indicator_history = on_regex(pattern=indicator_history_regex, permission=GROUP, priority=5, block=True)
+indicator_regex = r"(^战绩 [(\u4e00-\u9fa5)|(@)]+$)|(^战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+indicator = on_regex(pattern=indicator_regex, permission=GROUP, priority=5, block=True)
 
 # 名剑排行查询
 awesome_query_regex = r"(^名剑排行 [0-9]+$)|(^名剑排行$)"
@@ -538,13 +534,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await seniority_query.finish()
 
 
-@indicator_overview.handle()
+@indicator.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''战绩总览查询'''
     bot_id = int(bot.self_id)
     echo = int(time.time())
     group_id = event.group_id
-    params = "overview"
     text = event.get_plaintext()
     text_list = text.split(' ')
     if len(text_list) == 2:
@@ -556,7 +551,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         server = await ger_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
-            await indicator_overview.finish(msg)
+            await indicator.finish(msg)
     msg = {
         "type": 1026,
         "server": server,
@@ -566,39 +561,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server, params=params)
-    await indicator_overview.finish()
-
-
-@indicator_history.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
-    '''战绩总览查询'''
-    bot_id = int(bot.self_id)
-    echo = int(time.time())
-    group_id = event.group_id
-    params = "history"
-    text = event.get_plaintext()
-    text_list = text.split(' ')
-    if len(text_list) == 2:
-        server = await get_server(bot_id, group_id)
-        name = text_list[1]
-    else:
-        text_server = text_list[1]
-        name = text_list[2]
-        server = await ger_master_server(text_server)
-        if server is None:
-            msg = "查询出错，请输入正确的服务器名."
-            await indicator_history.finish(msg)
-    msg = {
-        "type": 1026,
-        "server": server,
-        "name": name,
-        "echo": echo
-    }
-    log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
-    logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server, params=params)
-    await indicator_history.finish()
+    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
+    await indicator.finish()
 
 
 @awesome_query.handle()
