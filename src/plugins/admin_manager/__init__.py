@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 from nonebot import on_message, on_notice, on_regex, on_request
@@ -14,7 +13,7 @@ from src.utils.utils import OWNER, nickname
 from ..chat.data_source import get_reply_jx3, get_reply_qingyunke
 from .data_source import (change_status_all, check_event, get_all_data,
                           get_bot_owner, get_text_num, leave_group,
-                          set_robot_status)
+                          set_robot_status, get_help_img)
 
 export = export()
 export.plugin_name = '超级用户管理'
@@ -267,9 +266,8 @@ owner_help = on_regex(pattern=r"^帮助$", permission=OWNER, priority=2, block=T
 @owner_help.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊帮助'''
-    help_img_path = baseconfig.get('path').get('owner-help')
-    img_path = "file:///"+os.getcwd()+help_img_path
-    msg = MessageSegment.image(img_path)
+    img = get_help_img()
+    msg = MessageSegment.image(img)
 
     log = f"Bot({bot.self_id}) | 管理员私聊帮助"
     logger.info(log)

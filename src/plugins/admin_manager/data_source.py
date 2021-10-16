@@ -6,6 +6,9 @@ from nonebot.typing import T_State
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.user_info import UserInfo
+import base64
+
+from src.utils.config import config
 
 
 def check_event(event_list: list[str]):
@@ -67,3 +70,14 @@ async def leave_group(bot_id: int, group_id: int) -> Tuple[bool, str]:
     await GroupInfo.delete_one(bot_id=bot_id, group_id=group_id)
     await UserInfo.delete_group(bot_id=bot_id, group_id=group_id)
     return True, group_name
+
+
+def get_help_img() -> str:
+    '''
+    获取help图片内容
+    '''
+    help_img_path = config.get('path').get('owner-help')
+    with open(help_img_path, 'rb') as f:
+        base64_str = base64.b64encode(f.read())
+        req_str = 'base64://'+base64_str.decode()
+    return req_str
