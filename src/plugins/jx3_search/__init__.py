@@ -1,17 +1,20 @@
 import time
+from datetime import datetime
 
 from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from src.server.jx3_soket import send_ws_message
-from src.utils.browser import get_web_screenshot
+from src.utils.browser import get_html_screenshots, get_web_screenshot
 from src.utils.log import logger
 
-from .data_source import (ger_master_server, get_equipquery_name,
-                          get_gonglue_name, get_macro_name, get_medicine_name,
+from .data_source import (get_daily_week, get_data_from_jx3api,
+                          get_equipquery_name, get_gonglue_name,
+                          get_macro_name, get_master_server, get_medicine_name,
                           get_peizhuang_name, get_qixue_name, get_server,
-                          get_xinfa)
+                          get_xinfa, hand_adventure_data, handle_data,
+                          indicator_query_hanlde)
 
 export = export()
 export.plugin_name = '查询功能'
@@ -110,245 +113,342 @@ teamcdlist = on_regex(pattern=teamcdlist_regex, permission=GROUP, priority=5, bl
 async def _(bot: Bot, event: GroupMessageEvent):
     '''日常查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext().split(" ")
     if len(text) > 1:
         server_text = text[-1]
-        server = await ger_master_server(server_text)
+        server = await get_master_server(server_text)
         if server is None:
             msg = "查询错误，请输入正确的服务器名。"
             await daily.finish(msg)
     else:
         server = await get_server(bot_id, group_id)
-    data = {
-        "type": 1001,
-        "server": server,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询日常：server：{server}"
     logger.info(log)
-    await send_ws_message(msg=data, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await daily.finish()
+
+    app = "daily"
+    params = {
+        "server": server,
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await daily.finish(msg)
+
+    msg = f'日常[{server}]\n'
+    msg += f'当前时间：{data.get("DateTime")} 星期{data.get("Week")}\n'
+    msg += f'今日大战：{data.get("DayWar")}\n'
+    msg += f'今日战场：{data.get("DayBattle")}\n'
+    msg += f'公共任务：{data.get("DayCommon")}\n'
+    msg += f'阵营任务：{data.get("DayCamp")}\n'
+    msg += get_daily_week(data.get("Week"))
+    if data.get("DayDraw") is not None:
+        msg += f'美人画像：{data.get("DayDraw")}\n'
+    msg += f'\n武林通鉴·公共任务\n{data.get("WeekCommon")}\n'
+    msg += f'武林通鉴·秘境任务\n{data.get("WeekFive")}\n'
+    msg += f'武林通鉴·团队秘境\n{data.get("WeekTeam")}'
+    await daily.finish(msg)
 
 
 @equipquery.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''装备查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     server, name = get_equipquery_name(text)
     if server is None:
         server = await get_server(bot_id, group_id)
-    msg = {
-        "type": 1025,
-        "server": server,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装备：server：{server}，name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await equipquery.finish()
+
+    app = 'roleequip'
+    params = {
+        "server": server,
+        "name": name
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        # msg = f"查询失败，{req_msg}。"
+        # await equipquery.finish(msg)
+        # 临时使用ws查询，等后期开放后采用http查询
+        echo = int(time.time())
+        msg = {
+            "type": 1025,
+            "server": server,
+            "name": name,
+            "echo": echo
+        }
+        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
+        await equipquery.finish()
+
+    data = await handle_data(req_data)
+    pagename = "equip.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await equipquery.finish(msg)
 
 
 @open_server_send.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''开服查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext().split(" ")
     if len(text) > 1:
         server_text = text[-1]
-        server = await ger_master_server(server_text)
+        server = await get_master_server(server_text)
         if server is None:
             msg = "查询错误，请输入正确的服务器名。"
-            await daily.finish(msg)
+            await open_server_send.finish(msg)
     else:
         server = await get_server(bot_id, group_id)
-    msg = {
-        "type": 1002,
-        "server": server,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询开服：server：{server}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await open_server_send.finish()
+
+    app = 'check'
+    params = {
+        "server": server
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await open_server_send.finish(msg)
+
+    status = "已开服" if data['status'] == 1 else "维护中"
+    msg = f'{data.get("server")} 当前状态是[{status}]'
+    await open_server_send.finish(msg)
 
 
 @gold_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''金价查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext().split(" ")
     if len(text) > 1:
         server_text = text[-1]
-        server = await ger_master_server(server_text)
+        server = await get_master_server(server_text)
         if server is None:
             msg = "查询错误，请输入正确的服务器名。"
-            await daily.finish(msg)
+            await gold_query.finish(msg)
     else:
         server = await get_server(bot_id, group_id)
-    msg = {
-        "type": 1003,
-        "server": server,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await open_server_send.finish()
+
+    app = 'gold'
+    params = {
+        "server": server
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await gold_query.finish(msg)
+
+    date_now = datetime.now().strftime("%m-%d %H:%M")
+    msg = f'金价[{data.get("server")}] {date_now}\n'
+    msg += f'官方平台：1元={data.get("wanbaolou")}金\n'
+    msg += f'悠悠平台：1元={data.get("uu898")}金\n'
+    msg += f'嘟嘟平台：1元={data.get("dd373")}金\n'
+    msg += f'其他平台：1元={data.get("5173")}金'
+    await gold_query.finish(msg)
 
 
 @extra_point.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''奇穴查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     get_name = get_qixue_name(text)
     name = get_xinfa(get_name)
-    msg = {
-        "type": 1008,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'holes'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await extra_point.finish(msg)
+
+    msg = f'[{data.get("name")}]\n'
+    msg += f'龙门绝境奇穴：\n{data.get("long")}\n'
+    msg += f'战场任务奇穴：\n{data.get("battle")}\n'
+    await extra_point.finish(msg)
 
 
 @medicine.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''小药查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     get_name = get_medicine_name(text)
     name = get_xinfa(get_name)
-    msg = {
-        "type": 1010,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'strengthen'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await medicine.finish(msg)
+
+    msg = f'[{data.get("name")}]小药：\n'
+    msg += f'增强食品：{data.get("heightenFood")}\n'
+    msg += f'辅助食品：{data.get("auxiliaryFood")}\n'
+    msg += f'增强药品：{data.get("heightenDrug")}\n'
+    msg += f'辅助药品：{data.get("auxiliaryDrug")}'
+
+    await medicine.finish(msg)
 
 
 @macro.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''宏查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     get_name = get_macro_name(text)
     name = get_xinfa(get_name)
-    msg = {
-        "type": 1011,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询宏：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'macro'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await macro.finish(msg)
+
+    msg = f'宏 {data.get("name")} 更新时间：{data.get("time")}\n'
+    msg += f'{data.get("command")}\n'
+    msg += f'奇穴：{data.get("holes")}'
+
+    await macro.finish(msg)
 
 
 @adventurecondition.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''前置查询'''
-    echo = int(time.time())
     group_id = event.group_id
-    get_name = event.get_plaintext().split(" ")[-1]
-    msg = {
-        "type": 1013,
-        "name": get_name,
-        "echo": echo
-    }
-    log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{get_name}"
+    name = event.get_plaintext().split(" ")[-1]
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'require'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await adventurecondition.finish(msg)
+
+    url = data.get("url")
+    msg = MessageSegment.image(url)
+    await adventurecondition.finish(msg)
 
 
 @exam.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''科举查询'''
-    echo = int(time.time())
     group_id = event.group_id
     question = event.get_plaintext()[3:]
-    msg = {
-        "type": 1014,
-        "question": question,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询科举：question：{question}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'exam'
+    params = {
+        "question":  question
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await exam.finish(msg)
+    data: list = data[0]
+    msg = f'[问题]\n{data.get("question")}\n'
+    msg += f'[答案]\n{data.get("answer")}'
+    await exam.finish(msg)
 
 
 @pendant.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''挂件查询'''
-    echo = int(time.time())
     group_id = event.group_id
-    get_name = event.get_plaintext().split(" ")[-1]
-    msg = {
-        "type": 1021,
-        "name": get_name,
-        "echo": echo
-    }
-    log = f"Bot({bot.self_id}) | 群[{group_id}]查询挂件：name：{get_name}"
+    name = event.get_plaintext().split(" ")[-1]
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询挂件：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'pendant'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await pendant.finish(msg)
+
+    msg = f'[{data.get("name")}]\n'
+    msg += f'物品类型：{data.get("type")}\n'
+    msg += f'使用特效：{data.get("use")}\n'
+    msg += f'物品说明：{data.get("explain")}\n'
+    msg += f'获取方式：{data.get("source")}'
+
+    await pendant.finish(msg)
 
 
 @equip_group_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''配装查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     get_name = get_peizhuang_name(text)
     name = get_xinfa(get_name)
-    msg = {
-        "type": 1006,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询配装：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'equip'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await equip_group_query.finish(msg)
+
+    msg = MessageSegment.text(f'{data.get("name")}配装：\nPve装备：\n')+MessageSegment.image(data.get("pveUrl")) + \
+        MessageSegment.text("Pvp装备：\n")+MessageSegment.image(data.get("pvpUrl"))
+    await equip_group_query.finish(msg)
 
 
 @raiderse.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''攻略查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
-    get_name = get_gonglue_name(text)
-    msg = {
-        "type": 1023,
-        "name": get_name,
-        "echo": echo
-    }
-    log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{get_name}"
+    name = get_gonglue_name(text)
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'strategy'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await raiderse.finish(msg)
+
+    img = data.get("url")
+    msg = MessageSegment.image(img)
+    await raiderse.finish(msg)
 
 
 @flowers.handle()
@@ -356,25 +456,36 @@ async def _(bot: Bot, event: GroupMessageEvent):
     '''花价查询'''
     bot_id = int(bot.self_id)
     group_id = event.group_id
-    echo = int(time.time())
     text = event.get_plaintext().split(" ")
     if len(text) > 1:
         server_text = text[-1]
-        server = await ger_master_server(server_text)
+        server = await get_master_server(server_text)
         if server is None:
             msg = "查询错误，请输入正确的服务器名。"
-            await daily.finish(msg)
+            await flowers.finish(msg)
     else:
         server = await get_server(bot_id, group_id)
-    msg = {
-        "type": 1004,
-        "server": server,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询花价：server：{server}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await open_server_send.finish()
+
+    app = 'flower'
+    params = {
+        "server": server
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await flowers.finish(msg)
+
+    data = {}
+    data["server"] = server
+    data["data"] = req_data
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['time'] = now_time
+    pagename = "flower.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await flowers.finish(msg)
 
 
 @update_query.handle()
@@ -385,32 +496,37 @@ async def _(bot: Bot, event: GroupMessageEvent):
     msg = MessageSegment.image(img)
     log = f"Bot({bot.self_id}) | 群[{event.group_id}]查询更新公告"
     logger.info(log)
-    await flowers.finish(msg)
+    await update_query.finish(msg)
 
 
 @price_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''物价查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     name = text.split(' ')[-1]
-    msg = {
-        "type": 1012,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询物价：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await open_server_send.finish()
+
+    app = 'price'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await price_query.finish(msg)
+
+    pagename = "itemprice.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await price_query.finish(msg)
 
 
 @serendipity.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''奇遇查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -420,27 +536,38 @@ async def _(bot: Bot, event: GroupMessageEvent):
     else:
         text_server = text_list[1]
         name = text_list[2]
-        server = await ger_master_server(text_server)
+        server = await get_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
             await serendipity.finish(msg)
-    msg = {
-        "type": 1018,
-        "server": server,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await open_server_send.finish()
+
+    app = 'serendipity'
+    params = {
+        "server": server,
+        "name": name
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await serendipity.finish(msg)
+
+    data = {}
+    data["server"] = server
+    data["data"] = hand_adventure_data(req_data)
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['time'] = now_time
+    pagename = "adventure.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await serendipity.finish(msg)
 
 
 @serendipityList.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''奇遇列表查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -450,60 +577,80 @@ async def _(bot: Bot, event: GroupMessageEvent):
     else:
         text_server = text_list[1]
         serendipity = text_list[2]
-        server = await ger_master_server(text_server)
+        server = await get_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
-            await serendipity.finish(msg)
-    msg = {
-        "type": 1018,
-        "server": server,
-        "serendipity": serendipity,
-        "echo": echo
-    }
+            await serendipityList.finish(msg)
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await serendipityList.finish()
+
+    app = 'serendipity'
+    params = {
+        "server": server,
+        "serendipity": serendipity
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await serendipityList.finish(msg)
+
+    data = {}
+    data["server"] = server
+    data["data"] = hand_adventure_data(req_data)
+    now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data['time'] = now_time
+    pagename = "adventure.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await serendipityList.finish(msg)
 
 
 @saohua_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''骚话'''
-    echo = int(time.time())
     group_id = event.group_id
-    msg = {
-        "type": 1019,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询请求骚话"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await saohua_query.finish()
+
+    app = 'random'
+    params = {}
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await saohua_query.finish(msg)
+
+    msg = data.get('text')
+    await saohua_query.finish(msg)
 
 
 @furniture_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''装饰查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     name = text.split(' ')[-1]
-    msg = {
-        "type": 1016,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装饰：name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await furniture_query.finish()
+
+    app = 'furniture'
+    params = {
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await furniture_query.finish(msg)
+
+    pagename = "furniture.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await furniture_query.finish(msg)
 
 
 @seniority_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''资历排行查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -518,27 +665,36 @@ async def _(bot: Bot, event: GroupMessageEvent):
         if text_server == "全区服":
             server = "全区服"
         else:
-            server = await ger_master_server(text_server)
+            server = await get_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
             await seniority_query.finish(msg)
-    msg = {
-        "type": 1022,
-        "server": server,
-        "sect": sect,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await seniority_query.finish()
+
+    app = 'seniority'
+    params = {
+        "server": server,
+        "sect": sect
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await seniority_query.finish(msg)
+
+    data = []
+    for i in range(10):
+        data.append(req_data[i])
+    pagename = "seniority.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await seniority_query.finish(msg)
 
 
 @indicator.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''战绩总览查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -548,27 +704,46 @@ async def _(bot: Bot, event: GroupMessageEvent):
     else:
         text_server = text_list[1]
         name = text_list[2]
-        server = await ger_master_server(text_server)
+        server = await get_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
             await indicator.finish(msg)
-    msg = {
-        "type": 1026,
-        "server": server,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await indicator.finish()
+    app = 'indicator'
+    params = {
+        "server": server,
+        "name": name
+    }
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        # msg = f"查询失败，{req_msg}。"
+        # await indicator.finish(msg)
+        echo = int(time.time())
+        msg = {
+            "type": 1026,
+            "server": server,
+            "name": name,
+            "echo": echo
+        }
+        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
+        await indicator.finish()
+
+    data = {}
+    role_info = req_data.get("role_info")
+    data['name'] = role_info['server']+"-"+role_info['name']
+    data['role_performance'] = req_data.get('role_performance')
+    data['history'] = indicator_query_hanlde(req_data.get('role_history'))
+    pagename = "indicator.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await indicator.finish(msg)
 
 
 @awesome_query.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''名剑排行查询'''
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -586,23 +761,38 @@ async def _(bot: Bot, event: GroupMessageEvent):
             msg = "查询出错，请输入正确的参数。"
             await awesome_query.finish(msg)
     params = str(match)
-    msg = {
-        "type": 1027,
-        "match": match,
-        "limit": 10,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-    await awesome_query.finish()
+
+    app = 'awesome'
+    params = {
+        "match": match,
+        "limit": 10
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        # msg = f"查询失败，{req_msg}。"
+        # await awesome_query.finish(msg)
+        echo = int(time.time())
+        msg = {
+            "type": 1027,
+            "match": match,
+            "limit": 10,
+            "echo": echo
+        }
+        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
+        await awesome_query.finish()
+
+    pagename = "awesome_query.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await awesome_query.finish(msg)
 
 
 @teamcdlist.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''副本记录查询'''
     bot_id = int(bot.self_id)
-    echo = int(time.time())
     group_id = event.group_id
     text = event.get_plaintext()
     text_list = text.split(' ')
@@ -612,17 +802,33 @@ async def _(bot: Bot, event: GroupMessageEvent):
     else:
         text_server = text_list[1]
         name = text_list[2]
-        server = await ger_master_server(text_server)
+        server = await get_master_server(text_server)
         if server is None:
             msg = "查询出错，请输入正确的服务器名."
             await teamcdlist.finish(msg)
-    msg = {
-        "type": 1029,
-        "server": server,
-        "name": name,
-        "echo": echo
-    }
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询副本记录：server：{server}，name：{name}"
     logger.info(log)
-    await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-    await teamcdlist.finish()
+
+    app = 'teamcdlist'
+    params = {
+        "server": server,
+        "name": name
+    }
+    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    if req_msg != 'success':
+        # msg = f"查询失败，{req_msg}。"
+        # await teamcdlist.finish(msg)
+        echo = int(time.time())
+        msg = {
+            "type": 1029,
+            "server": server,
+            "name": name,
+            "echo": echo
+        }
+        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
+        await teamcdlist.finish()
+
+    pagename = "teamcdlist.html"
+    img = await get_html_screenshots(pagename=pagename, data=data)
+    msg = MessageSegment.image(img)
+    await teamcdlist.finish(msg)
