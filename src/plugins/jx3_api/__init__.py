@@ -1,9 +1,6 @@
 from datetime import datetime
 
-import src.server.jx3_soket as jx3_soket
-from nonebot import get_driver, on_regex
-from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
-from nonebot.permission import SUPERUSER
+from nonebot.adapters.cqhttp import Bot, MessageSegment
 from nonebot.plugin import export, on
 from src.server.jx3_event import (AdventureConditionEvent,
                                   AdventureSearchEvent, AwesomeQueryEvent,
@@ -15,9 +12,7 @@ from src.server.jx3_event import (AdventureConditionEvent,
                                   OpenServerSendEvent, PendantEvent,
                                   RaiderseSearchEvent, SaohuaQueryEvent,
                                   SeniorityQueryEvent, TeamCdListEvent)
-from src.utils.browser import close_browser, get_broser, get_html_screenshots
-from src.utils.log import logger
-from tortoise import Tortoise
+from src.utils.browser import get_html_screenshots
 
 from .data_source import (get_daily_week, hand_adventure_data, handle_data,
                           indicator_query_hanlde)
@@ -27,71 +22,6 @@ export.plugin_name = 'ws链接回复'
 export.plugin_command = ""
 export.plugin_usage = '用于jx3_api的ws链接，处理服务器主动发送后回复的信息。'
 export.ignore = True  # 插件管理器忽略此插件
-
-driver = get_driver()
-
-
-@driver.on_startup
-async def _():
-    '''
-    初始化链接ws
-    '''
-    log = 'jx3_api > 开始连接ws.'
-    logger.info(log)
-    jx3_soket.init()
-
-
-@driver.on_shutdown
-async def _():
-    '''shut_down时关闭链接'''
-    log = 'jx3_bot进程关闭，正在清理……'
-    logger.info(log)
-    log = '关闭无头浏览器'
-    logger.info(log)
-    browser = get_broser()
-    if browser is not None:
-        await close_browser()
-    log = '关闭数据库'
-    logger.info(log)
-    await Tortoise.close_connections()
-    log = 'jx3_api > 关闭ws链接。'
-    logger.info(log)
-    ws_connect = jx3_soket.get_ws_connect()
-    await ws_connect.close()
-
-
-# 查看ws链接状态
-ws_check = on_regex(pattern=r"^查看链接$", permission=SUPERUSER, priority=2, block=True)
-
-
-@ws_check.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    查询ws链接状态
-    '''
-    ws_connect = jx3_soket.get_ws_connect()
-    if ws_connect.closed:
-        msg = 'jx3_api > 当前未链接。'
-    else:
-        msg = 'jx3_api > 当前链接正常。'
-    await ws_check.finish(msg)
-
-
-ws_re_connect = on_regex(pattern=r"^链接服务器$", permission=SUPERUSER, priority=2, block=True)
-
-
-@ws_re_connect.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    重连ws链接
-    '''
-    ws_connect = jx3_soket.get_ws_connect()
-    if ws_connect.closed:
-        await jx3_soket.on_connect()
-        msg = 'jx3_api > 正在重连……'
-    else:
-        msg = 'jx3_api > 当前已链接，请勿重复链接。'
-    await ws_re_connect.finish(msg)
 
 
 daily = on(type="daily", priority=6, block=True)    # 日常查询

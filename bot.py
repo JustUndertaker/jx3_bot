@@ -23,6 +23,7 @@ driver.on_startup(database_init)
 driver.on_startup(start_scheduler)
 
 # 加载插件
+nonebot.load_plugins("src/plugin_managers")
 nonebot.load_plugins("src/plugins")
 # nonebot.load_plugin("nonebot_plugin_test")
 

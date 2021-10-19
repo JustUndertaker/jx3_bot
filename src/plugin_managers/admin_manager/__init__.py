@@ -10,7 +10,7 @@ from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.utils import OWNER, nickname
 
-from ..chat.data_source import get_reply_jx3, get_reply_qingyunke
+from src.plugins.chat import get_reply_jx3, get_reply_qingyunke
 from .data_source import (change_status_all, check_event, get_all_data,
                           get_bot_owner, get_text_num, leave_group,
                           set_robot_status, get_help_img)

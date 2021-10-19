@@ -61,7 +61,7 @@ async def send_ws_message(msg: dict,
     if ws_connect.closed:
         log = f"jx3_api > 链接已关闭，代码：{str(ws_connect.close_code)}"
         logger.debug(log)
-        loop.create_task(on_connect())
+        await on_connect()
     data = json.dumps(msg)
     await ws_connect.send(data)
 
@@ -128,7 +128,7 @@ async def _task():
                         await handle_event(one_bot, event)
 
     except (ConnectionClosed, ConnectionClosedError, ConnectionClosedOK) as e:
-        ws_connect = None
+        # ws_connect = None
         if e.code != 1000:
             logger.error('jx3_api > 链接已断开！')
             loop.create_task(on_connect())
