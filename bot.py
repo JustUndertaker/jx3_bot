@@ -22,8 +22,9 @@ driver.on_startup(database_init)
 # 开启定时器
 driver.on_startup(start_scheduler)
 
-# 加载插件
-nonebot.load_plugins("src/plugin_managers")
+# 加载管理插件
+nonebot.load_plugins("src/managers")
+# 加载其他插件
 nonebot.load_plugins("src/plugins")
 # nonebot.load_plugin("nonebot_plugin_test")
 
