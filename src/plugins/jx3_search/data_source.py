@@ -16,7 +16,7 @@ headers = {"ser-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/201
 http_client = httpx.AsyncClient(headers=headers)
 
 
-async def get_data_from_jx3api(app: str, params: dict) -> Tuple[str, Optional[dict]]:
+async def get_data_from_jx3api(app: str, params: dict, app_type: str = "app") -> Tuple[str, Optional[dict]]:
     '''
     :说明
         发送一条请求给jx3-api，返回结果
@@ -24,12 +24,13 @@ async def get_data_from_jx3api(app: str, params: dict) -> Tuple[str, Optional[di
     :参数
         * app：请求功能名，链接到url后
         * params：请求参数
+        * app_type：默认的网址type，默认为app
 
     :返回
         * msg：返回msg，为'success'时成功
         * data：返回数据
     '''
-    url = "https://www.jx3api.com/app/"+app
+    url = f"https://www.jx3api.com/{app_type}/{app}"
     try:
         req_url = await http_client.get(url, params=params)
         req = req_url.json()
@@ -232,7 +233,7 @@ async def handle_data(alldata: dict) -> dict:
     attribute = _handle_attributes(attribute)
     post_attribute = _handle_data(role, body, attribute, shuxing_data)
     # 判断是否需要缓存
-    img_cache: bool = config.get('default').get('img-cache')
+    img_cache: bool = baseconfig.get('default').get('img-cache')
     if img_cache:
         post_equip = await _handle_icon(post_equip)
         post_qixue = await _handle_icon(post_qixue)

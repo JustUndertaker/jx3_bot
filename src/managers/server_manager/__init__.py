@@ -1,13 +1,12 @@
-import src.server.jx3_soket as jx3_soket
 from nonebot import get_driver, on_regex
+from nonebot.adapters.cqhttp import Bot, PrivateMessageEvent
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
 from src.utils.browser import close_browser, get_broser
-
-from nonebot.adapters.cqhttp import Bot, PrivateMessageEvent
 from src.utils.log import logger
 from tortoise import Tortoise
 
+from .data_source import get_ws_connect, init, on_connect
 
 export = export()
 export.plugin_name = 'jx3api链接服务'
@@ -25,7 +24,7 @@ async def _():
     '''
     log = 'jx3_api > 开始连接ws.'
     logger.info(log)
-    jx3_soket.init()
+    init()
 
 
 @driver.on_shutdown
@@ -43,7 +42,7 @@ async def _():
     await Tortoise.close_connections()
     log = 'jx3_api > 关闭ws链接。'
     logger.info(log)
-    ws_connect = jx3_soket.get_ws_connect()
+    ws_connect = get_ws_connect()
     await ws_connect.close()
 
 
@@ -56,7 +55,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     查询ws链接状态
     '''
-    ws_connect = jx3_soket.get_ws_connect()
+    ws_connect = get_ws_connect()
     if ws_connect.closed:
         msg = 'jx3_api > 当前未链接。'
     else:
@@ -72,7 +71,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     关闭ws链接
     '''
-    ws_connect = jx3_soket.get_ws_connect()
+    ws_connect = get_ws_connect()
     if ws_connect.closed:
         msg = 'ws已经关闭了，不要重复关闭。'
     else:
@@ -89,9 +88,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     重连ws链接
     '''
-    ws_connect = jx3_soket.get_ws_connect()
+    ws_connect = get_ws_connect()
     if ws_connect.closed:
-        await jx3_soket.on_connect()
+        await on_connect()
         msg = 'jx3_api > 正在重连……'
     else:
         msg = 'jx3_api > 当前已链接，请勿重复链接。'

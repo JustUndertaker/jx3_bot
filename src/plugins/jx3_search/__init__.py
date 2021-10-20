@@ -1,11 +1,9 @@
-import time
 from datetime import datetime
 
 from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
 from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
-from src.server.jx3_soket import send_ws_message
 from src.utils.browser import get_html_screenshots, get_web_screenshot
 from src.utils.log import logger
 
@@ -162,25 +160,16 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装备：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'roleequip'
+    app_type = 'roles'
+    app = 'attribute'
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params, app_type=app_type)
     if req_msg != 'success':
-        # msg = f"查询失败，{req_msg}。"
-        # await equipquery.finish(msg)
-        # 临时使用ws查询，等后期开放后采用http查询
-        echo = int(time.time())
-        msg = {
-            "type": 1025,
-            "server": server,
-            "name": name,
-            "echo": echo
-        }
-        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-        await equipquery.finish()
+        msg = f"查询失败，{req_msg}。"
+        await equipquery.finish(msg)
 
     data = await handle_data(req_data)
     pagename = "equip.html"
@@ -711,24 +700,16 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
+    app_type = 'arena'
     app = 'indicator'
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params, app_type=app_type)
     if req_msg != 'success':
-        # msg = f"查询失败，{req_msg}。"
-        # await indicator.finish(msg)
-        echo = int(time.time())
-        msg = {
-            "type": 1026,
-            "server": server,
-            "name": name,
-            "echo": echo
-        }
-        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-        await indicator.finish()
+        msg = f"查询失败，{req_msg}。"
+        await indicator.finish(msg)
 
     data = {}
     role_info = req_data.get("role_info")
@@ -764,24 +745,16 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
 
+    app_type = 'arena'
     app = 'awesome'
     params = {
         "match": match,
         "limit": 10
     }
-    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    req_msg, data = await get_data_from_jx3api(app=app, params=params, app_type=app_type)
     if req_msg != 'success':
-        # msg = f"查询失败，{req_msg}。"
-        # await awesome_query.finish(msg)
-        echo = int(time.time())
-        msg = {
-            "type": 1027,
-            "match": match,
-            "limit": 10,
-            "echo": echo
-        }
-        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id)
-        await awesome_query.finish()
+        msg = f"查询失败，{req_msg}。"
+        await awesome_query.finish(msg)
 
     pagename = "awesome_query.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
@@ -809,24 +782,16 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询副本记录：server：{server}，name：{name}"
     logger.info(log)
 
+    app_type = 'roles'
     app = 'teamcdlist'
     params = {
         "server": server,
         "name": name
     }
-    req_msg, data = await get_data_from_jx3api(app=app, params=params)
+    req_msg, data = await get_data_from_jx3api(app=app, params=params, app_type=app_type)
     if req_msg != 'success':
-        # msg = f"查询失败，{req_msg}。"
-        # await teamcdlist.finish(msg)
-        echo = int(time.time())
-        msg = {
-            "type": 1029,
-            "server": server,
-            "name": name,
-            "echo": echo
-        }
-        await send_ws_message(msg=msg, echo=echo, bot_id=bot.self_id, group_id=group_id, server=server)
-        await teamcdlist.finish()
+        msg = f"查询失败，{req_msg}。"
+        await teamcdlist.finish(msg)
 
     pagename = "teamcdlist.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
