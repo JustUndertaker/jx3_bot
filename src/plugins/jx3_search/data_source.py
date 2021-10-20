@@ -272,7 +272,7 @@ def _handle_data(role: str, body: str, attribute: dict, shuxing_data: dict) -> l
 
 async def _handle_icon(data: list[dict]) -> dict:
     '''处理icon'''
-    html_path: str = config.get('path').get('html')
+    html_path: str = baseconfig.get('path').get('html')
     icon_path = "."+html_path+"icons/"
     icons_files = os.listdir(icon_path)
     for one_data in data:
