@@ -4,6 +4,7 @@ from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
 from src.utils.browser import close_browser, get_broser
 from src.utils.log import logger
+from src.utils.scheduler import scheduler
 from tortoise import Tortoise
 
 from .data_source import get_ws_connect, init, on_connect
@@ -95,3 +96,13 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = 'jx3_api > 当前已链接，请勿重复链接。'
     await ws_re_connect.finish(msg)
+
+
+# jx3_api中ws的心跳事件
+@scheduler.scheduled_job("interval", seconds=5)
+async def _():
+    ws_connect = get_ws_connect()
+    if ws_connect.closed:
+        msg = "检测到jx3_api断开链接！正在重连……"
+        logger.debug(msg)
+        await on_connect()
