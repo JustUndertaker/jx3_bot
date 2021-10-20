@@ -10,10 +10,10 @@ from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.utils import OWNER, nickname
 
-from src.plugins.chat import get_reply_jx3, get_reply_qingyunke
 from .data_source import (change_status_all, check_event, get_all_data,
-                          get_bot_owner, get_text_num, leave_group,
-                          set_robot_status, get_help_img)
+                          get_bot_owner, get_help_img, get_reply_jx3,
+                          get_reply_qingyunke, get_text_num, leave_group,
+                          set_robot_status)
 
 export = export()
 export.plugin_name = '超级用户管理'
