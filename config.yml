@@ -28,6 +28,21 @@ chat_voice:
   # 音调，取值范围：-500～500
   pitch_rate: 0
 
+# jx3_api网站设置
+jx3-api:
+  # 剑三沙盘账号，申请网址：https://www.j3sp.com/
+  jx3sp:
+    # 账号
+    account: ~
+    # 密码
+    password: ~
+    # 沙盘图片是否显示水印
+    shadow: false
+  # ws链接地址
+  ws-path: wss://socket.nicemoe.cn
+  # jx3api域名地址
+  jx3-url:  https://api.jx3api.com
+
 # 天气插件设置
 weather:
   # 和风天气api-key
@@ -81,21 +96,6 @@ default:
   img-cache: false
   # 离线bot数据清理时间，单位：小时
   bot-outtime: 48
-
-# jx3_api网站设置
-jx3-api:
-  # 剑三沙盘账号，申请网址：https://www.j3sp.com/
-  jx3sp:
-    # 账号
-    account: ~
-    # 密码
-    password: ~
-    # 沙盘图片是否显示水印
-    shadow: false
-  # ws链接地址
-  ws-path: wss://socket.nicemoe.cn
-  # jx3api域名地址
-  jx3-url:  https://api.jx3api.com
 
 # 路径设置
 path:
