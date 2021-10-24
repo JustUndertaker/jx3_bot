@@ -76,7 +76,8 @@ async def get_server_name(name: str) -> Optional[str]:
     '''
     根据服务器获取主服务器名
     '''
-    url: str = config.get('jx3-api').get('master-server')
+    url_head: str = config.get('jx3-api').get('jx3-url')
+    url = f"{url_head}/app/master"
     params = {"name": name}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:
