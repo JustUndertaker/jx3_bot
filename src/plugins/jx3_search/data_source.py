@@ -17,7 +17,7 @@ headers = {"ser-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/201
 http_client = httpx.AsyncClient(headers=headers)
 '''异步请求库客户端'''
 
-jx3sp_token: Optional[str] = '3edde08b-1255-48d2-8ecd-4efab9ee9545'
+jx3sp_token: Optional[str] = None
 '''jx3sp的token'''
 
 
