@@ -387,7 +387,7 @@ async def _get_jx3sp_token() -> Tuple[bool, str]:
         msg = "未配置jx3sp账号密码，请联系服务器管理员"
         return False, msg
 
-    url = "https://www.jx3sp.com/api/user/login"
+    url = "https://www.j3sp.com/api/user/login"
     params = {
         "account": account,
         "password": password
@@ -420,7 +420,7 @@ async def _check_jx3sp_token() -> Tuple[bool, str]:
         flag, msg = await _get_jx3sp_token()
         return flag, msg
 
-    url = "https://www.jx3sp.com/api/token/check"
+    url = "https://www.j3sp.com/api/token/check"
     params = {'token': jx3sp_token}
     try:
         req_url = await http_client.get(url, params=params)
