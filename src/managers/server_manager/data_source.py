@@ -61,7 +61,6 @@ async def on_connect():
 
 async def _task():
     global ws_connect
-    global ws_echo_list
     global loop
     try:
         while True:
