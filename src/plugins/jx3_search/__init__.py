@@ -825,8 +825,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
     flag, data = await get_jx3sp_img(server)
     if flag:
+        text = f"[{server}]沙盘 更新时间 {data.get('createTime')}"
         img = data.get('sandImage')
-        msg = MessageSegment.image(img)
+        msg = MessageSegment.text(text)+MessageSegment.image(img)
     else:
         msg = f"查询失败，{data}"
 

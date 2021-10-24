@@ -17,7 +17,7 @@ headers = {"ser-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/201
 http_client = httpx.AsyncClient(headers=headers)
 '''异步请求库客户端'''
 
-jx3sp_token: Optional[str] = None
+jx3sp_token: Optional[str] = '3edde08b-1255-48d2-8ecd-4efab9ee9545'
 '''jx3sp的token'''
 
 
@@ -432,7 +432,7 @@ async def _check_jx3sp_token() -> Tuple[bool, str]:
             msg = "jx3sp:"+req['msg']
             return False, msg
     except Exception as e:
-        msg = "网络错误，"+e
+        msg = "网络错误，"+str(e)
         return False, msg
 
 
@@ -449,11 +449,16 @@ async def get_jx3sp_img(server: str) -> Tuple[bool, Optional[dict]]:
         * str：成功则为sand_data数据，失败则为返回消息
     '''
     # 验证token
+    global jx3sp_token
     flag, msg = await _check_jx3sp_token()
     if not flag:
         return False, msg
 
-    shadow = config.get('jx3sp').get('shadow')
+    shadow_flag = config.get('jx3sp').get('shadow')
+    if shadow_flag:
+        shadow = 0
+    else:
+        shadow = 1
     url = "https://www.j3sp.com/api/sand/"
     params = {
         "token": jx3sp_token,
@@ -471,5 +476,5 @@ async def get_jx3sp_img(server: str) -> Tuple[bool, Optional[dict]]:
             msg = "jx3sp:"+req['msg']
             return False, msg
     except Exception as e:
-        msg = "网络错误，"+e
+        msg = "网络错误，"+str(e)
         return False, msg
