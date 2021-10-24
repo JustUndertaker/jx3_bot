@@ -26,7 +26,8 @@ async def get_saohua() -> str:
     '''
     获取一条骚话
     '''
-    url: str = config.get('jx3-api').get('random-say')
+    jx3_url: str = config.get('jx3-api').get('jx3-url')
+    url = f"{jx3_url}/app/random"
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:
             req_url = await client.get(url=url)
@@ -63,7 +64,8 @@ async def get_voice(text: str) -> Optional[str]:
         return None
     log = f'请求语音合成：{text}'
     logger.debug(log)
-    url: str = config.get('jx3-api').get('voice')
+    jx3_url: str = config.get('jx3-api').get('jx3-url')
+    url = f"{jx3_url}/extend/aliyun"
     params = chat_voice.copy()
     params['text'] = text
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
@@ -89,7 +91,8 @@ async def get_image() -> Optional[str]:
     '''
     获取一张图片
     '''
-    url: str = config.get('jx3-api').get('random-image')
+    jx3_url: str = config.get('jx3-api').get('jx3-url')
+    url = f"{jx3_url}/extend/stickers"
     params = {"format": "json"}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:

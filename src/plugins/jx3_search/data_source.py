@@ -11,9 +11,14 @@ from src.utils.utils import nickname
 from .config import shuxing, zhiye, zhiye_name
 
 config = baseconfig.get('jx3-api')
+'''jx3-api的配置'''
 
 headers = {"ser-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0"}
 http_client = httpx.AsyncClient(headers=headers)
+'''异步请求库客户端'''
+
+jx3sp_token: Optional[str] = None
+'''jx3sp的token'''
 
 
 async def get_data_from_jx3api(app: str, params: dict, app_type: str = "app") -> Tuple[str, Optional[dict]]:
@@ -30,7 +35,8 @@ async def get_data_from_jx3api(app: str, params: dict, app_type: str = "app") ->
         * msg：返回msg，为'success'时成功
         * data：返回数据
     '''
-    url = f"https://www.jx3api.com/{app_type}/{app}"
+    api_url = config.get('jx3-url')
+    url = f"{api_url}/{app_type}/{app}"
     try:
         req_url = await http_client.get(url, params=params)
         req = req_url.json()
@@ -52,18 +58,17 @@ async def get_master_server(server: str) -> Optional[str]:
     '''
     获取主服务器名称
     '''
-    url: str = config.get('master-server')
+    app = "master"
     params = {
         "name": server
     }
-    try:
-        req_url = await http_client.get(url, params=params)
-        req = req_url.json()
-        if req['code'] == 200:
-            data = req['data']
-            return data['server']
-    except Exception:
+    msg, data = await get_data_from_jx3api(app, params)
+
+    if msg != 'success':
         return None
+
+    server = data.get('server')
+    return server
 
 
 def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:
@@ -364,3 +369,107 @@ def indicator_query_hanlde(data: list[dict]) -> list[dict]:
         req_data.append(one_req_data)
 
     return req_data
+
+
+async def _get_jx3sp_token() -> Tuple[bool, str]:
+    '''
+    :说明
+        获取jx3sp的token
+
+    :返回
+        * bool：是否成功
+        * str：返回消息
+    '''
+    global jx3sp_token
+    account = config.get('jx3sp').get('username')
+    password = config.get('jx3sp').get('password')
+    if account is None or password is None:
+        msg = "未配置jx3sp账号密码，请联系服务器管理员"
+        return False, msg
+
+    url = "https://www.jx3sp.com/api/user/login"
+    params = {
+        "account": account,
+        "password": password
+    }
+    try:
+        req_url = await http_client.get(url, params=params)
+        req = req_url.json()
+        if req['code'] == 1:
+            jx3sp_token = req.get('data').get('userinfo').get('token')
+            return True, "success"
+        else:
+            msg = "jx3sp:"+req['msg']
+            return False, msg
+    except Exception as e:
+        msg = "网络错误，"+e
+        return False, msg
+
+
+async def _check_jx3sp_token() -> Tuple[bool, str]:
+    '''
+    :说明
+        检查jx3sp的token并刷新
+
+    :返回
+        * bool：是否成功
+        * str：成功为token，不成功为消息
+    '''
+    global jx3sp_token
+    if jx3sp_token is None:
+        flag, msg = await _get_jx3sp_token()
+        return flag, msg
+
+    url = "https://www.jx3sp.com/api/token/check"
+    params = {'token': jx3sp_token}
+    try:
+        req_url = await http_client.get(url, params=params)
+        req = req_url.json()
+        if req['code'] == 1:
+            jx3sp_token = req.get('data').get('token')
+            return True, "success"
+        else:
+            msg = "jx3sp:"+req['msg']
+            return False, msg
+    except Exception as e:
+        msg = "网络错误，"+e
+        return False, msg
+
+
+async def get_jx3sp_img(server: str):
+    '''
+    :说明
+        获取沙盘数据
+
+    :参数
+        * server：服务器名
+
+    :返回
+        * bool：是否成功
+        * str：成功则为img地址，失败则为返回消息
+    '''
+    # 验证token
+    flag, msg = await _check_jx3sp_token()
+    if not flag:
+        return False, msg
+
+    shadow = config.get('jx3sp').get('shadow')
+    url = "https://www.j3sp.com/api/sand/"
+    params = {
+        "token": jx3sp_token,
+        "serverName": server,
+        "is_history": 0,
+        "shadow": shadow
+    }
+    try:
+        req_url = await http_client.get(url, params=params)
+        req = req_url.json()
+        if req['code'] == 1:
+            img = req.get('data').get('')
+            return True, img
+        else:
+            msg = "jx3sp:"+req['msg']
+            return False, msg
+    except Exception as e:
+        msg = "网络错误，"+e
+        return False, msg

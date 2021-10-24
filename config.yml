@@ -84,22 +84,18 @@ default:
 
 # jx3_api网站设置
 jx3-api:
-  # 网站token，需要加群158918036，找群主获取，目前不需要填写
-  token: ~
+  # 剑三沙盘账号，申请网址：https://www.j3sp.com/
+  jx3sp:
+    # 账号
+    account: ~
+    # 密码
+    password: ~
+    # 沙盘图片是否显示水印
+    shadow: false
   # ws链接地址
   ws-path: wss://socket.nicemoe.cn
-  # 主服务器查询地址
-  master-server: https://www.jx3api.com/app/master
-  # 随机骚话
-  random-say: https://www.jx3api.com/app/random
-  # 随机图片地址
-  random-image: https://www.jx3api.com/extend/stickers
-  # 智能闲聊地址
-  chat: https://www.jx3api.com/extend/nlpchat
-  # 语音合成地址
-  voice: https://www.jx3api.com/extend/aliyun
-  # 舔狗日记地址
-  tiangou: https://www.jx3api.com/extend/flatterer
+  # jx3api域名地址
+  jx3-url:  https://api.jx3api.com
 
 # 路径设置
 path:
