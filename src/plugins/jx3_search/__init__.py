@@ -8,7 +8,7 @@ from src.utils.browser import get_html_screenshots, get_web_screenshot
 from src.utils.log import logger
 
 from .data_source import (get_daily_week, get_data_from_jx3api,
-                          get_equipquery_name, get_gonglue_name,
+                          get_equipquery_name, get_gonglue_name, get_jx3sp_img,
                           get_macro_name, get_master_server, get_medicine_name,
                           get_peizhuang_name, get_qixue_name, get_server,
                           get_xinfa, hand_adventure_data, handle_data,
@@ -105,6 +105,11 @@ awesome_query = on_regex(pattern=awesome_query_regex, permission=GROUP, priority
 # 团本记录查询
 teamcdlist_regex = r"(^副本记录 [(\u4e00-\u9fa5)|(@)]+$)|(^副本记录 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
 teamcdlist = on_regex(pattern=teamcdlist_regex, permission=GROUP, priority=5, block=True)
+
+
+# 沙盘查询
+sand_query_regex = r"(^沙盘$)|(^沙盘 [\u4e00-\u9fa5]+$)"
+sand_query = on_regex(pattern=sand_query_regex, permission=GROUP, priority=5, block=True)
 
 
 @daily.handle()
@@ -797,3 +802,32 @@ async def _(bot: Bot, event: GroupMessageEvent):
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
     await teamcdlist.finish(msg)
+
+
+@sand_query.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''
+    沙盘查询
+    '''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    text = event.get_plaintext().split(" ")
+    if len(text) > 1:
+        server_text = text[-1]
+        server = await get_master_server(server_text)
+        if server is None:
+            msg = "查询错误，请输入正确的服务器名。"
+            await flowers.finish(msg)
+    else:
+        server = await get_server(bot_id, group_id)
+    log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
+    logger.info(log)
+
+    flag, data = await get_jx3sp_img(server)
+    if flag:
+        img = data.get('sandImage')
+        msg = MessageSegment.image(img)
+    else:
+        msg = f"查询失败，{data}"
+
+    await raiderse.finish(msg)

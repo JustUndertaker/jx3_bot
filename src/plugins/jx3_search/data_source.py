@@ -381,7 +381,7 @@ async def _get_jx3sp_token() -> Tuple[bool, str]:
         * str：返回消息
     '''
     global jx3sp_token
-    account = config.get('jx3sp').get('username')
+    account = config.get('jx3sp').get('account')
     password = config.get('jx3sp').get('password')
     if account is None or password is None:
         msg = "未配置jx3sp账号密码，请联系服务器管理员"
@@ -402,7 +402,7 @@ async def _get_jx3sp_token() -> Tuple[bool, str]:
             msg = "jx3sp:"+req['msg']
             return False, msg
     except Exception as e:
-        msg = "网络错误，"+e
+        msg = "网络错误，"+str(e)
         return False, msg
 
 
@@ -436,7 +436,7 @@ async def _check_jx3sp_token() -> Tuple[bool, str]:
         return False, msg
 
 
-async def get_jx3sp_img(server: str):
+async def get_jx3sp_img(server: str) -> Tuple[bool, Optional[dict]]:
     '''
     :说明
         获取沙盘数据
@@ -446,7 +446,7 @@ async def get_jx3sp_img(server: str):
 
     :返回
         * bool：是否成功
-        * str：成功则为img地址，失败则为返回消息
+        * str：成功则为sand_data数据，失败则为返回消息
     '''
     # 验证token
     flag, msg = await _check_jx3sp_token()
@@ -465,8 +465,8 @@ async def get_jx3sp_img(server: str):
         req_url = await http_client.get(url, params=params)
         req = req_url.json()
         if req['code'] == 1:
-            img = req.get('data').get('')
-            return True, img
+            data = req.get('data').get('sand_data')
+            return True, data
         else:
             msg = "jx3sp:"+req['msg']
             return False, msg
