@@ -390,8 +390,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await equip_group_query.finish(msg)
 
-    msg = MessageSegment.text(f'{data.get("name")}配装：\nPve装备：\n')+MessageSegment.image(data.get("pveUrl")) + \
-        MessageSegment.text("Pvp装备：\n")+MessageSegment.image(data.get("pvpUrl"))
+    msg = MessageSegment.text(f'{data.get("name")}配装：\nPve装备：\n')+MessageSegment.image(data.get("pve")) + \
+        MessageSegment.text("Pvp装备：\n")+MessageSegment.image(data.get("pvp"))
     await equip_group_query.finish(msg)
 
 
