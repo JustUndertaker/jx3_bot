@@ -62,9 +62,6 @@ exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, bl
 raiderse = r"(^攻略 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+攻略$)"
 raiderse = on_regex(pattern=raiderse, permission=GROUP, priority=5, block=True)
 
-# 挂件查询
-pendant = on_regex(pattern=r'^挂件 [\u4e00-\u9fa5]+$', permission=GROUP, priority=5, block=True)
-
 # 花价查询
 flowers_regex = r"(^花价$)|(^花价 [\u4e00-\u9fa5]+$)"
 flowers = on_regex(pattern=flowers_regex, permission=GROUP, priority=5, block=True)
@@ -231,7 +228,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
     logger.info(log)
 
-    app = 'gold'
+    app = 'demon'
     params = {
         "server": server
     }
@@ -259,7 +256,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
     logger.info(log)
 
-    app = 'holes'
+    app = 'qixue'
     params = {
         "name": name
     }
@@ -284,7 +281,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
     logger.info(log)
 
-    app = 'strengthen'
+    app = 'heighten'
     params = {
         "name": name
     }
@@ -370,32 +367,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
     msg = f'[问题]\n{data.get("question")}\n'
     msg += f'[答案]\n{data.get("answer")}'
     await exam.finish(msg)
-
-
-@pendant.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
-    '''挂件查询'''
-    group_id = event.group_id
-    name = event.get_plaintext().split(" ")[-1]
-    log = f"Bot({bot.self_id}) | 群[{group_id}]查询挂件：name：{name}"
-    logger.info(log)
-
-    app = 'pendant'
-    params = {
-        "name": name
-    }
-    req_msg, data = await get_data_from_jx3api(app=app, params=params)
-    if req_msg != 'success':
-        msg = f"查询失败，{req_msg}。"
-        await pendant.finish(msg)
-
-    msg = f'[{data.get("name")}]\n'
-    msg += f'物品类型：{data.get("type")}\n'
-    msg += f'使用特效：{data.get("use")}\n'
-    msg += f'物品说明：{data.get("explain")}\n'
-    msg += f'获取方式：{data.get("source")}'
-
-    await pendant.finish(msg)
 
 
 @equip_group_query.handle()
@@ -578,7 +549,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
-    app = 'serendipity'
+    app = 'recent'
     params = {
         "server": server,
         "serendipity": serendipity
