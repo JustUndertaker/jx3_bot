@@ -44,7 +44,7 @@ async def get_data_from_jx3api(app: str, params: dict, app_type: str = "app") ->
         data = req['data']
         return msg, data
     except Exception as e:
-        return e, None
+        return str(e), None
 
 
 async def get_server(bot_id: int, group_id: int) -> Optional[str]:
