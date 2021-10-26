@@ -344,7 +344,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await adventurecondition.finish(msg)
 
-    url = data.get("url")
+    url = data.get("upload")
     msg = MessageSegment.image(url)
     await adventurecondition.finish(msg)
 
