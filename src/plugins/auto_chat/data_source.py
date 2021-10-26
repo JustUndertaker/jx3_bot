@@ -85,30 +85,3 @@ async def get_voice(text: str) -> Optional[str]:
             log = f'请求链接失败，原因：{e}'
             logger.error(log)
             return None
-
-
-async def get_image() -> Optional[str]:
-    '''
-    获取一张图片
-    '''
-    jx3_url: str = config.get('jx3-api').get('jx3-url')
-    url = f"{jx3_url}/share/stickers"
-    params = {"format": "json"}
-    async with httpx.AsyncClient(headers=get_user_agent()) as client:
-        try:
-            req_url = await client.get(url=url, params=params)
-            req = req_url.json()
-            if req['code'] == 200:
-                data = req['data']
-                img_url = data['url']
-                log = 'jx3_api请求图片成功'
-                logger.debug(log)
-                return img_url
-            else:
-                log = f'jx3_api请求图片失败：{req["msg"]}'
-                logger.debug(log)
-                return None
-        except Exception as e:
-            log = f'jx3_api请求图片失败：{e}'
-            logger.debug(log)
-            return None
