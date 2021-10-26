@@ -65,7 +65,7 @@ async def get_voice(text: str) -> Optional[str]:
     log = f'请求语音合成：{text}'
     logger.debug(log)
     jx3_url: str = config.get('jx3-api').get('jx3-url')
-    url = f"{jx3_url}/extend/aliyun"
+    url = f"{jx3_url}/share/aliyun"
     params = chat_voice.copy()
     params['text'] = text
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
@@ -92,7 +92,7 @@ async def get_image() -> Optional[str]:
     获取一张图片
     '''
     jx3_url: str = config.get('jx3-api').get('jx3-url')
-    url = f"{jx3_url}/extend/stickers"
+    url = f"{jx3_url}/share/stickers"
     params = {"format": "json"}
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:

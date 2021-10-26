@@ -19,7 +19,7 @@ async def get_tiangou() -> Optional[str]:
         * `None`：转换出错
     '''
     jx3_url: str = config.get('jx3-url')
-    url = f"{jx3_url}/extend/flatterer"
+    url = f"{jx3_url}/share/random"
 
     async with httpx.AsyncClient(headers=get_user_agent()) as client:
         try:
