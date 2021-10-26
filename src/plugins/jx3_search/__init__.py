@@ -290,11 +290,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await medicine.finish(msg)
 
-    msg = f'[{data.get("name")}]小药：\n'
-    msg += f'增强食品：{data.get("heightenFood")}\n'
-    msg += f'辅助食品：{data.get("auxiliaryFood")}\n'
-    msg += f'增强药品：{data.get("heightenDrug")}\n'
-    msg += f'辅助药品：{data.get("auxiliaryDrug")}'
+    name = data.get('name')
+    data = data.get('data')
+    msg = f'[{name}]小药：\n'
+    msg += f'增强食品：{data.get("heighten_food")}\n'
+    msg += f'辅助食品：{data.get("auxiliary_food")}\n'
+    msg += f'增强药品：{data.get("heighten_drug")}\n'
+    msg += f'辅助药品：{data.get("auxiliary_drug")}'
 
     await medicine.finish(msg)
 
