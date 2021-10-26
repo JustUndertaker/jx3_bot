@@ -321,8 +321,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await macro.finish(msg)
 
     msg = f'宏 {data.get("name")} 更新时间：{data.get("time")}\n'
-    msg += f'{data.get("command")}\n'
-    msg += f'奇穴：{data.get("holes")}'
+    msg += f'{data.get("macro")}\n'
+    msg += f'奇穴：{data.get("qixue")}'
 
     await macro.finish(msg)
 
