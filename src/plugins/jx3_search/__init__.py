@@ -136,17 +136,17 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await daily.finish(msg)
 
     msg = f'日常[{server}]\n'
-    msg += f'当前时间：{data.get("DateTime")} 星期{data.get("Week")}\n'
-    msg += f'今日大战：{data.get("DayWar")}\n'
-    msg += f'今日战场：{data.get("DayBattle")}\n'
-    msg += f'公共任务：{data.get("DayCommon")}\n'
-    msg += f'阵营任务：{data.get("DayCamp")}\n'
-    msg += get_daily_week(data.get("Week"))
-    if data.get("DayDraw") is not None:
-        msg += f'美人画像：{data.get("DayDraw")}\n'
-    msg += f'\n武林通鉴·公共任务\n{data.get("WeekCommon")}\n'
-    msg += f'武林通鉴·秘境任务\n{data.get("WeekFive")}\n'
-    msg += f'武林通鉴·团队秘境\n{data.get("WeekTeam")}'
+    msg += f'当前时间：{data.get("date")} 星期{data.get("week")}\n'
+    msg += f'今日大战：{data.get("dayWar")}\n'
+    msg += f'今日战场：{data.get("dayBattle")}\n'
+    msg += f'公共任务：{data.get("dayPublic")}\n'
+    msg += f'阵营任务：{data.get("dayCamp")}\n'
+    msg += get_daily_week(data.get("week"))
+    if data.get("dayDraw") is not None:
+        msg += f'美人画像：{data.get("dayDraw")}\n'
+    msg += f'\n武林通鉴·公共任务\n{data.get("weekPublic")}\n'
+    msg += f'武林通鉴·秘境任务\n{data.get("weekFive")}\n'
+    msg += f'武林通鉴·团队秘境\n{data.get("weekTeam")}'
     await daily.finish(msg)
 
 
