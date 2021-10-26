@@ -58,7 +58,7 @@ async def get_master_server(server: str) -> Optional[str]:
     '''
     获取主服务器名称
     '''
-    app = "master"
+    app = "server"
     params = {
         "name": server
     }
