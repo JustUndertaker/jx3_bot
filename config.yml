@@ -30,6 +30,16 @@ chat_voice:
 
 # jx3_api网站设置
 jx3-api:
+  # ws链接地址
+  ws-path: wss://socket.nicemoe.cn
+  # 主站地址
+  jx3-url:  https://www.jx3api.com
+  # 主站token
+  jx3-token: test
+  # 高级功能站点地址，如需获取请加QQ群：158918036，找群主获取
+  jx3-vip-url: ~
+  # 高级功能站点token，如需获取请加QQ群：158918036，找群主获取
+  jx3-vip-token: ~
   # 剑三沙盘账号，申请网址：https://www.j3sp.com/
   jx3sp:
     # 账号
@@ -38,10 +48,6 @@ jx3-api:
     password: ~
     # 沙盘图片是否显示水印
     shadow: false
-  # ws链接地址
-  ws-path: wss://socket.nicemoe.cn
-  # jx3api域名地址
-  jx3-url:  https://api.jx3api.com
 
 # 天气插件设置
 weather:
