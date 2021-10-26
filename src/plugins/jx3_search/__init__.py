@@ -551,12 +551,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
+    app_type = 'advent'
     app = 'recent'
     params = {
         "server": server,
         "serendipity": serendipity
     }
-    req_msg, req_data = await get_data_from_jx3api(app=app, params=params)
+    req_msg, req_data = await get_data_from_jx3api(app=app, params=params, app_type=app_type)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await serendipityList.finish(msg)
