@@ -7,7 +7,6 @@ import httpx
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.utils.config import config as baseconfig
-from src.utils.log import logger
 from src.utils.utils import nickname
 
 from .config import jx3_app, shuxing, zhiye, zhiye_name
@@ -77,11 +76,8 @@ async def get_data_from_jx3api(url: str, params: dict, vip_flag: bool) -> Tuple[
     '''
     if vip_flag:
         client = jx3_vip_client
-        log = f"使用vip站点访问：{url}"
     else:
         client = jx3_client
-        log = f"使用普通站点访问：{url}"
-    logger.debug(log)
     try:
         req_url = await client.get(url, params=params)
         req = req_url.json()
