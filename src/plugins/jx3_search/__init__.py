@@ -538,7 +538,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
     data = {}
     data["server"] = server
-    data["data"] = source.hand_adventure_data(req_data)
+    data["data"] = source.handle_adventure_data(req_data)
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['time'] = now_time
     pagename = "adventure.html"
@@ -580,7 +580,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
     data = {}
     data["server"] = server
-    data["data"] = source.hand_adventure_data(req_data)
+    data["data"] = source.handle_adventure_data(req_data)
     now_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['time'] = now_time
     pagename = "adventure.html"
@@ -751,11 +751,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
         "match": match,
         "limit": 10
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await awesome_query.finish(msg)
 
+    data = source.handle_awesome_data(match, req_data)
     pagename = "awesome_query.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)

@@ -196,7 +196,7 @@ def get_daily_week(week: str) -> str:
     return daily_list.get(week)
 
 
-def hand_adventure_data(data: list[dict]) -> list[dict]:
+def handle_adventure_data(data: list[dict]) -> list[dict]:
     '''处理奇遇数据，转换时间'''
     for one_data in data:
         get_time = one_data.get('time')
@@ -268,6 +268,25 @@ async def handle_equip_data(alldata: dict) -> dict:
     post_data['qixue'] = post_qixue
 
     return post_data
+
+
+def handle_awesome_data(match: str, data: list[dict]) -> dict:
+    '''
+    处理名剑排行数据
+    '''
+    req_data = {}
+    if match == 22:
+        req_data['type'] = "2v2"
+    elif match == 33:
+        req_data['type'] = "3v3"
+    else:
+        req_data['type'] = "5v5"
+    for one_data in data:
+        for key, value in one_data.items():
+            if value == "":
+                one_data[key] = "-"
+    req_data['data'] = data
+    return req_data
 
 
 def indicator_query_hanlde(data: list[dict]) -> list[dict]:
