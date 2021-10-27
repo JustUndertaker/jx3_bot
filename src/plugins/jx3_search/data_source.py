@@ -4,41 +4,86 @@ import time
 from typing import Optional, Tuple
 
 import httpx
+from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.utils.config import config as baseconfig
+from src.utils.log import logger
 from src.utils.utils import nickname
 
-from .config import shuxing, zhiye, zhiye_name
+from .config import jx3_app, shuxing, zhiye, zhiye_name
 
 config = baseconfig.get('jx3-api')
 '''jx3-api的配置'''
 
-headers = {"ser-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0"}
-http_client = httpx.AsyncClient(headers=headers)
+_jx3_token = config.get('jx3-token')
+_jx3_vip_token = config.get('jx3-vip-token')
+
+_jx3_headers = {"token": _jx3_token, "User-Agent": "Nonebot2-jx3_bot"}
+_jx3_vip_headers = {"token": _jx3_vip_token, "User-Agent": "Nonebot2-jx3_bot"}
+
+jx3_client = httpx.AsyncClient(headers=_jx3_headers)
+'''异步请求库客户端'''
+jx3_vip_client = httpx.AsyncClient(headers=_jx3_vip_headers)
 '''异步请求库客户端'''
 
 jx3sp_token: Optional[str] = None
 '''jx3sp的token'''
+_j3sp_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0"}
+http_client = httpx.AsyncClient(headers=_j3sp_headers)
 
 
-async def get_data_from_jx3api(app: str, params: dict, app_type: str = "app") -> Tuple[str, Optional[dict]]:
+async def get_jx3_url(bot_id: int, app: str) -> Tuple[bool, str]:
+    '''
+    :说明
+        获取访问api的url，如果未配置高级站点地址，则默认采用普通站访问
+
+    :参数
+        * bot_id：机器人QQ
+        * app：应用名称
+
+    :返回
+        * bool：是否为高级用户
+        * str：url地址
+    '''
+    jx3_url = config.get('jx3-url')
+    vip_url = config.get('jx3-vip-url')
+    app_dict = jx3_app.get(app)
+    if vip_url is None:
+        url = jx3_url+app_dict.get('free')
+        return False, url
+
+    permission = await BotInfo.bot_get_permission(bot_id)
+    if permission:
+        url = vip_url+app_dict.get('vip')
+    else:
+        url = jx3_url+app_dict.get('free')
+
+    return permission, url
+
+
+async def get_data_from_jx3api(url: str, params: dict, vip_flag: bool) -> Tuple[str, Optional[dict]]:
     '''
     :说明
         发送一条请求给jx3-api，返回结果
 
     :参数
-        * app：请求功能名，链接到url后
+        * url：url地址
         * params：请求参数
-        * app_type：默认的网址type，默认为app
+        * vip_flag：是否为高级用户
 
     :返回
         * msg：返回msg，为'success'时成功
         * data：返回数据
     '''
-    api_url = config.get('jx3-url')
-    url = f"{api_url}/{app_type}/{app}"
+    if vip_flag:
+        client = jx3_vip_client
+        log = f"使用vip站点访问：{url}"
+    else:
+        client = jx3_client
+        log = f"使用普通站点访问：{url}"
+    logger.debug(log)
     try:
-        req_url = await http_client.get(url, params=params)
+        req_url = await client.get(url, params=params)
         req = req_url.json()
         msg = req['msg']
         data = req['data']
@@ -58,11 +103,12 @@ async def get_master_server(server: str) -> Optional[str]:
     '''
     获取主服务器名称
     '''
-    app = "server"
+    app = "/app/server"
+    url = config.get('jx3-url')+app
     params = {
         "name": server
     }
-    msg, data = await get_data_from_jx3api(app, params)
+    msg, data = await get_data_from_jx3api(url, params, False)
 
     if msg != 'success':
         return None

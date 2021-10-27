@@ -162,3 +162,122 @@ shuxing = {
         "atDecriticalDamagePowerBase": "化劲"
     }
 }
+
+jx3_app = {
+    "daily": {
+        "free": "/app/daily",
+        "vip": "/next/daily"
+    },
+    "check": {
+        "free": "/app/check",
+        "vip": "/next/check"
+    },
+    "demon": {
+        "free": "/app/demon",
+        "vip": "/next/demon"
+    },
+    "flower": {
+        "free": "/app/flower",
+        "vip": "/next/flower"
+    },
+    "exam": {
+        "free": "/app/exam",
+        "vip": "/next/exam"
+    },
+    "furniture": {
+        "free": "/app/furniture",
+        "vip": "/next/furniture"
+    },
+    "require": {
+        "free": "/app/require",
+        "vip": "/next/require"
+    },
+    "heighten": {
+        "free": "/app/heighten",
+        "vip": "/next/heighten"
+    },
+    "equip": {
+        "free": "/app/equip",
+        "vip": "/next/equip"
+    },
+    "qixue": {
+        "free": "/app/qixue",
+        "vip": "/next/qixue"
+    },
+    "server": {
+        "free": "/app/server",
+        "vip": "/next/server"
+    },
+    "macro": {
+        "free": "/app/macro",
+        "vip": "/next/macro"
+    },
+    "price": {
+        "free": "/app/price",
+        "vip": "/next/price"
+    },
+    "prices": {
+        "free": "/app/prices",
+        "vip": "/next/prices"
+    },
+    "seniority": {
+        "free": "/app/seniority",
+        "vip": "/next/seniority"
+    },
+    "strategy": {
+        "free": "/app/strategy",
+        "vip": "/next/strategy"
+    },
+    "horse": {
+        "free": "/app/horse",
+        "vip": "/next/horse"
+    },
+    "serendipity": {
+        "free": "/advent/serendipity",
+        "vip": "/advent/serendipity"
+    },
+    "recent": {
+        "free": "/advent/recent",
+        "vip": "/advent/recent"
+    },
+    "collect": {
+        "free": "/advent/collect",
+        "vip": "/advent/collect"
+    },
+    "random": {
+        "free": "/app/random",
+        "vip": "/next/random"
+    },
+    "roleInfo": {
+        "free": "/role/roleInfo",
+        "vip": "/role/roleInfo"
+    },
+    "teamCdList": {
+        "free": "/role/teamCdList",
+        "vip": "/role/teamCdList"
+    },
+    "attribute": {
+        "free": "/role/attribute",
+        "vip": "/role/attribute"
+    },
+    "achievement": {
+        "free": "/role/achievement",
+        "vip": "/role/achievement"
+    },
+    "role_seniority": {
+        "free": "/role/attribute",
+        "vip": "/role/attribute"
+    },
+    "record": {
+        "free": "/arena/record",
+        "vip": "/arena/record"
+    },
+    "awesome": {
+        "free": "/arena/awesome",
+        "vip": "/arena/awesome"
+    },
+    "schools": {
+        "free": "/arena/schools",
+        "vip": "/arena/schools"
+    }
+}
