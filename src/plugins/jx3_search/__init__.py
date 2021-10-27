@@ -235,9 +235,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await gold_query.finish(msg)
 
+    if vip_flag:
+        data = data[0]
     date_now = datetime.now().strftime("%m-%d %H:%M")
     msg = f'金价[{data.get("server")}] {date_now}\n'
     msg += f'官方平台：1元={data.get("wanbaolou")}金\n'
+    msg += f'百度贴吧：1元={data.get("tieba")}金\n'
     msg += f'悠悠平台：1元={data.get("uu898")}金\n'
     msg += f'嘟嘟平台：1元={data.get("dd373")}金\n'
     msg += f'其他平台：1元={data.get("5173")}金'
