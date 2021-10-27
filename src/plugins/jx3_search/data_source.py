@@ -15,6 +15,8 @@ config = baseconfig.get('jx3-api')
 
 _jx3_token = config.get('jx3-token')
 _jx3_vip_token = config.get('jx3-vip-token')
+if _jx3_vip_token is None:
+    _jx3_vip_token = ""
 
 _jx3_headers = {"token": _jx3_token, "User-Agent": "Nonebot2-jx3_bot"}
 _jx3_vip_headers = {"token": _jx3_vip_token, "User-Agent": "Nonebot2-jx3_bot"}
