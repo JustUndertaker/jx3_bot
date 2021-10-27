@@ -712,10 +712,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await indicator.finish(msg)
 
     data = {}
-    role_info = req_data.get("role_info")
-    data['name'] = role_info['server']+"-"+role_info['name']
-    data['role_performance'] = req_data.get('role_performance')
-    data['history'] = source.indicator_query_hanlde(req_data.get('role_history'))
+    data['name'] = req_data['server']+"-"+req_data['name']
+    data['role_performance'] = req_data.get('performance')
+    data['history'] = source.indicator_query_hanlde(req_data.get('history'))
     pagename = "indicator.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)

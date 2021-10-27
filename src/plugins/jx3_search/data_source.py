@@ -270,19 +270,6 @@ async def handle_equip_data(alldata: dict) -> dict:
     return post_data
 
 
-def _get_icon_name(url: str) -> str:
-    '''从url返回文件名'''
-    url_list = url.split("/")
-    last = url_list[-1].split("?")
-    return last[0]
-
-
-async def _get_icon(url: str, filename: str) -> None:
-    '''下载icon'''
-    req = await http_client.get(url)
-    open(filename, 'wb').write(req.content)
-
-
 def indicator_query_hanlde(data: list[dict]) -> list[dict]:
     '''
     历史战绩预处理数据
@@ -291,25 +278,25 @@ def indicator_query_hanlde(data: list[dict]) -> list[dict]:
     for one_data in data:
         one_req_data = {}
         one_req_data['kungfu'] = one_data.get('kungfu')
-        pvp_type = one_data.get('pvp_type')
+        pvp_type = one_data.get('pvpType')
         if pvp_type == 2:
             one_req_data['pvp_type'] = "2v2"
         elif pvp_type == 3:
             one_req_data['pvp_type'] = "3v3"
         else:
             one_req_data['pvp_type'] = "5v5"
-        one_req_data['avg_grade'] = one_data.get('avg_grade')
+        one_req_data['avg_grade'] = one_data.get('avgGrade')
         one_req_data['result'] = one_data.get('won')
         mmr = one_data.get('mmr')
         if mmr > 0:
             mmr_str = "+"+str(mmr)
         else:
             mmr_str = str(mmr)
-        one_req_data['source'] = str(one_data.get('total_mmr'))
+        one_req_data['source'] = str(one_data.get('totalMmr'))
         one_req_data['source_add'] = mmr_str
 
-        start_time = one_data.get('start_time')
-        end_time = one_data.get('end_time')
+        start_time = one_data.get('startTime')
+        end_time = one_data.get('endTime')
         time_keep = end_time-start_time
         pvp_time = int((time_keep+30)/60)
         if pvp_time == 0:
