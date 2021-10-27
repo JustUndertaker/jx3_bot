@@ -9,7 +9,7 @@ function handle(alldata) {
         var one_role = attribute[i]
         role_tittle = "#role_tittle_" + i
         role_value = "#role_value_" + i
-        $(role_tittle).text(one_role["tittle"])
+        $(role_tittle).text(one_role["name"])
         $(role_value).text(one_role["value"])
     }
 

@@ -1,4 +1,3 @@
-import os
 import re
 import time
 from typing import Optional, Tuple
@@ -9,7 +8,7 @@ from src.modules.group_info import GroupInfo
 from src.utils.config import config as baseconfig
 from src.utils.utils import nickname
 
-from .config import jx3_app, shuxing, zhiye, zhiye_name
+from .config import jx3_app, zhiye_name
 
 config = baseconfig.get('jx3-api')
 '''jx3-api的配置'''
@@ -210,80 +209,56 @@ def hand_adventure_data(data: list[dict]) -> list[dict]:
     return data
 
 
-def _handle_attributes(attribute: dict) -> dict:
-    '''预处理attribute'''
-    data = {}
-    data['score'] = attribute.get('score')
-    data['totalLift'] = attribute.get('totalLift')
-    data['atVitalityBase'] = attribute.get('atVitalityBase')
-    data['atSpiritBase'] = attribute.get('atSpiritBase')
-    data['atStrengthBase'] = attribute.get('atStrengthBase')
-    data['atAgilityBase'] = attribute.get('atAgilityBase')
-    data['atSpunkBase'] = attribute.get('atSpunkBase')
-    data['totalAttack'] = attribute.get('totalAttack')
-    data['baseAttack'] = attribute.get('baseAttack')
-    data['totaltherapyPowerBase'] = attribute.get('totaltherapyPowerBase')
-    data['therapyPowerBase'] = attribute.get('therapyPowerBase')
-    data['atSurplusValueBase'] = attribute.get('atSurplusValueBase')
-    # 会心
-    data['atCriticalStrike'] = f"{attribute.get('atCriticalStrike')}（{attribute.get('atCriticalStrikeLevel')}%）"
-    # 会效
-    data['atCriticalDamagePowerBase'] = f"{attribute.get('atCriticalDamagePowerBase')}（{attribute.get('atCriticalDamagePowerBaseLevel')}%）"
-    # 加速
-    data['atHasteBase'] = f"{attribute.get('atHasteBaseLevel')}（{attribute.get('atHasteBase')}%）"
-    # 破防
-    data['atOvercome'] = f"{attribute.get('atOvercome')}（{attribute.get('atOvercomeBaseLevel')}%）"
-    # 无双
-    data['atStrainBase'] = f"{attribute.get('atStrainBase')}（{attribute.get('atStrainBaseLevel')}%）"
-    # 外防
-    data['atPhysicsShieldBase'] = f"{attribute.get('atPhysicsShieldBase')}（{attribute.get('atPhysicsShieldBaseLevel')}%）"
-    # 内防
-    data['atMagicShield'] = f"{attribute.get('atMagicShield')}（{attribute.get('atMagicShieldLevel')}%）"
-    # 闪避
-    data['atDodge'] = f"{attribute.get('atDodge')}（{attribute.get('atDodgeLevel')}%）"
-    # 招架
-    data['atParryBase'] = f"{attribute.get('atParryBase')}（{attribute.get('atParryBaseLevel')}%）"
-    # 御劲
-    data['atToughnessBase'] = f"{attribute.get('atToughnessBase')}（{attribute.get('atToughnessBaseLevel')}%）"
-    # 化劲
-    data['atDecriticalDamagePowerBase'] = f"{attribute.get('atDecriticalDamagePowerBase')}（{attribute.get('atDecriticalDamagePowerBaseLevel')}%）"
-
-    return data
-
-
-async def handle_data(alldata: dict) -> dict:
+async def handle_equip_data(alldata: dict) -> dict:
     '''预处理装备数据'''
-    sectName = alldata.get("sectName")
-    role = f'{alldata.get("forceName")}|{alldata.get("sectName")}'
-    body = alldata.get("bodilyName")
+    kungfu = alldata.get("kungfu")
     tittle = f'{alldata.get("serverName")}-{alldata.get("roleName")}'
 
-    # 判断职业
-    type_data = None
-    for key, zhiye_data in zhiye.items():
-        for one_data in zhiye_data:
-            if one_data == sectName:
-                type_data = key
-                break
-        if type_data is not None:
-            break
+    # 处理属性
+    post_attribute = []
 
-    if type_data is None:
-        type_data = "输出"
+    kungfu = {
+        'name': '心法',
+        'value': alldata.get("kungfu")
+    }
+    post_attribute.append(kungfu)
 
-    shuxing_data = shuxing.get(type_data)
-    num_data = alldata.get("data")
-    attribute = num_data.get("attribute")
-    post_equip = num_data.get('equip')
-    post_qixue = num_data.get('qixue')
+    info = alldata.get('info')
+    score = {
+        'name': '装分',
+        'value': info.get('totalScore')
+    }
+    post_attribute.append(score)
 
-    attribute = _handle_attributes(attribute)
-    post_attribute = _handle_data(role, body, attribute, shuxing_data)
-    # 判断是否需要缓存
-    img_cache: bool = baseconfig.get('default').get('img-cache')
-    if img_cache:
-        post_equip = await _handle_icon(post_equip)
-        post_qixue = await _handle_icon(post_qixue)
+    panel: list[dict] = info.get('panel')
+    for one_data in panel:
+        one_dict = {}
+        one_dict['name'] = one_data.get('name')
+        percent = one_data.get('percent')
+        value = one_data.get('value')
+        if percent:
+            one_dict['value'] = f"{value}%"
+        else:
+            one_dict['value'] = value
+        post_attribute.append(one_dict)
+
+    # 奇穴
+    qixue: list[dict] = alldata.get('qixue')
+    post_qixue = []
+    for one_data in qixue:
+        one_dict = {}
+        one_dict['name'] = one_data.get('name')
+        one_dict['icon'] = one_data.get('icon')
+        post_qixue.append(one_dict)
+
+    # 装备
+    equip: list[dict] = alldata.get('equip')
+    post_equip = []
+    for one_data in equip:
+        one_dict = {}
+        one_dict['name'] = one_data.get('name')
+        one_dict['icon'] = one_data.get('icon')
+        post_equip.append(one_dict)
 
     post_data = {}
     post_data['tittle'] = tittle
@@ -293,48 +268,6 @@ async def handle_data(alldata: dict) -> dict:
     post_data['qixue'] = post_qixue
 
     return post_data
-
-
-def _handle_data(role: str, body: str, attribute: dict, shuxing_data: dict) -> list:
-    '''处理attribute数据'''
-    data = []
-    role_dict = {
-        "tittle": "角色",
-        "value": role
-    }
-    data.append(role_dict)
-    body_dict = {
-        "tittle": "体型",
-        "value": body
-    }
-    data.append(body_dict)
-    for key, value in shuxing_data.items():
-        one_dict = {
-            "tittle": value,
-            "value": attribute.get(key)
-        }
-        data.append(one_dict)
-    return data
-
-
-async def _handle_icon(data: list[dict]) -> dict:
-    '''处理icon'''
-    html_path: str = baseconfig.get('path').get('html')
-    icon_path = "."+html_path+"icons/"
-    icons_files = os.listdir(icon_path)
-    for one_data in data:
-        icon_url = one_data.get('icon')
-        icon_name = _get_icon_name(icon_url)
-        filename = icon_path+icon_name
-        if (icon_name in icons_files):
-            # 文件已存在，替换url
-            icon_file = "icons/"+icon_name
-            one_data['icon'] = icon_file
-        else:
-            # 文件不存在，需要下载
-            await _get_icon(icon_url, filename)
-
-    return data
 
 
 def _get_icon_name(url: str) -> str:

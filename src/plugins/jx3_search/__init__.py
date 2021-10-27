@@ -169,7 +169,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await equipquery.finish(msg)
 
-    data = await source.handle_data(req_data)
+    data = await source.handle_equip_data(req_data)
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)
