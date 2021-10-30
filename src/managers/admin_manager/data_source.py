@@ -116,7 +116,7 @@ async def get_reply_jx3(question: str) -> Optional[str]:
                 logger.debug(log)
                 return None
         except Exception as e:
-            log = f'API访问失败：{e}'
+            log = f'API访问失败：{str(e)}'
             logger.error(log)
             return None
 
@@ -159,6 +159,6 @@ async def get_reply_qingyunke(text: str) -> Optional[str]:
                 logger.error(log)
                 return None
         except Exception as e:
-            log = f'青云客API访问失败：{e}'
+            log = f'青云客API访问失败：{str(e)}'
             logger.error(log)
             return None

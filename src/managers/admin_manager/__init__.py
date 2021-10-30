@@ -251,7 +251,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
             await bot.call_api(api="delete_friend", id=user_id)
             msg = f'成功，删除好友：{user_name}({user_id})。'
         except Exception as e:
-            msg = f'删除好友失败：{e}'
+            msg = f'删除好友失败：{str(e)}'
     else:
         msg = f'失败，未找到好友：({user_id})。'
 

@@ -44,6 +44,6 @@ async def get_voice(text: str) -> Optional[str]:
                 logger.debug(log)
                 return None
         except Exception as e:
-            log = f'请求链接失败，原因：{e}'
+            log = f'请求链接失败，原因：{str(e)}'
             logger.error(log)
             return None
