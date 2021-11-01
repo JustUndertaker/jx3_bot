@@ -219,7 +219,7 @@ async def handle_equip_data(alldata: dict) -> dict:
     info = alldata.get('info')
     score = {
         'name': '装分',
-        'value': info.get('totalScore')
+        'value': info.get('score')
     }
     post_attribute.append(score)
 
