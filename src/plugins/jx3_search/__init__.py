@@ -20,7 +20,7 @@ export.ignore = False  # 插件管理器忽略此插件
 daily = on_regex(pattern=r"(^日常$)|(^日常 [\u4e00-\u9fa5]+$)", permission=GROUP, priority=5, block=True)
 
 # 装备查询
-equipquery_regex = r"(^(装备)|(属性) [(\u4e00-\u9fa5)|(@)]+$)|(^(装备)|(属性) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+equipquery_regex = r"(^((装备)|(属性)) [(\u4e00-\u9fa5)|(@)]+$)|(^((装备)|(属性)) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
 equipquery = on_regex(pattern=equipquery_regex, permission=GROUP, priority=5, block=True)
 
 # 开服查询
@@ -47,11 +47,11 @@ macro_regex = r"(^宏 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+宏$)"
 macro = on_regex(pattern=macro_regex, permission=GROUP, priority=5, block=True)
 
 # 奇遇前置查询
-adventure_regex = r"^(前置)|(条件) [\u4e00-\u9fa5]+$"
+adventure_regex = r"^((前置)|(条件)) [\u4e00-\u9fa5]+$"
 adventurecondition = on_regex(pattern=adventure_regex, permission=GROUP, priority=5, block=True)
 
 # 科举查询
-exam = on_regex(pattern=r"^(考试)|(科举) ", permission=GROUP, priority=5, block=True)
+exam = on_regex(pattern=r"^((考试)|(科举)) ", permission=GROUP, priority=5, block=True)
 
 # 攻略查询
 raiderse = r"(^攻略 [\u4e00-\u9fa5]+$)|(^[\u4e00-\u9fa5]+攻略$)"
