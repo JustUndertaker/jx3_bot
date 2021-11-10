@@ -16,6 +16,7 @@ export = export()
 export.plugin_name = '签到系统'
 export.plugin_command = "签到"
 export.plugin_usage = '普普通通的签到系统。'
+export.default_status = True  # 插件默认开关
 export.ignore = False  # 插件管理器忽略此插件
 
 sign = on_regex(r"^签到$", permission=GROUP, priority=5, block=True)

@@ -10,6 +10,7 @@ export = export()
 export.plugin_name = '舔狗日记'
 export.plugin_command = "舔狗|日记|舔狗日记"
 export.plugin_usage = '返回一条舔狗日记。'
+export.default_status = True  # 插件默认开关
 export.ignore = False  # 插件管理器忽略此插件
 
 tiangou_regex = r"(^舔狗$)|(^日记$)|(^舔狗日记$)"

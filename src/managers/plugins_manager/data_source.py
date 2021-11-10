@@ -1,11 +1,11 @@
+import base64
 from typing import Optional
 
 from nonebot.adapters.cqhttp import MessageSegment
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
-from src.utils.utils import nickname
 from src.utils.config import config
-import base64
+from src.utils.utils import nickname
 
 from .model import PluginManager
 
@@ -62,7 +62,8 @@ async def plugin_init(bot_id, group_id: int) -> None:
             continue
         module_name = plugin.module_name
         description = plugin.plugin_usage
-        await PluginInfo.append_or_update(bot_id, module_name, description, group_id)
+        default_status = plugin.default_status
+        await PluginInfo.append_or_update(bot_id, module_name, description, group_id, default_status)
 
 
 async def change_plugin_status(bot_id: int, plugin_name: str, group_id: int, status: bool) -> MessageSegment:

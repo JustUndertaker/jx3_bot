@@ -25,7 +25,7 @@ class PluginInfo(Model):
     '''
     QQ群号
     '''
-    status = fields.BooleanField(default=True)
+    status = fields.BooleanField(null=True)
     '''
     插件状态
     '''
@@ -71,7 +71,7 @@ class PluginInfo(Model):
             raise Exception
 
     @classmethod
-    async def append_or_update(cls, bot_id: int, module_name: str, description: str,  group_id: int) -> None:
+    async def append_or_update(cls, bot_id: int, module_name: str, description: str,  group_id: int, status: bool) -> None:
         '''
         :说明
             增加，或更新一条数据
@@ -81,10 +81,16 @@ class PluginInfo(Model):
             * module_name：插件模块名
             * description：插件描述
             * group_id：QQ群号
+            * status: 开关状态
         '''
-        record, _ = await cls.get_or_create(bot_id=bot_id, module_name=module_name, group_id=group_id)
+        record, flag = await cls.get_or_create(bot_id=bot_id, module_name=module_name, group_id=group_id)
         record.description = description
-        await record.save(update_fields=["description"])
+        if flag:
+            record.status = status
+            update_fields = ["description", "status"]
+        else:
+            update_fields = ["description"]
+        await record.save(update_fields=update_fields)
 
     @classmethod
     async def set_group_status(cls, bot_id: int, group_id: int, status: bool) -> None:

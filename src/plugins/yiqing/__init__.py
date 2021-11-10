@@ -14,6 +14,7 @@ export = export()
 export.plugin_name = '疫情查询'
 export.plugin_command = "XX疫情|疫情 XX"
 export.plugin_usage = '查询疫情情况。'
+export.default_status = True  # 插件默认开关
 export.ignore = False  # 插件管理器忽略此插件
 
 
