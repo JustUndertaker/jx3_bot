@@ -269,9 +269,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await extra_point.finish(msg)
 
-    msg = f'[{data.get("name")}]\n'
-    msg += f'龙门绝境奇穴：\n{data.get("long")}\n'
-    msg += f'战场任务奇穴：\n{data.get("battle")}\n'
+    img = data.get('all')
+    msg = MessageSegment.image(img)
     await extra_point.finish(msg)
 
 
