@@ -14,9 +14,7 @@ from src.utils.log import logger
 from src.utils.scheduler import scheduler
 from src.utils.utils import OWNER
 
-from .data_source import (bot_connect, bot_disconnect, clean_bot,
-                          clean_bot_owner, get_all_bot, get_bot_group_list,
-                          get_robot_status, set_bot_owner, set_permission)
+from . import data_source as source
 
 export = export()
 export.plugin_name = 'bot管理插件'
@@ -38,7 +36,7 @@ async def _(bot: Bot):
     bot_id = int(bot.self_id)
     log = f'连接到bot（{bot.self_id}），正在注册信息'
     logger.info(log)
-    await bot_connect(bot_id)
+    await source.bot_connect(bot_id)
     log = f'bot（{bot.self_id}）信息注册完毕'
     logger.info(log)
 
@@ -51,7 +49,7 @@ async def _(bot: Bot):
     bot_id = int(bot.self_id)
     log = f'检测到bot（{bot.self_id}）断开链接.'
     logger.info(log)
-    await bot_disconnect(bot_id)
+    await source.bot_disconnect(bot_id)
 
 
 # 定时清理离线超过时间的Bot
@@ -60,13 +58,25 @@ async def _():
     log = '正在清理离线bot'
     logger.info(log)
     outtime = config.get('default').get('bot-outtime')
-    count = await clean_bot(outtime)
+    count = await source.clean_bot(outtime)
     log = f'清理完毕，本次共清理 {count} 个机器人数据'
     logger.info(log)
 
 
 # 设置管理员
 set_owner = on_regex(pattern=r"^设置管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
+# 清除管理员
+clean_owner = on_regex(pattern=r"^清除管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
+# 管理员广播
+borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
+borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
+# 查看所有连接机器人
+server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, priority=2, block=True)
+# 授权高级功能
+open_permission = on_regex(pattern=r"^授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
+close_permission = on_regex(pattern=r"^取消授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
+# 手动清理离线机器人
+clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
 
 
 @set_owner.handle()
@@ -75,7 +85,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     bot_id = int(bot.self_id)
     owner_id = event.user_id
     nickname = event.sender.nickname
-    flag = await set_bot_owner(bot_id, owner_id)
+    flag = await source.set_bot_owner(bot_id, owner_id)
     if flag is None:
         msg = "设置失败，机器人记录不存在。"
     elif flag:
@@ -85,16 +95,12 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await set_owner.finish(msg)
 
 
-# 清除管理员
-clean_owner = on_regex(pattern=r"^清除管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
-
-
 @clean_owner.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''清除管理员'''
     bot_id = int(bot.self_id)
     owner_id = event.user_id
-    flag = await clean_bot_owner(bot_id, owner_id)
+    flag = await source.clean_bot_owner(bot_id, owner_id)
     if flag is None:
         msg = "没有什么好清除的了。"
     elif flag:
@@ -102,10 +108,6 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = "清除失败惹，你不是管理员。"
     await clean_owner.finish(msg)
-
-
-# 管理员广播
-borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
 
 
 @borodcast_all.handle()
@@ -117,7 +119,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     text = event.get_plaintext()[5:]
     msg = "管理员广播消息：\n\n"
     msg += text
-    group_list = await get_bot_group_list(bot_id)
+    group_list = await source.get_bot_group_list(bot_id)
     num = len(group_list)
     time_start = time.time()
     count_success = 0
@@ -135,9 +137,6 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await borodcast_all.finish(msg)
 
 
-borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
-
-
 @borodcast.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''
@@ -149,7 +148,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     group_id = int(text_list[1])
     loc = plaintext.find(" ", 3)
     text = plaintext[loc+1:]
-    robot_status = await get_robot_status(bot_id, group_id)
+    robot_status = await source.get_robot_status(bot_id, group_id)
     if robot_status is None:
         msg = f"广播失败，未找到群[{str(group_id)}]。"
         await borodcast.finish(msg)
@@ -166,15 +165,12 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await borodcast.finish(msg)
 
 
-server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, priority=2, block=True)
-
-
 @server_list.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     查看所有链接机器人
     '''
-    data = await get_all_bot()
+    data = await source.get_all_bot()
     for one_data in data:
         if one_data['owner_id'] is None:
             one_data['owner_id'] = "无"
@@ -196,24 +192,18 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await server_list.finish(msg)
 
 
-open_permission = on_regex(pattern=r"^授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
-
-
 @open_permission.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     私聊授权高级功能
     '''
     bot_id = int(event.get_plaintext().split(" ")[-1])
-    req = await set_permission(bot_id, True)
+    req = await source.set_permission(bot_id, True)
     if req:
         msg = f"授权成功，机器人[{bot_id}]已开启高级功能。"
     else:
         msg = f"授权失败，未找到机器人[{bot_id}]。"
     await open_permission.finish(msg)
-
-
-close_permission = on_regex(pattern=r"^取消授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
 
 
 @close_permission.handle()
@@ -222,15 +212,12 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     私聊取消高级功能
     '''
     bot_id = int(event.get_plaintext().split(" ")[-1])
-    req = await set_permission(bot_id, False)
+    req = await source.set_permission(bot_id, False)
     if req:
         msg = f"机器人[{bot_id}]已关闭高级功能。"
     else:
         msg = f"失败，未找到机器人[{bot_id}]。"
     await close_permission.finish(msg)
-
-
-clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
 
 
 @clean_outline_bot.handle()
@@ -245,6 +232,6 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         outtime = int(text_list[-1])
     log = f"管理员清理机器人，参数：{outtime}"
     logger.info(log)
-    count = await clean_bot(outtime)
+    count = await source.clean_bot(outtime)
     msg = f"清理完毕，共清理 {str(count)} 个机器人。"
     await clean_outline_bot.finish(msg)

@@ -6,7 +6,7 @@ from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import OpenServerRecvEvent
 
-from .data_source import get_robot_status, get_server
+from . import data_source as source
 
 export = export()
 export.plugin_name = '开服推送'
@@ -36,10 +36,10 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
-        group_server = await get_server(bot_id, group_id)
+        group_server = await source.get_server(bot_id, group_id)
         if group_server == server:
             # 判断机器人是否开启
-            status = await get_robot_status(bot_id, group_id)
+            status = await source.get_robot_status(bot_id, group_id)
             if status:
                 try:
                     await bot.send_group_msg(group_id=group_id, message=msg)

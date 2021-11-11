@@ -12,8 +12,7 @@ from src.utils.browser import get_html_screenshots
 from src.utils.log import logger
 from src.utils.utils import OWNER
 
-from .data_source import (change_plugin_status, check_group_init,
-                          check_plugin_status, get_meau_data, plugin_init, get_help_img)
+from . import data_source as source
 from .model import manager_init
 
 # 获取本模块名
@@ -35,7 +34,7 @@ async def _(bot: Bot):
     logger.debug(log)
     for group in group_list:
         group_id = group['group_id']
-        await plugin_init(bot_id, group_id)
+        await source.plugin_init(bot_id, group_id)
     log = f'Bot({bot.self_id}) | 插件信息注册完毕。'
     logger.debug(log)
 
@@ -57,14 +56,14 @@ async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State
     bot_id = int(bot.self_id)
 
     # 判断是否注册
-    is_init = await check_group_init(bot_id, group_id, module_name)
+    is_init = await source.check_group_init(bot_id, group_id, module_name)
     if is_init is False or module_name == self_module:
         log = f'Bot({bot.self_id}) | 此插件不归管理器管理，跳过。'
         logger.debug(log)
         return
 
     # 管理器管理函数
-    status = await check_plugin_status(bot_id, module_name, group_id)
+    status = await source.check_plugin_status(bot_id, module_name, group_id)
 
     if status is False:
         reason = f'[{module_name}]插件未开启'
@@ -88,7 +87,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     # 注册
     log = f'Bot({bot.self_id}) | 管理员手动注册群插件：{group_id}'
     logger.info(log)
-    await plugin_init(bot_id, group_id)
+    await source.plugin_init(bot_id, group_id)
 
 changeregex = r'^(打开|关闭) [\u4E00-\u9FA5A-Za-z0-9_]+$'
 change = on_regex(changeregex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
@@ -104,7 +103,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
         plugin_name, status = _get_change_params(text)
         log = f'Bot({bot.self_id}) | （{group_id}）群尝试设置插件[{plugin_name}]的状态：[{status}]。'
         logger.info(log)
-        msg = await change_plugin_status(bot_id, plugin_name, group_id, status)
+        msg = await source.change_plugin_status(bot_id, plugin_name, group_id, status)
         log = f'插件[{plugin_name}]状态设置成功。'
         logger.info(log)
     except Exception:
@@ -148,7 +147,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     group_id = event.group_id
     log = f'Bot({bot.self_id}) | {event.sender.nickname}（{event.user_id}，{event.group_id}）请求功能菜单。'
     logger.info(log)
-    data = await get_meau_data(self_id, group_id)
+    data = await source.get_meau_data(self_id, group_id)
     pagename = "meau.html"
     img = await get_html_screenshots(pagename, data)
     msg = MessageSegment.image(img)
@@ -161,7 +160,7 @@ help_info = on_regex(pattern=r"^帮助$", permission=GROUP, priority=2, block=Tr
 @help_info.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''帮助info'''
-    img = get_help_img()
+    img = source.get_help_img()
     msg = MessageSegment.image(img)
     log = f"Bot({bot.self_id}) | 群[{event.group_id}]请求帮助"
     logger.info(log)

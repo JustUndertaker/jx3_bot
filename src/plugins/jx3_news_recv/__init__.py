@@ -5,7 +5,7 @@ from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import NewsRecvEvent
 
-from .data_source import get_robot_status
+from . import data_source as source
 
 export = export()
 export.plugin_name = '新闻推送'
@@ -33,7 +33,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
     group_list = await bot.get_group_list()
     for group in group_list:
         group_id = group['group_id']
-        status = await get_robot_status(bot_id, group_id)
+        status = await source.get_robot_status(bot_id, group_id)
         if status:
             try:
                 await bot.send_group_msg(group_id=group_id, message=msg)

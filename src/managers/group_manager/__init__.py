@@ -9,10 +9,7 @@ from src.utils.log import logger
 from src.utils.utils import OWNER, nickname
 
 from ..plugins_manager.data_source import plugin_init
-from .data_source import (change_active, change_server, check_event,
-                          check_robot_status, get_bot_owner, get_group_name,
-                          get_server_name, get_user_name, group_detel,
-                          group_init, set_robot_status, user_detele, user_init)
+from . import data_source as source
 
 export = export()
 export.plugin_name = '群管理'
@@ -37,13 +34,13 @@ async def _(bot: Bot):
     for group in group_list:
         group_id = group['group_id']
         group_name = group['group_name']
-        await group_init(bot_id=bot_id, group_id=group_id, group_name=group_name)
+        await source.group_init(bot_id=bot_id, group_id=group_id, group_name=group_name)
         # 用户注册
         user_list = await bot.get_group_member_list(group_id=group_id)
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
-            await user_init(bot_id, user_id, group_id, user_name)
+            await source.user_init(bot_id, user_id, group_id, user_name)
 
 server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
 server_useage = "[更换绑定服务器]\n群管理命令：绑定 XXX"
@@ -62,13 +59,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
     group_id = event.group_id
     log = f'Bot({bot.self_id}) | [{playername}]({event.user_id},{group_id})更换服务器，参数：{name}'
     logger.info(log)
-    server = await get_server_name(name)
+    server = await source.get_server_name(name)
     if server is None:
         msg = f'参数错误，检查一下呀。\n{server_useage}'
         log = '更换服务器出错，参数错误。'
         logger.info(log)
         await server_change.finish(msg)
-    await change_server(bot_id=bot_id, group_id=group_id, server=server)
+    await source.change_server(bot_id=bot_id, group_id=group_id, server=server)
     msg = f'当前绑定服务器为：{server}'
     log = f'更换服务器成功，绑定服务器为：{server}'
     logger.info(log)
@@ -93,7 +90,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await active_change.finish(msg)
 
     group_id = event.group_id
-    await change_active(bot_id, group_id, active)
+    await source.change_active(bot_id, group_id, active)
     msg = f"活跃值设为：{active}"
     log = f"Bot({bot.self_id}) | 群[{group_id}]设置活跃值：{active}"
     logger.info(log)
@@ -101,7 +98,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
 
 check_in_group = ['notice.group_increase.approve', 'notice.group_increase.invite']
-someone_in_group = on_notice(rule=check_event(check_in_group), priority=3, block=True)
+someone_in_group = on_notice(rule=source.check_event(check_in_group), priority=3, block=True)
 
 
 @someone_in_group.handle()
@@ -118,7 +115,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         # 注册群
         group_info = await bot.get_group_info(group_id=group_id, no_cache=True)
         group_name = group_info['group_name']
-        await group_init(bot_id, group_id, group_name)
+        await source.group_init(bot_id, group_id, group_name)
         # 用户注册
         user_list = await bot.get_group_member_list(group_id=group_id)
         # 插件注册
@@ -126,10 +123,10 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         for user in user_list:
             user_id = user['user_id']
             user_name = user['nickname'] if user['card'] == "" else user['card']
-            await user_init(bot_id, user_id, group_id, user_name)
+            await source.user_init(bot_id, user_id, group_id, user_name)
 
         msg = f'我加入了群[{group_name}]({group_id})'
-        owner_id = await get_bot_owner(bot_id)
+        owner_id = await source.get_bot_owner(bot_id)
         if owner_id is not None:
             await bot.send_private_msg(user_id=owner_id, message=msg)
         msg = None
@@ -139,14 +136,14 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
         await someone_in_group.finish(msg)
 
     # 判断机器人是否开启
-    status = await check_robot_status(bot_id, group_id)
+    status = await source.check_robot_status(bot_id, group_id)
     if status is None or status is False:
         await someone_in_group.finish()
 
     # 注册用户
     user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id, no_cache=True)
     user_name = user_info['nickname']
-    await user_init(bot_id, user_id, group_id, user_name)
+    await source.user_init(bot_id, user_id, group_id, user_name)
     # 欢迎语
     default_welcome: str = config.get('robot-welcome')
     msg = MessageSegment.at(user_id)+default_welcome
@@ -154,7 +151,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
 
 
 check_left = ['notice.group_decrease.leave', 'notice.group_decrease.kick', 'notice.group_decrease.kick_me']
-someone_left = on_notice(rule=check_event(check_left), priority=3, block=True)
+someone_left = on_notice(rule=source.check_event(check_left), priority=3, block=True)
 
 
 @someone_left.handle()
@@ -165,24 +162,24 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     bot_id = int(bot.self_id)
     user_id = event.user_id
     group_id = event.group_id
-    user_name = await get_user_name(bot_id, user_id, group_id)
+    user_name = await source.get_user_name(bot_id, user_id, group_id)
     # 删除数据
-    await user_detele(bot_id, user_id, group_id)
+    await source.user_detele(bot_id, user_id, group_id)
 
     sub_type = event.sub_type
     if sub_type == "kick_me":
         # 机器人被踢了
-        group_name = await get_group_name(bot_id, group_id)
+        group_name = await source.get_group_name(bot_id, group_id)
         msg = f'我在[{group_name}]({group_id})被管理员踹走了……'
-        owner_id = await get_bot_owner(bot_id)
+        owner_id = await source.get_bot_owner(bot_id)
         if owner_id is not None:
             await bot.send_private_msg(user_id=owner_id, message=msg)
         # 删除数据
-        await group_detel(bot_id, group_id)
+        await source.group_detel(bot_id, group_id)
         await someone_in_group.finish()
 
     # 查看群是否开启
-    status = await check_robot_status(bot_id, group_id)
+    status = await source.check_robot_status(bot_id, group_id)
     if status is None or status is False:
         await someone_in_group.finish()
 
@@ -220,6 +217,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
         status = False
 
     # 设置开关
-    await set_robot_status(bot_id, group_id, status)
+    await source.set_robot_status(bot_id, group_id, status)
     msg = f"{nickname} 当前状态为：[{get_status}]"
     await robotchange.finish(msg)

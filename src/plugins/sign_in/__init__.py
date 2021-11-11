@@ -10,7 +10,7 @@ from src.utils.log import logger
 from src.utils.scheduler import scheduler
 from src.utils.utils import nickname
 
-from .data_source import get_bot_owner, get_sign_in, reset
+from . import data_source as source
 
 export = export()
 export.plugin_name = '签到系统'
@@ -31,7 +31,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
     log = f'Bot({bot.self_id}) | {user_name}（{user_id}，{group_id}）请求：签到'
     logger.info(log)
-    msg_req = await get_sign_in(bot_id, user_id, group_id, user_name)
+    msg_req = await source.get_sign_in(bot_id, user_id, group_id, user_name)
     msg = MessageSegment.at(user_id)+msg_req
     await sign.finish(msg)
 
@@ -41,7 +41,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 async def _():
     bot_id_list = get_bots()
     for bot_id, bot in bot_id_list.items():
-        group_list = await reset(int(bot_id))
+        group_list = await source.reset(int(bot_id))
         count_success = 0
         count_failed = 0
         count_all = len(group_list)
@@ -59,7 +59,7 @@ async def _():
         # 获取owner
         time_end = time.time()
         time_use = round(time_end-time_start, 2)
-        owner_id = await get_bot_owner(bot_id)
+        owner_id = await source.get_bot_owner(bot_id)
         if owner_id is not None:
             msg = f"发送晚安完毕，共发送 {count_all} 个群\n成功 {count_success} 个\n失败 {count_failed} 个\n用时 {time_use} 秒"
             await bot.send_private_msg(user_id=owner_id, message=msg)

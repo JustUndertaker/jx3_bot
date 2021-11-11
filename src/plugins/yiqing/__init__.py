@@ -7,8 +7,8 @@ from nonebot.plugin import export
 from nonebot.typing import T_State
 from src.utils.log import logger
 
+from . import data_source as source
 from .config import city_list
-from .data_source import get_yiqing_card
 
 export = export()
 export.plugin_name = '疫情查询'
@@ -38,7 +38,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
                 city = name
 
     if province:
-        msg = await get_yiqing_card(province, city)
+        msg = await source.get_yiqing_card(province, city)
         name = event.sender.card
         if name == '':
             name = event.sender.nickname

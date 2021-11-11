@@ -5,7 +5,7 @@ from nonebot.plugin import export
 from nonebot.rule import to_me
 from src.utils.log import logger
 
-from .data_source import get_reply_jx3, get_reply_qingyunke
+from . import data_source as source
 
 export = export()
 export.plugin_name = '智能闲聊'
@@ -30,10 +30,10 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     # 使用jx3api访问
-    msg = await get_reply_jx3(text)
+    msg = await source.get_reply_jx3(text)
     if msg is None:
         # 使用青云客访问
-        msg = await get_reply_qingyunke(text)
+        msg = await source.get_reply_qingyunke(text)
         if msg is None:
             # 访问失败
             log = '接口访问失败，关闭事件。'

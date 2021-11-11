@@ -10,10 +10,7 @@ from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.utils import OWNER, nickname
 
-from .data_source import (change_status_all, check_event, get_all_data,
-                          get_bot_owner, get_help_img, get_reply_jx3,
-                          get_reply_qingyunke, get_text_num, leave_group,
-                          set_robot_status)
+from . import data_source as source
 
 export = export()
 export.plugin_name = '超级用户管理'
@@ -25,7 +22,7 @@ export.ignore = True  # 插件管理器忽略此插件
 config = baseconfig.get('default')
 
 check_firend_add = ['notice.friend_add']
-someone_add_me = on_notice(rule=check_event(check_firend_add), priority=3, block=True)
+someone_add_me = on_notice(rule=source.check_event(check_firend_add), priority=3, block=True)
 
 
 @someone_add_me.handle()
@@ -36,7 +33,7 @@ async def _(bot: Bot, event: FriendAddNoticeEvent):
     user_info = await bot.get_stranger_info(user_id=user_id, no_cache=True)
     user_name = user_info['nickname']
     msg = f"我添加了好友[{user_name}]({user_id})"
-    owner_id = await get_bot_owner(bot_id)
+    owner_id = await source.get_bot_owner(bot_id)
     log = f"Bot({bot.self_id}) | 添加了好友[{user_name}]({user_id})"
     logger.info(log)
     if owner_id is not None:
@@ -45,7 +42,7 @@ async def _(bot: Bot, event: FriendAddNoticeEvent):
 
 
 check_friend_add = ['request.friend']
-friend_add = on_request(rule=check_event(check_friend_add), priority=3, block=True)
+friend_add = on_request(rule=source.check_event(check_friend_add), priority=3, block=True)
 
 
 @friend_add.handle()
@@ -57,7 +54,7 @@ async def _(bot: Bot, event: FriendRequestEvent):
     await friend_add.finish()
 
 check_group_add = ['request.group.invite']
-group_add = on_request(rule=check_event(check_group_add), priority=3, block=True)
+group_add = on_request(rule=source.check_event(check_group_add), priority=3, block=True)
 
 
 @group_add.handle()
@@ -70,7 +67,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
 
 
 group_list_event = ['message.private.friend', 'message.private.group']
-get_group_list = on_regex(pattern=r"(^状态$)|(^运行状态$)", rule=check_event(
+get_group_list = on_regex(pattern=r"(^状态$)|(^运行状态$)", rule=source.check_event(
     group_list_event), permission=OWNER, priority=2, block=True)
 
 
@@ -79,7 +76,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''超级用户私聊消息'''
     bot_id = int(bot.self_id)
     data = {}
-    groups = await get_all_data(bot_id)
+    groups = await source.get_all_data(bot_id)
     group_nums = len(groups)
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data['time'] = time_now
@@ -96,7 +93,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 group_status_regex = r"^(打开|关闭) [0-9]+$"
-set_group_status = on_regex(pattern=group_status_regex, rule=check_event(
+set_group_status = on_regex(pattern=group_status_regex, rule=source.check_event(
     group_list_event), permission=OWNER, priority=2, block=True)
 
 
@@ -105,8 +102,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊打开关闭机器人'''
     bot_id = int(bot.self_id)
     text = event.get_plaintext()
-    status, group_id = get_text_num(text)
-    result = await set_robot_status(bot_id, group_id, status)
+    status, group_id = source.get_text_num(text)
+    result = await source.set_robot_status(bot_id, group_id, status)
     if result:
         msg = f"群（{group_id}）状态设置成功！"
     else:
@@ -118,7 +115,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 change_all_regex = r"^(打开|关闭)所有$"
-change_all = on_regex(pattern=change_all_regex, rule=check_event(
+change_all = on_regex(pattern=change_all_regex, rule=source.check_event(
     group_list_event), permission=OWNER, priority=2, block=True)
 
 
@@ -128,7 +125,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     bot_id = int(bot.self_id)
     text = event.get_plaintext()
     status = (text == "打开所有")
-    await change_status_all(bot_id, status)
+    await source.change_status_all(bot_id, status)
     if status:
         msg = "所有群已打开机器人！"
     else:
@@ -140,7 +137,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 chat_event = ['message.private.friend', 'message.private.group']
-chat = on_message(rule=check_event(chat_event), priority=9, block=True)
+chat = on_message(rule=source.check_event(chat_event), priority=9, block=True)
 
 
 @chat.handle()
@@ -158,10 +155,10 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     logger.info(log)
 
     # 使用jx3api访问
-    msg = await get_reply_jx3(text)
+    msg = await source.get_reply_jx3(text)
     if msg is None:
         # 使用青云客访问
-        msg = await get_reply_qingyunke(text)
+        msg = await source.get_reply_qingyunke(text)
         if msg is None:
             # 访问失败
             log = '接口访问失败，关闭事件。'
@@ -174,7 +171,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 set_group_leave_regex = r"^退群 [0-9]+$"
-set_group_leave = on_regex(pattern=set_group_leave_regex, rule=check_event(
+set_group_leave = on_regex(pattern=set_group_leave_regex, rule=source.check_event(
     chat_event), permission=OWNER, priority=2, block=True)
 
 
@@ -184,7 +181,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     text = event.get_plaintext()
     bot_id = int(bot.self_id)
     group_id = int(text.split(' ')[-1])
-    flag, group_name = await leave_group(bot_id, group_id)
+    flag, group_name = await source.leave_group(bot_id, group_id)
     if flag:
         await bot.set_group_leave(group_id=group_id, is_dismiss=True)
         msg = f'成功，已退出群：[{group_name}]({group_id})'
@@ -197,7 +194,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 get_friend_regex = r"^好友列表$"
-get_friend = on_regex(pattern=get_friend_regex, rule=check_event(
+get_friend = on_regex(pattern=get_friend_regex, rule=source.check_event(
     chat_event), permission=OWNER, priority=2, block=True)
 
 
@@ -228,7 +225,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 
 detele_friend_regex = r"^删除好友 [0-9]+$"
-detele_friend = on_regex(pattern=detele_friend_regex, rule=check_event(
+detele_friend = on_regex(pattern=detele_friend_regex, rule=source.check_event(
     chat_event), permission=OWNER, priority=2, block=True)
 
 
@@ -267,7 +264,7 @@ owner_help = on_regex(pattern=r"^帮助$", permission=OWNER, priority=2, block=T
 @owner_help.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊帮助'''
-    img = get_help_img()
+    img = source.get_help_img()
     msg = MessageSegment.image(img)
 
     log = f"Bot({bot.self_id}) | 管理员私聊帮助"

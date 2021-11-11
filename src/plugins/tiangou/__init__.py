@@ -4,7 +4,7 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from src.utils.log import logger
 
-from .data_source import get_tiangou
+from . import data_source as source
 
 export = export()
 export.plugin_name = '舔狗日记'
@@ -22,5 +22,5 @@ async def _(bot: Bot, event: GroupMessageEvent):
     group_id = event.group_id
     log = f"Bot({bot.self_id}) | 群[{str(group_id)}]请求舔狗日记"
     logger.info(log)
-    msg = await get_tiangou()
+    msg = await source.get_tiangou()
     await tiangou.finish(msg)

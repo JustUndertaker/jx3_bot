@@ -7,7 +7,7 @@ from src.utils.log import logger
 from src.utils.scheduler import scheduler
 from tortoise import Tortoise
 
-from .data_source import get_ws_connect, init, on_connect
+from . import data_source as source
 
 export = export()
 export.plugin_name = 'jx3api链接服务'
@@ -26,7 +26,7 @@ async def _():
     '''
     log = 'jx3_api > 开始连接ws.'
     logger.info(log)
-    init()
+    source.init()
 
 
 @driver.on_shutdown
@@ -44,7 +44,7 @@ async def _():
     await Tortoise.close_connections()
     log = 'jx3_api > 关闭ws链接。'
     logger.info(log)
-    ws_connect = get_ws_connect()
+    ws_connect = source.get_ws_connect()
     await ws_connect.close()
 
 
@@ -57,7 +57,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     查询ws链接状态
     '''
-    ws_connect = get_ws_connect()
+    ws_connect = source.get_ws_connect()
     if ws_connect.closed:
         msg = 'jx3_api > 当前未链接。'
     else:
@@ -73,7 +73,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     关闭ws链接
     '''
-    ws_connect = get_ws_connect()
+    ws_connect = source.get_ws_connect()
     if ws_connect.closed:
         msg = 'ws已经关闭了，不要重复关闭。'
     else:
@@ -90,9 +90,9 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''
     重连ws链接
     '''
-    ws_connect = get_ws_connect()
+    ws_connect = source.get_ws_connect()
     if ws_connect.closed:
-        await on_connect()
+        await source.on_connect()
         msg = 'jx3_api > 正在重连……'
     else:
         msg = 'jx3_api > 当前已链接，请勿重复链接。'
@@ -102,8 +102,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 # jx3_api中ws的心跳事件
 @scheduler.scheduled_job("interval", seconds=5)
 async def _():
-    ws_connect = get_ws_connect()
+    ws_connect = source.get_ws_connect()
     if ws_connect.closed:
         msg = "检测到jx3_api断开链接！正在重连……"
         logger.debug(msg)
-        await on_connect()
+        await source.on_connect()
