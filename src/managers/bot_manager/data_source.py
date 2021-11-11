@@ -118,3 +118,13 @@ async def set_permission(bot_id: int, permission: bool) -> bool:
     '''授权一个机器人'''
     req = await BotInfo.set_permission(bot_id, permission)
     return req
+
+
+async def clean_one_group(bot_id: int, group_id: int) -> None:
+    '''清理一个机器人，一个群数据'''
+    # 清理插件
+    await PluginInfo.deltele_group(bot_id, group_id)
+    # 清理用户
+    await UserInfo.delete_group(bot_id, group_id)
+    # 清理群信息
+    await GroupInfo.delete_one(bot_id, group_id)

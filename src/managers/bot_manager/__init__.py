@@ -3,7 +3,7 @@ import random
 import time
 from datetime import datetime
 
-from nonebot import get_driver, on_regex
+from nonebot import get_bots, get_driver, on_regex
 from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.adapters.cqhttp.permission import PRIVATE_FRIEND
 from nonebot.permission import SUPERUSER
@@ -77,6 +77,8 @@ open_permission = on_regex(pattern=r"^授权 [0-9]+$", permission=SUPERUSER, pri
 close_permission = on_regex(pattern=r"^取消授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
 # 手动清理离线机器人
 clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
+# 管理员更新数据库
+update_database = on_regex(pattern=r"^清理数据$", permission=SUPERUSER, priority=2, block=True)
 
 
 @set_owner.handle()
@@ -235,3 +237,34 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     count = await source.clean_bot(outtime)
     msg = f"清理完毕，共清理 {str(count)} 个机器人。"
     await clean_outline_bot.finish(msg)
+
+
+@update_database.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    超级用户更新数据库
+    '''
+    msg = "开始清理数据库"
+    await update_database.send(msg)
+
+    msg_dict = {}
+    botdict = get_bots()
+    for id, one_bot in botdict.items():
+        bot_id = int(id)
+        count = 0
+        group_list = [x['group_id'] for x in await one_bot.get_group_list()]
+        data_group_list = await source.get_bot_group_list(bot_id)
+        for one_group in data_group_list:
+            if one_group not in group_list:
+                # 数据不在群列表中
+                await source.clean_one_group(bot_id, one_group)
+                # 记录
+                count += 1
+
+        msg_dict[id] = count
+
+    msg = "数据库清理完毕……\n"
+    for id, count in msg_dict.items():
+        msg += f"bot[{id}] 共清理群数据 {count} 个.\n"
+
+    await update_database.finish(msg)
