@@ -135,6 +135,26 @@ class UserInfo(Model):
         return None if record is None else record.lucky
 
     @classmethod
+    async def set_user_name(cls, bot_id: int, user_id: int, group_id: int, user_name: str):
+        '''
+        :说明：
+            获取用户的昵称
+
+        :参数
+            * bot_id：机器人QQ
+            * user_id：用户QQ
+            * group_id：QQ群号
+            * user_name：用户名
+
+        :返回
+            * str：昵称
+        '''
+        record = await cls.get_or_none(bot_id=bot_id, user_id=user_id, group_id=group_id)
+        if record is not None:
+            record.user_name = user_name
+            await record.save(update_fields=["user_name"])
+
+    @classmethod
     async def get_user_name(cls, bot_id: int, user_id: int, group_id: int) -> Optional[str]:
         '''
         :说明：

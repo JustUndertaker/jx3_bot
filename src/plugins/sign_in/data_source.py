@@ -1,26 +1,14 @@
 import base64
 import random
 from datetime import date
-from typing import Optional
 
 import httpx
 from nonebot.adapters.cqhttp import Message, MessageSegment
-from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.user_info import UserInfo
 from src.utils.user_agent import get_user_agent
 
 from .config import FRIENDLY_ADD, GOLD_BASE, LUCKY_GOLD, LUCKY_MAX, LUCKY_MIN
-
-
-async def reset(bot_id: int) -> list[int]:
-    '''
-    :说明
-        重置签到人数，返回所有开启机器人的群号list
-    '''
-    await GroupInfo.reset_sign(bot_id)
-    group_list = await GroupInfo.get_group_list(bot_id)
-    return group_list
 
 
 async def get_sign_in(bot_id: int, user_id: int, group_id: int, user_name: str) -> Message:
@@ -73,6 +61,9 @@ async def get_sign_in(bot_id: int, user_id: int, group_id: int, user_name: str) 
     # 累计签到次数
     sign_times = await UserInfo.get_sign_times(bot_id, user_id, group_id)
 
+    # 更新用户昵称
+    await UserInfo.set_user_name(bot_id, user_id, group_id, user_name)
+
     msg_txt = f'本群第 {sign_num} 位 签到完成\n'
     msg_txt += f'今日运势：{lucky}\n'
     msg_txt += f'获得金币：+{gold}（总金币：{gold_all}）\n'
@@ -107,11 +98,3 @@ async def _get_qq_img(user_id: int) -> str:
     base64_str = base64.b64encode(req_bytes)
     req_str = 'base64://'+base64_str.decode()
     return req_str
-
-
-async def get_bot_owner(bot_id: int) -> Optional[int]:
-    '''
-    获取bot主人id
-    '''
-    owner_id = await BotInfo.get_owner(bot_id)
-    return owner_id
