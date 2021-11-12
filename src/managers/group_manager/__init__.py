@@ -2,7 +2,7 @@ from nonebot import get_driver, on_notice, on_regex
 from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupIncreaseNoticeEvent,
                                      GroupMessageEvent, MessageSegment)
-from nonebot.adapters.cqhttp.permission import GROUP_ADMIN, GROUP_OWNER
+from nonebot.adapters.cqhttp.permission import GROUP, GROUP_ADMIN, GROUP_OWNER
 from nonebot.plugin import export
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
@@ -42,9 +42,23 @@ async def _(bot: Bot):
             user_name = user['nickname'] if user['card'] == "" else user['card']
             await source.user_init(bot_id, user_id, group_id, user_name)
 
+# 绑定服务器
 server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
-server_useage = "[更换绑定服务器]\n群管理命令：绑定 XXX"
 server_change = on_regex(pattern=server_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+# 设置活跃值
+active_regex = r"^活跃值 [0-9]+$"
+active_change = on_regex(pattern=active_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+# 群成员增加事件
+check_in_group = ['notice.group_increase.approve', 'notice.group_increase.invite']
+someone_in_group = on_notice(rule=source.check_event(check_in_group), priority=3, block=True)
+# 群成员减少事件
+check_left = ['notice.group_decrease.leave', 'notice.group_decrease.kick', 'notice.group_decrease.kick_me']
+someone_left = on_notice(rule=source.check_event(check_left), priority=3, block=True)
+# 机器人开关
+robotregex = r'^机器人 [开|关]$'
+robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=True)
+# 滴滴管理员
+didi_admin = on_regex(pattern=r"^滴滴 ", permission=GROUP, priority=5, block=True)
 
 
 @server_change.handle()
@@ -61,7 +75,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
     server = await source.get_server_name(name)
     if server is None:
-        msg = f'参数错误，检查一下呀。\n{server_useage}'
+        msg = '参数错误，检查一下呀。\n[更换绑定服务器]\n群管理命令：绑定 XXX'
         log = '更换服务器出错，参数错误。'
         logger.info(log)
         await server_change.finish(msg)
@@ -70,11 +84,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f'更换服务器成功，绑定服务器为：{server}'
     logger.info(log)
     await server_change.finish(msg)
-
-
-active_regex = r"^活跃值 [0-9]+$"
-active_usage = "[设置活跃值]\n群管理命令：活跃值 XX（1-99）"
-active_change = on_regex(pattern=active_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 @active_change.handle()
@@ -86,7 +95,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     regex = event.get_plaintext()
     active = int(regex.split(' ')[-1])
     if active < 1 or active > 99:
-        msg = f"参数错误，检查一下呀。\n{active_usage}"
+        msg = "参数错误，检查一下呀。\n[设置活跃值]\n群管理命令：活跃值 XX（1-99）"
         await active_change.finish(msg)
 
     group_id = event.group_id
@@ -95,10 +104,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]设置活跃值：{active}"
     logger.info(log)
     await active_change.finish(msg)
-
-
-check_in_group = ['notice.group_increase.approve', 'notice.group_increase.invite']
-someone_in_group = on_notice(rule=source.check_event(check_in_group), priority=3, block=True)
 
 
 @someone_in_group.handle()
@@ -150,10 +155,6 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     await someone_in_group.finish(msg)
 
 
-check_left = ['notice.group_decrease.leave', 'notice.group_decrease.kick', 'notice.group_decrease.kick_me']
-someone_left = on_notice(rule=source.check_event(check_left), priority=3, block=True)
-
-
 @someone_left.handle()
 async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     '''
@@ -199,10 +200,6 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     await someone_in_group.finish()
 
 
-robotregex = r'^机器人 [开|关]$'
-robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=True)
-
-
 @robotchange.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
     '''
@@ -220,3 +217,26 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await source.set_robot_status(bot_id, group_id, status)
     msg = f"{nickname} 当前状态为：[{get_status}]"
     await robotchange.finish(msg)
+
+
+@didi_admin.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''
+    滴滴管理员，给管理员发送消息
+    '''
+    bot_id = int(bot.self_id)
+    _msg = event.get_plaintext()[3:]
+    # 获取管理员
+    owner = await source.get_bot_owner(bot_id)
+
+    if owner is None:
+        msg = f"{nickname} 目前还没有管理呢，不知道发给谁。"
+        await didi_admin.finish(msg)
+
+    group_id = str(event.group_id)
+    user_id = str(event.user_id)
+    user_name = event.sender.nickname
+    msg = f"收到 {user_name} [{user_id}] 来自群[{group_id}]的滴滴消息：\n\n{_msg}"
+    await bot.send_private_msg(user_id=owner, message=msg)
+    reply = "消息已发送给管理员了……"
+    await didi_admin.finish(reply)
