@@ -234,9 +234,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
         await didi_admin.finish(msg)
 
     group_id = str(event.group_id)
+    group_info = await bot.get_group_info(group_id=event.group_id, no_cache=False)
+    group_name = group_info.get("group_name")
     user_id = str(event.user_id)
     user_name = event.sender.nickname
-    msg = f"收到 {user_name} [{user_id}] 来自群[{group_id}]的滴滴消息：\n\n{_msg}"
+    msg = f"收到群 {group_name}({group_id}) 内 {user_name}({user_id}) 的滴滴消息：\n\n{_msg}"
     await bot.send_private_msg(user_id=owner, message=msg)
     reply = "消息已发送给管理员了……"
     await didi_admin.finish(reply)
