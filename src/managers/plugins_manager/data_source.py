@@ -1,10 +1,8 @@
-import base64
 from typing import Optional
 
 from nonebot.adapters.cqhttp import MessageSegment
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
-from src.utils.config import config
 from src.utils.utils import nickname
 
 from .model import PluginManager
@@ -144,14 +142,3 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
     alldata['head_icon'] = f'http://q1.qlogo.cn/g?b=qq&nk={str(self_id)}&s=640'
 
     return alldata
-
-
-def get_help_img() -> str:
-    '''
-    获取help图片内容
-    '''
-    help_img_path = config.get('path').get('img-help')
-    with open(help_img_path, 'rb') as f:
-        base64_str = base64.b64encode(f.read())
-        req_str = 'base64://'+base64_str.decode()
-    return req_str

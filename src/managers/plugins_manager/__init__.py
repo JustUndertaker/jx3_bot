@@ -160,7 +160,8 @@ help_info = on_regex(pattern=r"^帮助$", permission=GROUP, priority=2, block=Tr
 @help_info.handle()
 async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     '''帮助info'''
-    img = source.get_help_img()
+    pagename = "search_help.html"
+    img = await get_html_screenshots(pagename)
     msg = MessageSegment.image(img)
     log = f"Bot({bot.self_id}) | 群[{event.group_id}]请求帮助"
     logger.info(log)

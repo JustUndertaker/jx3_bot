@@ -78,6 +78,8 @@ yiqing:
 default:
   # ws链接最大重连次数
   max-recon-times: 100
+  # 插件debug日志是否显示在控制台
+  logger-debug: true
   # 每个群默认绑定服务器
   server: 幽月轮
   # 是否接收添加好友请求
@@ -88,12 +90,18 @@ default:
   robot-status: true
   # 机器人自动插话默认活跃度
   robot-active: 10
-  # 插件debug日志是否显示在控制台
-  logger-debug: true
+  # 群默认欢迎开关
+  robot-welcome-status: true
   # 默认机器人的欢迎语
   robot-welcome: 欢迎新同学来到这里。
+  # 群默认离开开关
+  robot-someone-left-status: true
   # 默认成员离开说辞
   robot-someone-left: 默默地离开了我们……
+  # 群默认晚安开关
+  robot-goodnight-status: true
+  # 默认晚安说辞
+  robot-goodnight: 小团子要去睡觉了，大家晚安……
   # 默认被踢说辞
   robot-left-kick: 被管理员狠心地踢走了……
   # 是否开启智能私聊，开启后私聊机器人会获得回复
@@ -109,7 +117,3 @@ path:
   log: ./log/
   # html文件路径
   html: /resources/html/
-  # 查询帮助图片位置
-  img-help: ./resources/img/help/help.jpg
-  # 管理帮助图片位置
-  owner-help: ./resources/img/help/owner_help.jpg

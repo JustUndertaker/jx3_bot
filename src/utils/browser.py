@@ -44,7 +44,7 @@ async def browser_init():
     logger.info(log)
 
 
-async def get_html_screenshots(pagename: str, data: dict) -> str:
+async def get_html_screenshots(pagename: str, data: dict = None) -> str:
     '''
     :说明
         获取页面截图
@@ -68,9 +68,10 @@ async def get_html_screenshots(pagename: str, data: dict) -> str:
     await page.goto(url)
 
     # 注入js
-    data_str = json.dumps(data, ensure_ascii=False)
-    js = f"data={data_str}\nhandle(data)"
-    await page.evaluate(js)
+    if data is not None:
+        data_str = json.dumps(data, ensure_ascii=False)
+        js = f"data={data_str}\nhandle(data)"
+        await page.evaluate(js)
 
     # 截图
     await page.wait_for_load_state("networkidle")

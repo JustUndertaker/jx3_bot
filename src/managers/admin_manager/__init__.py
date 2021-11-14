@@ -282,7 +282,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 @owner_help.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员私聊帮助'''
-    img = source.get_help_img()
+    pagename = "owner_help.html"
+    img = await get_html_screenshots(pagename)
     msg = MessageSegment.image(img)
 
     log = f"Bot({bot.self_id}) | 管理员私聊帮助"

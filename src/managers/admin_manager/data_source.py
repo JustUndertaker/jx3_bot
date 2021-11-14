@@ -1,4 +1,3 @@
-import base64
 from typing import Optional, Tuple
 
 import httpx
@@ -73,17 +72,6 @@ async def leave_group(bot_id: int, group_id: int) -> Tuple[bool, str]:
     await GroupInfo.delete_one(bot_id=bot_id, group_id=group_id)
     await UserInfo.delete_group(bot_id=bot_id, group_id=group_id)
     return True, group_name
-
-
-def get_help_img() -> str:
-    '''
-    获取help图片内容
-    '''
-    help_img_path = config.get('path').get('owner-help')
-    with open(help_img_path, 'rb') as f:
-        base64_str = base64.b64encode(f.read())
-        req_str = 'base64://'+base64_str.decode()
-    return req_str
 
 
 async def get_reply_jx3(question: str) -> Optional[str]:

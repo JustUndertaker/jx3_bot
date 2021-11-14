@@ -4,6 +4,7 @@ from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupMessageEvent, MessageSegment)
 from nonebot.adapters.cqhttp.permission import GROUP, GROUP_ADMIN, GROUP_OWNER
 from nonebot.plugin import export
+from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.utils import OWNER, nickname
@@ -59,6 +60,8 @@ robotregex = r'^机器人 [开|关]$'
 robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=True)
 # 滴滴管理员
 didi_admin = on_regex(pattern=r"^滴滴 ", permission=GROUP, priority=5, block=True)
+# 管理员帮助
+group_admin_help = on_regex(pattern=r"^管理员帮助$", permission=GROUP, priority=2, block=True)
 
 
 @server_change.handle()
@@ -242,3 +245,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await bot.send_private_msg(user_id=owner, message=msg)
     reply = "消息已发送给管理员了……"
     await didi_admin.finish(reply)
+
+
+@group_admin_help.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''管理员帮助'''
+    pagename = "group_admin_help.html"
+    img = await get_html_screenshots(pagename)
+    msg = MessageSegment.image(img)
+
+    log = f"Bot({bot.self_id}) Group({str(event.group_id)}) | 请求管理员帮助"
+    logger.info(log)
+    await group_admin_help.finish(msg)
