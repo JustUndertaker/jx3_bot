@@ -125,8 +125,6 @@ goodnight_status = on_regex(pattern=goodnight_status_regex,
                             priority=2,
                             block=True)
 
-test = on_regex(pattern=r"^测试$", permission=GROUP, priority=5, block=True)
-
 
 @server_change.handle()
 async def _(bot: Bot, event: GroupMessageEvent):
@@ -368,11 +366,3 @@ async def _(bot: Bot, event: GroupMessageEvent):
     msg = "已设置欢迎语。"
 
     await welcome_text.finish(msg)
-
-
-@test.handle()
-async def _(bot: Bot, event: GroupMessageEvent):
-    bot_id = int(bot.self_id)
-    group_id = event.group_id
-    msg = await source.get_welcome_text(bot_id, group_id)
-    await test.finish(msg)
