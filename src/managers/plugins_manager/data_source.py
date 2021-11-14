@@ -131,6 +131,10 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
         alldata['robot_status'] = "开"
     else:
         alldata['robot_status'] = "关"
+    alldata['welcome_status'] = await GroupInfo.get_welcome_status(self_id, group_id)
+    alldata['someone_left_status'] = await GroupInfo.get_someoneleft_status(self_id, group_id)
+    alldata['goodnight_status'] = await GroupInfo.get_goodnight_status(self_id, group_id)
+
     server = await GroupInfo.get_server(self_id, group_id)
     alldata['server'] = server
     sign_nums = await GroupInfo.get_sign_nums(self_id, group_id)
