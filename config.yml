@@ -114,7 +114,7 @@ path:
   # 日志位置
   log: ./log/
   # html文件路径
-  html: ./resources/html/
+  html: /resources/html/
   # 欢迎消息存储图片路径
   welcome: ./resources/img/welcome/
   # 离群消息储存图片路径
