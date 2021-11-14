@@ -136,3 +136,18 @@ async def get_bot_owner(bot_id: int) -> Optional[int]:
     '''获取机器人管理员账号'''
     owner = await BotInfo.get_owner(bot_id)
     return owner
+
+
+async def set_welcome_status(bot_id: int, group_id: int, status: bool):
+    '''设置进群通知'''
+    await GroupInfo.set_welcome_status(bot_id, group_id, status)
+
+
+async def set_someoneleft_status(bot_id: int, group_id: int, status: bool):
+    '''设置离群通知'''
+    await GroupInfo.set_someoneleft_status(bot_id, group_id, status)
+
+
+async def set_goodnight_status(bot_id: int, group_id: int, status: bool):
+    '''设置晚安通知'''
+    await GroupInfo.set_goodnight_status(bot_id, group_id, status)

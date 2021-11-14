@@ -90,7 +90,7 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     await source.plugin_init(bot_id, group_id)
 
 changeregex = r'^(打开|关闭) [\u4E00-\u9FA5A-Za-z0-9_]+$'
-change = on_regex(changeregex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
+change = on_regex(changeregex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=3, block=True)
 
 
 # =================================功能开关===============================

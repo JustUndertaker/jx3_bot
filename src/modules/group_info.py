@@ -293,7 +293,7 @@ class GroupInfo(Model):
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         if record is not None:
             record.someoneleft_status = someoneleft_status
-            await record.save(update_fields=["welcome_status"])
+            await record.save(update_fields=["someoneleft_status"])
         else:
             raise Exception
 

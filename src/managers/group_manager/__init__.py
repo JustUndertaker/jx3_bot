@@ -62,6 +62,24 @@ robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=T
 didi_admin = on_regex(pattern=r"^滴滴 ", permission=GROUP, priority=5, block=True)
 # 管理员帮助
 group_admin_help = on_regex(pattern=r"^管理员帮助$", permission=GROUP, priority=2, block=True)
+# 打开关闭进群通知
+welcome_status_regex = r"^((打开)|(关闭)) 进群通知$"
+welcome_status = on_regex(pattern=welcome_status_regex,
+                          permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
+                          priority=2,
+                          block=True)
+# 打开关闭离群通知
+someoneleft_status_regex = r"^((打开)|(关闭)) 离群通知$"
+someoneleft_status = on_regex(pattern=someoneleft_status_regex,
+                              permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
+                              priority=2,
+                              block=True)
+# 打开关闭晚安通知
+goodnight_status_regex = r"^((打开)|(关闭)) 晚安通知$"
+goodnight_status = on_regex(pattern=goodnight_status_regex,
+                            permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
+                            priority=2,
+                            block=True)
 
 
 @server_change.handle()
@@ -257,3 +275,39 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) Group({str(event.group_id)}) | 请求管理员帮助"
     logger.info(log)
     await group_admin_help.finish(msg)
+
+
+@welcome_status.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''打开关闭进群通知'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    text = event.get_plaintext()
+    status = (text == "打开 进群通知")
+    await source.set_welcome_status(bot_id, group_id, status)
+    msg = "进群通知已开启。" if status else "进群通知已关闭。"
+    await welcome_status.finish(msg)
+
+
+@someoneleft_status.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''打开关闭离群通知'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    text = event.get_plaintext()
+    status = (text == "打开 离群通知")
+    await source.set_someoneleft_status(bot_id, group_id, status)
+    msg = "离群通知已开启。" if status else "离群通知已关闭。"
+    await someoneleft_status.finish(msg)
+
+
+@goodnight_status.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''打开关闭晚安通知'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    text = event.get_plaintext()
+    status = (text == "打开 晚安通知")
+    await source.set_goodnight_status(bot_id, group_id, status)
+    msg = "晚安通知已开启。" if status else "晚安通知已关闭。"
+    await someoneleft_status.finish(msg)
