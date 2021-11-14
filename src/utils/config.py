@@ -1,3 +1,4 @@
+import os
 from typing import Optional, Union
 
 import yaml
@@ -14,3 +15,19 @@ def config_init():
     with open('config.yml', 'r', encoding='utf-8') as f:
         cfg = f.read()
         config = yaml.load(cfg, Loader=yaml.FullLoader)
+
+    # 判断项目目录是否存在
+    path = config.get('path')
+    data = path.get('data')
+    if not os.path.exists(data):
+        os.makedirs(data)
+    log = path.get('log')
+    info = log+'info'
+    if not os.path.exists(info):
+        os.makedirs(info)
+    debug = log+'debug'
+    if not os.path.exists(debug):
+        os.makedirs(debug)
+    error = log+'error'
+    if not os.path.exists(error):
+        os.makedirs(error)
