@@ -48,9 +48,8 @@ async def _(bot: Bot):
             user_name = user['nickname'] if user['card'] == "" else user['card']
             await source.user_init(bot_id, user_id, group_id, user_name)
 
+
 # 零点重置签到数
-
-
 @scheduler.scheduled_job("cron", hour=0, minute=0)
 async def _():
     bot_id_list = get_bots()
