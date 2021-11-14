@@ -1,7 +1,9 @@
+import os
 from typing import Optional
 
 import httpx
 from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.adapters.cqhttp.message import Message, MessageSegment
 from nonebot.rule import Rule
 from nonebot.typing import T_State
 from src.modules.bot_info import BotInfo
@@ -138,9 +140,29 @@ async def get_bot_owner(bot_id: int) -> Optional[int]:
     return owner
 
 
+async def sign_reset(bot_id: int) -> list[int]:
+    '''
+    :说明
+        重置签到人数，返回所有开启机器人的群号list
+    '''
+    await GroupInfo.reset_sign(bot_id)
+    group_list = await GroupInfo.get_group_list(bot_id)
+    return group_list
+
+
+async def get_welcome_status(bot_id: int, group_id: int) -> Optional[bool]:
+    '''获取进群通知开关'''
+    return await GroupInfo.get_welcome_status(bot_id, group_id)
+
+
 async def set_welcome_status(bot_id: int, group_id: int, status: bool):
     '''设置进群通知'''
     await GroupInfo.set_welcome_status(bot_id, group_id, status)
+
+
+async def get_someoneleft_status(bot_id: int, group_id: int) -> Optional[bool]:
+    '''获取离群通知开关'''
+    return await GroupInfo.get_someoneleft_status(bot_id, group_id)
 
 
 async def set_someoneleft_status(bot_id: int, group_id: int, status: bool):
@@ -148,6 +170,166 @@ async def set_someoneleft_status(bot_id: int, group_id: int, status: bool):
     await GroupInfo.set_someoneleft_status(bot_id, group_id, status)
 
 
+async def get_goodnight_status(bot_id: int, group_id: int) -> Optional[bool]:
+    '''获取晚安通知开关'''
+    return await GroupInfo.get_goodnight_status(bot_id, group_id)
+
+
 async def set_goodnight_status(bot_id: int, group_id: int, status: bool):
     '''设置晚安通知'''
     await GroupInfo.set_goodnight_status(bot_id, group_id, status)
+
+
+def Message_command_handler(message: Message, command: str) -> Message:
+    '''
+    剔除message命令内容
+    '''
+    length = len(command)
+    text = message[0].data['text']
+    if len(text) == length+1:
+        message = message[1:]
+    else:
+        new_text = text[length+1:]
+        message[0].data['text'] = new_text
+    return message
+
+
+async def _Message_encoder(bot_id: int, group_id: int, msg_type: str, message: Message) -> list:
+    '''
+    :说明
+        message消息编码器，将message消息序列化，保存本地
+
+    :参数
+        * bot_id：机器人id
+        * group_id：QQ群号
+        * msg_type：消息类型，welcome，someoneleft，goodninght
+        * message：消息内容
+    '''
+    # 处理目录
+    _path = config.get('path').get(msg_type)
+    path = f"{_path}{str(bot_id)}/{str(group_id)}/"
+
+    if os.path.exists(path):
+        file_list = os.listdir(path)
+        for one_file in file_list:
+            filepath = os.path.join(path, one_file)
+            os.remove(filepath)
+    else:
+        os.makedirs(path)
+
+    count = 1
+    req_message = []
+    for one_message in message:
+        one_req_message = {}
+        if one_message.type == 'image':
+            # 图片处理
+            url = one_message.data['url']
+            file_name = f"{path}{count}.jpg"
+            async with httpx.AsyncClient(headers=get_user_agent()) as client:
+                req = await client.get(url=url)
+                with open(file_name, mode='wb') as f:
+                    f.write(req.read())
+            count += 1
+            one_req_message['type'] = "image"
+            one_req_message['data'] = file_name
+            req_message.append(one_req_message)
+            continue
+
+        if one_message.type == 'text':
+            # 文字处理
+            one_req_message = {}
+            one_req_message['type'] = one_message.type
+            one_req_message['data'] = one_message.data.get('text')
+            req_message.append(one_req_message)
+            continue
+
+        if one_message.type == 'face':
+            one_req_message = {}
+            one_req_message['type'] = one_message.type
+            one_req_message['data'] = one_message.data.get('id')
+            req_message.append(one_req_message)
+            continue
+
+    return req_message
+
+
+def _Message_decoder(message_list: list) -> Message:
+    '''
+    message消息解码器
+    '''
+    req_message = Message()
+    for one_message in message_list:
+        msg_type = one_message['type']
+        if msg_type == 'text':
+            text = one_message['data']
+            msg = MessageSegment.text(text)
+
+        if msg_type == 'face':
+            face_id = one_message['data']
+            msg = MessageSegment.face(face_id)
+
+        if msg_type == 'image':
+            url = one_message['data']
+            with open(url, 'rb') as f:
+                img_byte = f.read()
+            msg = MessageSegment.image(img_byte)
+
+        req_message.append(msg)
+    return req_message
+
+
+async def set_welcome_text(bot_id: int, group_id: int, msg_type: str, message: Message):
+    '''
+    :说明
+        设置群欢迎语
+
+    :参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+        * msg_type：消息类型，welcome，someoneleft，goodninght
+        * message：消息内容
+    '''
+    message_list = await _Message_encoder(bot_id=bot_id, group_id=group_id, msg_type=msg_type, message=message)
+    await GroupInfo.set_welcome_text(bot_id, group_id, message_list)
+
+
+async def get_welcome_text(bot_id: int, group_id: int) -> Message:
+    '''
+    :说明
+        获取群欢迎语
+
+    :参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+    '''
+    message_list = await GroupInfo.get_welcome_text(bot_id, group_id)
+    message = _Message_decoder(message_list)
+    return message
+
+
+async def get_someoneleft_text(bot_id: int, group_id: int) -> Message:
+    '''
+    : 说明
+        获取群离开语
+
+    : 参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+    '''
+    message_list = await GroupInfo.get_someoneleft_text(bot_id, group_id)
+    message = _Message_decoder(message_list)
+    return message
+
+
+async def get_goodnight_text(bot_id: int, group_id: int) -> Message:
+    '''
+    : 说明
+        获取晚安语
+
+    : 参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+    '''
+    message_list = await GroupInfo.get_goodnight_text(bot_id, group_id)
+    message = _Message_decoder(message_list)
+    return message

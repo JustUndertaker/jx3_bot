@@ -1,4 +1,8 @@
-from nonebot import get_driver, on_notice, on_regex
+import asyncio
+import random
+import time
+
+from nonebot import get_bots, get_driver, on_notice, on_regex
 from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupIncreaseNoticeEvent,
                                      GroupMessageEvent, MessageSegment)
@@ -7,6 +11,7 @@ from nonebot.plugin import export
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
+from src.utils.scheduler import scheduler
 from src.utils.utils import OWNER, nickname
 
 from ..plugins_manager.data_source import plugin_init
@@ -43,6 +48,44 @@ async def _(bot: Bot):
             user_name = user['nickname'] if user['card'] == "" else user['card']
             await source.user_init(bot_id, user_id, group_id, user_name)
 
+# 零点重置签到数
+
+
+@scheduler.scheduled_job("cron", hour=0, minute=0)
+async def _():
+    bot_id_list = get_bots()
+    for bot_id, bot in bot_id_list.items():
+        group_list = await source.sign_reset(int(bot_id))
+        count_success = 0
+        count_failed = 0
+        count_closed = 0
+        count_all = len(group_list)
+        time_start = time.time()
+        for group_id in group_list:
+            goodnight_status = await source.get_goodnight_status(int(bot_id), group_id)
+            if goodnight_status:
+                try:
+                    msg = await source.get_goodnight_status
+                    msg = f"{nickname}要去睡觉了，大家晚安……"
+                    await bot.send_group_msg(group_id=group_id, message=msg)
+                    await asyncio.sleep(random.uniform(0.3, 0.5))
+                    count_success += 1
+                except Exception:
+                    log = f'Bot({bot.self_id}) | （{group_id}）群被禁言了，无法发送晚安……'
+                    logger.warning(log)
+                    count_failed += 1
+            else:
+                count_closed += 1
+
+        # 获取owner
+        time_end = time.time()
+        time_use = round(time_end-time_start, 2)
+        owner_id = await source.get_bot_owner(bot_id)
+        if owner_id is not None:
+            msg = f"发送晚安完毕，共发送 {count_all} 个群\n发送成功 {count_success} 个\n发送失败 {count_failed} 个\n关闭通知 {count_closed}个\n用时 {time_use} 秒"
+            await bot.send_private_msg(user_id=owner_id, message=msg)
+
+
 # 绑定服务器
 server_regex = r"^绑定 [\u4e00-\u9fa5]+$"
 server_change = on_regex(pattern=server_regex, permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
@@ -68,6 +111,8 @@ welcome_status = on_regex(pattern=welcome_status_regex,
                           permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
                           priority=2,
                           block=True)
+# 更改进群通知内容
+welcome_text = on_regex(pattern="^进群通知 ", permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 # 打开关闭离群通知
 someoneleft_status_regex = r"^((打开)|(关闭)) 离群通知$"
 someoneleft_status = on_regex(pattern=someoneleft_status_regex,
@@ -80,6 +125,8 @@ goodnight_status = on_regex(pattern=goodnight_status_regex,
                             permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
                             priority=2,
                             block=True)
+
+test = on_regex(pattern=r"^测试$", permission=GROUP, priority=5, block=True)
 
 
 @server_change.handle()
@@ -170,9 +217,11 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id, no_cache=True)
     user_name = user_info['nickname']
     await source.user_init(bot_id, user_id, group_id, user_name)
-    # 欢迎语
-    default_welcome: str = config.get('robot-welcome')
-    msg = MessageSegment.at(user_id)+default_welcome
+    # 判断欢迎语
+    msg = None
+    welcome_status = await source.get_welcome_status(bot_id, group_id)
+    if welcome_status:
+        msg = await source.get_welcome_text(bot_id, group_id)
     await someone_in_group.finish(msg)
 
 
@@ -184,7 +233,7 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
     bot_id = int(bot.self_id)
     user_id = event.user_id
     group_id = event.group_id
-    user_name = await source.get_user_name(bot_id, user_id, group_id)
+    # user_name = await source.get_user_name(bot_id, user_id, group_id)
     # 删除数据
     await source.user_detele(bot_id, user_id, group_id)
 
@@ -198,27 +247,20 @@ async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
             await bot.send_private_msg(user_id=owner_id, message=msg)
         # 删除数据
         await source.group_detel(bot_id, group_id)
-        await someone_in_group.finish()
+        await someone_left.finish()
 
-    # 查看群是否开启
+    # 查看群是否开启机器人
     status = await source.check_robot_status(bot_id, group_id)
     if status is None or status is False:
-        await someone_in_group.finish()
+        await someone_left.finish()
 
-    sub_type = event.sub_type
-    if sub_type == "leave":
-        # 有人主动退群
-        default_left: str = config.get('robot-someone-left')
-        msg = f"{user_name}({user_id})"+default_left
-        await someone_in_group.finish(msg)
+    # 判断开关
+    msg = None
+    someoneleft_status = await source.get_someoneleft_status(bot_id, group_id)
+    if someoneleft_status:
+        msg = await source.get_someoneleft_text(bot_id, group_id)
 
-    if sub_type == "kick":
-        # 有人被踢出群
-        default_kick: str = config.get('robot-left-kick')
-        msg = f"{user_name}({user_id})"+default_kick
-        await someone_in_group.finish(msg)
-
-    await someone_in_group.finish()
+    await someone_left.finish()
 
 
 @robotchange.handle()
@@ -311,3 +353,27 @@ async def _(bot: Bot, event: GroupMessageEvent):
     await source.set_goodnight_status(bot_id, group_id, status)
     msg = "晚安通知已开启。" if status else "晚安通知已关闭。"
     await someoneleft_status.finish(msg)
+
+
+@welcome_text.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''修改进群通知内容'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    message = event.get_message()
+
+    command = "进群通知"
+    msg_type = "welcome"
+    message = source.Message_command_handler(message=message, command=command)
+    await source.set_welcome_text(bot_id, group_id, msg_type, message)
+    msg = "已设置欢迎语。"
+
+    await welcome_text.finish(msg)
+
+
+@test.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    msg = await source.get_welcome_text(bot_id, group_id)
+    await test.finish(msg)

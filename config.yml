@@ -102,8 +102,6 @@ default:
   robot-goodnight-status: true
   # 默认晚安说辞
   robot-goodnight: 小团子要去睡觉了，大家晚安……
-  # 默认被踢说辞
-  robot-left-kick: 被管理员狠心地踢走了……
   # 是否开启智能私聊，开启后私聊机器人会获得回复
   private-chat: true
   # 离线bot数据清理时间，单位：小时

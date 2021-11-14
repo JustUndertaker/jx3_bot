@@ -130,16 +130,6 @@ async def clean_one_group(bot_id: int, group_id: int) -> None:
     await GroupInfo.delete_one(bot_id, group_id)
 
 
-async def sign_reset(bot_id: int) -> list[int]:
-    '''
-    :说明
-        重置签到人数，返回所有开启机器人的群号list
-    '''
-    await GroupInfo.reset_sign(bot_id)
-    group_list = await GroupInfo.get_group_list(bot_id)
-    return group_list
-
-
 async def get_bot_owner(bot_id: int) -> Optional[int]:
     '''
     获取bot主人id

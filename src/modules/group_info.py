@@ -9,11 +9,20 @@ default_server: str = config.get('server')
 robot_status: bool = config.get('robot-status')
 robot_active: int = config.get('robot-active')
 robot_welcome_status: bool = config.get('robot-welcome-status')
-robot_welcome: str = config.get('robot-welcome')
+robot_welcome = [{
+    "type": "text",
+    "data": config.get('robot-welcome')
+}]
 robot_someone_left_status: bool = config.get('robot-someone-left-status')
-robot_someone_left: str = config.get('robot-someone-left')
+robot_someone_left = [{
+    "type": "text",
+    "data": config.get('robot-someone-left')
+}]
 robot_goodnight_status: bool = config.get('robot-goodnight-status')
-robot_goodnight: str = config.get('robot-goodnight')
+robot_goodnight = [{
+    "type": "text",
+    "data": config.get('robot-goodnight')
+}]
 
 
 class GroupInfo(Model):
@@ -37,15 +46,15 @@ class GroupInfo(Model):
     '''活跃值'''
     welcome_status = fields.BooleanField(default=robot_welcome_status)
     '''进群通知开关'''
-    welcome_text = fields.CharField(max_length=255, default=robot_welcome)
+    welcome_text = fields.JSONField(default=robot_welcome)
     '''进群通知内容'''
     someoneleft_status = fields.BooleanField(default=robot_someone_left_status)
     '''离群通知开关'''
-    someoneleft_text = fields.CharField(max_length=255, default=robot_someone_left)
+    someoneleft_text = fields.JSONField(default=robot_someone_left)
     '''离群通知内容'''
     goodnight_status = fields.BooleanField(default=robot_goodnight_status)
     '''晚安通知开关'''
-    goodnight_text = fields.CharField(max_length=255, default=robot_goodnight)
+    goodnight_text = fields.JSONField(default=robot_goodnight)
     '''晚安通知内容'''
 
     class Meta:
@@ -275,7 +284,7 @@ class GroupInfo(Model):
         return None if record is None else record.welcome_status
 
     @classmethod
-    async def set_welcome_text(cls, bot_id: int, group_id: int, welcome_text: str):
+    async def set_welcome_text(cls, bot_id: int, group_id: int, welcome_text: list):
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         if record is not None:
             record.welcome_text = welcome_text
@@ -284,7 +293,7 @@ class GroupInfo(Model):
             raise Exception
 
     @classmethod
-    async def get_welcome_text(cls, bot_id: int, group_id: int) -> Optional[str]:
+    async def get_welcome_text(cls, bot_id: int, group_id: int) -> Optional[list[dict]]:
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         return None if record is None else record.welcome_text
 
@@ -303,7 +312,7 @@ class GroupInfo(Model):
         return None if record is None else record.someoneleft_status
 
     @classmethod
-    async def set_someoneleft_text(cls, bot_id: int, group_id: int, someoneleft_text: str):
+    async def set_someoneleft_text(cls, bot_id: int, group_id: int, someoneleft_text: list):
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         if record is not None:
             record.someoneleft_text = someoneleft_text
@@ -312,7 +321,7 @@ class GroupInfo(Model):
             raise Exception
 
     @classmethod
-    async def get_someoneleft_text(cls, bot_id: int, group_id: int) -> Optional[str]:
+    async def get_someoneleft_text(cls, bot_id: int, group_id: int) -> Optional[list[dict]]:
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         return None if record is None else record.someoneleft_text
 
@@ -331,7 +340,7 @@ class GroupInfo(Model):
         return None if record is None else record.goodnight_status
 
     @classmethod
-    async def set_goodnight_text(cls, bot_id: int, group_id: int, goodnight_text: str):
+    async def set_goodnight_text(cls, bot_id: int, group_id: int, goodnight_text: list):
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         if record is not None:
             record.goodnight_text = goodnight_text
@@ -340,7 +349,7 @@ class GroupInfo(Model):
             raise Exception
 
     @classmethod
-    async def get_goodnight_text(cls, bot_id: int, group_id: int) -> Optional[str]:
+    async def get_goodnight_text(cls, bot_id: int, group_id: int) -> Optional[list[dict]]:
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id)
         return None if record is None else record.goodnight_text
 
