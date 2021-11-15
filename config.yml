@@ -116,8 +116,8 @@ path:
   # html文件路径
   html: /resources/html/
   # 欢迎消息存储图片路径
-  welcome: ./resources/img/welcome/
+  welcome: ./data/welcome/
   # 离群消息储存图片路径
-  someoneleft: ./resources/img/someoneleft/
+  someoneleft: ./data/someoneleft/
   # 晚安储存图片路径
-  goodnight: ./resources/img/goodnight/
+  goodnight: ./data/goodnight/
