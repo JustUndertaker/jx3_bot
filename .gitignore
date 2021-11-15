@@ -152,3 +152,4 @@ pyproject.toml
 .idea/
 .env.dev
 resources/html/icons/
+data/*
