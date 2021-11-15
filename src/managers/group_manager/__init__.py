@@ -64,8 +64,7 @@ async def _():
             goodnight_status = await source.get_goodnight_status(int(bot_id), group_id)
             if goodnight_status:
                 try:
-                    msg = await source.get_goodnight_status(bot_id, group_id)
-                    msg = f"{nickname}要去睡觉了，大家晚安……"
+                    msg = await source.get_goodnight_text(bot_id, group_id)
                     await bot.send_group_msg(group_id=group_id, message=msg)
                     await asyncio.sleep(random.uniform(0.3, 0.5))
                     count_success += 1

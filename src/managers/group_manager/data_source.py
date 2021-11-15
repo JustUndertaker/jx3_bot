@@ -224,7 +224,7 @@ async def _Message_encoder(bot_id: int, group_id: int, msg_type: str, message: M
         if one_message.type == 'image':
             # 图片处理
             url = one_message.data['url']
-            file_name = f"{path}{count}.jpg"
+            file_name = f"{path}{count}.image"
             async with httpx.AsyncClient(headers=get_user_agent()) as client:
                 req = await client.get(url=url)
                 with open(file_name, mode='wb') as f:
