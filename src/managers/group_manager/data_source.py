@@ -333,3 +333,11 @@ async def get_goodnight_text(bot_id: int, group_id: int) -> Message:
     message_list = await GroupInfo.get_goodnight_text(bot_id, group_id)
     message = _Message_decoder(message_list)
     return message
+
+
+def handle_didi_message(one_message: MessageSegment) -> MessageSegment:
+    '''处理滴滴消息头部'''
+    text: str = one_message.data['text']
+    req_text = text[3:]
+    req_msg = MessageSegment.text(req_text)
+    return req_msg

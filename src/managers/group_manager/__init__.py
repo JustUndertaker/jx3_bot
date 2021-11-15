@@ -101,7 +101,7 @@ someone_left = on_notice(rule=source.check_event(check_left), priority=3, block=
 robotregex = r'^机器人 [开|关]$'
 robotchange = on_regex(pattern=robotregex, permission=OWNER, priority=2, block=True)
 # 滴滴管理员
-didi_admin = on_regex(pattern=r"^滴滴 ", permission=GROUP, priority=5, block=True)
+didi_admin = on_regex(pattern=r"^滴滴 ", permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=5, block=True)
 # 管理员帮助
 group_admin_help = on_regex(pattern=r"^管理员帮助$", permission=GROUP, priority=2, block=True)
 # 打开关闭进群通知
@@ -285,10 +285,8 @@ async def _(bot: Bot, event: GroupMessageEvent):
     滴滴管理员，给管理员发送消息
     '''
     bot_id = int(bot.self_id)
-    _msg = event.get_plaintext()[3:]
     # 获取管理员
     owner = await source.get_bot_owner(bot_id)
-
     if owner is None:
         msg = f"{nickname} 目前还没有管理呢，不知道发给谁。"
         await didi_admin.finish(msg)
@@ -298,8 +296,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     group_name = group_info.get("group_name")
     user_id = str(event.user_id)
     user_name = event.sender.nickname
-    msg = f"收到群 {group_name}({group_id}) 内 {user_name}({user_id}) 的滴滴消息：\n\n{_msg}"
-    await bot.send_private_msg(user_id=owner, message=msg)
+
+    get_msg = event.get_message()
+    get_msg[0] = source.handle_didi_message(get_msg[0])
+    msg_0 = MessageSegment.text(f"收到群 {group_name}({group_id}) 内 {user_name}({user_id}) 的滴滴消息：\n\n")
+    get_msg.insert(0, msg_0)
+    await bot.send_private_msg(user_id=owner, message=get_msg)
     reply = "消息已发送给管理员了……"
     await didi_admin.finish(reply)
 
