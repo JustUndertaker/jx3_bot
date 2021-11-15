@@ -118,9 +118,11 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     管理员广播，全体广播
     '''
     bot_id = int(bot.self_id)
-    text = event.get_plaintext()[5:]
-    msg = "管理员广播消息：\n\n"
-    msg += text
+    get_msg = event.get_message()
+    get_msg[0], _ = source.handle_borad_message(all=True, one_message=get_msg[0])
+    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
+    get_msg.insert(0, msg_0)
+
     group_list = await source.get_bot_group_list(bot_id)
     num = len(group_list)
     time_start = time.time()
@@ -128,7 +130,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     count_failed = 0
     for group_id in group_list:
         try:
-            await bot.send_group_msg(group_id=group_id, message=msg)
+            await bot.send_group_msg(group_id=group_id, message=get_msg)
             await asyncio.sleep(random.uniform(0.3, 0.5))
             count_success += 1
         except Exception:
@@ -145,11 +147,11 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     广播某个群
     '''
     bot_id = int(bot.self_id)
-    plaintext = event.get_plaintext()
-    text_list = plaintext.split(" ")
-    group_id = int(text_list[1])
-    loc = plaintext.find(" ", 3)
-    text = plaintext[loc+1:]
+    get_msg = event.get_message()
+    get_msg[0], group_id = source.handle_borad_message(all=False, one_message=get_msg[0])
+    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
+    get_msg.insert(0, msg_0)
+
     robot_status = await source.get_robot_status(bot_id, group_id)
     if robot_status is None:
         msg = f"广播失败，未找到群[{str(group_id)}]。"
@@ -157,10 +159,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     elif robot_status is False:
         msg = f"广播失败，机器人在群[{str(group_id)}]处于关闭。"
         await borodcast.finish(msg)
-    msg = "管理员广播消息：\n\n"
-    msg += text
     try:
-        await bot.send_group_msg(group_id=group_id, message=msg)
+        await bot.send_group_msg(group_id=group_id, message=get_msg)
         msg = f"广播已发送至群[{str(group_id)}]。"
     except Exception:
         msg = f"广播失败至群[{str(group_id)}]失败，可能被禁言。"
