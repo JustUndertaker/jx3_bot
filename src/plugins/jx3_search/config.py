@@ -206,9 +206,9 @@ jx3_app = {
         "free": "/role/attribute",
         "vip": "/role/attribute"
     },
-    "record": {
-        "free": "/arena/record",
-        "vip": "/arena/record"
+    "match": {
+        "free": "/arena/match",
+        "vip": "/arena/match"
     },
     "awesome": {
         "free": "/arena/awesome",

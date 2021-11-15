@@ -703,7 +703,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'record'
+    app = 'match'
     vip_flag, url = await source.get_jx3_url(bot_id, app)
     params = {
         "server": server,

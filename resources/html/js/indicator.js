@@ -8,17 +8,17 @@ function handle(data) {
     var card_body = $("#card-body")
     $("#name").text(data['name'])
 
-    if (!Array.isArray(d_2)) {
+    if (JSON.stringify(d_2) != "{}") {
         type = "2v2"
         one_string = get_card(type, d_2)
         card_body.append(one_string)
     }
-    if (!Array.isArray(d_3)) {
+    if (JSON.stringify(d_3) != "{}") {
         type = "3v3"
         one_string = get_card(type, d_3)
         card_body.append(one_string)
     }
-    if (!Array.isArray(d_5)) {
+    if (JSON.stringify(d_5) != "{}") {
         type = "5v5"
         one_string = get_card(type, d_5)
         card_body.append(one_string)
