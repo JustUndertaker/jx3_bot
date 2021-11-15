@@ -321,6 +321,21 @@ async def get_someoneleft_text(bot_id: int, group_id: int) -> Message:
     return message
 
 
+async def set_someoneleft_text(bot_id: int, group_id: int, msg_type: str, message: Message):
+    '''
+    :说明
+        设置离群通知内容
+
+    :参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+        * msg_type：消息类型，welcome，someoneleft，goodninght
+        * message：消息内容
+    '''
+    message_list = await _Message_encoder(bot_id=bot_id, group_id=group_id, msg_type=msg_type, message=message)
+    await GroupInfo.set_someoneleft_text(bot_id, group_id, message_list)
+
+
 async def get_goodnight_text(bot_id: int, group_id: int) -> Message:
     '''
     : 说明
@@ -333,6 +348,21 @@ async def get_goodnight_text(bot_id: int, group_id: int) -> Message:
     message_list = await GroupInfo.get_goodnight_text(bot_id, group_id)
     message = _Message_decoder(message_list)
     return message
+
+
+async def set_goodnight_text(bot_id: int, group_id: int, msg_type: str, message: Message):
+    '''
+    :说明
+        设置晚安通知内容
+
+    :参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+        * msg_type：消息类型，welcome，someoneleft，goodninght
+        * message：消息内容
+    '''
+    message_list = await _Message_encoder(bot_id=bot_id, group_id=group_id, msg_type=msg_type, message=message)
+    await GroupInfo.set_goodnight_text(bot_id, group_id, message_list)
 
 
 def handle_didi_message(one_message: MessageSegment) -> MessageSegment:

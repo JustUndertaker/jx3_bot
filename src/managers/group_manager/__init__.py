@@ -118,12 +118,17 @@ someoneleft_status = on_regex(pattern=someoneleft_status_regex,
                               permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
                               priority=2,
                               block=True)
+
+# 更改离群通知内容
+someoneleft_text = on_regex(pattern="^离群通知 ", permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 # 打开关闭晚安通知
 goodnight_status_regex = r"^((打开)|(关闭)) 晚安通知$"
 goodnight_status = on_regex(pattern=goodnight_status_regex,
                             permission=OWNER | GROUP_OWNER | GROUP_ADMIN,
                             priority=2,
                             block=True)
+# 更改晚安通知内容
+goodnight_text = on_regex(pattern="^晚安通知 ", permission=OWNER | GROUP_OWNER | GROUP_ADMIN, priority=2, block=True)
 
 
 @server_change.handle()
@@ -365,6 +370,38 @@ async def _(bot: Bot, event: GroupMessageEvent):
     msg_type = "welcome"
     message = source.Message_command_handler(message=message, command=command)
     await source.set_welcome_text(bot_id, group_id, msg_type, message)
-    msg = "已设置欢迎语。"
+    msg = "已设置进群通知内容。"
+
+    await welcome_text.finish(msg)
+
+
+@someoneleft_text.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''修改离群通知'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    message = event.get_message()
+
+    command = "离群通知"
+    msg_type = "someoneleft"
+    message = source.Message_command_handler(message=message, command=command)
+    await source.set_someoneleft_text(bot_id, group_id, msg_type, message)
+    msg = "已设置离群通知内容。"
+
+    await welcome_text.finish(msg)
+
+
+@goodnight_text.handle()
+async def _(bot: Bot, event: GroupMessageEvent):
+    '''修改晚安通知'''
+    bot_id = int(bot.self_id)
+    group_id = event.group_id
+    message = event.get_message()
+
+    command = "晚安通知"
+    msg_type = "goodnight"
+    message = source.Message_command_handler(message=message, command=command)
+    await source.set_goodnight_text(bot_id, group_id, msg_type, message)
+    msg = "已设置晚安通知内容。"
 
     await welcome_text.finish(msg)
