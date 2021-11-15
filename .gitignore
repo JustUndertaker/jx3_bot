@@ -141,15 +141,11 @@ dmypy.json
 
 #self_use
 workspace.code-workspace
-*.sqlite3
 Dockerfile
 docker-compose.yml
 pyproject.toml
 .vscode/
-*.db
-*.db-shm
-*.db-wal
 .idea/
 .env.dev
-resources/html/icons/
 data/*
+*.bat
