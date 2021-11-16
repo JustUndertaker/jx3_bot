@@ -102,8 +102,11 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 # jx3_api中ws的心跳事件
 @scheduler.scheduled_job("interval", seconds=5)
 async def _():
-    ws_connect = source.get_ws_connect()
-    if ws_connect.closed:
-        msg = "检测到jx3_api断开链接！正在重连……"
-        logger.debug(msg)
-        await source.on_connect()
+    try:
+        ws_connect = source.get_ws_connect()
+        if ws_connect.closed:
+            msg = "检测到jx3_api断开链接！正在重连……"
+            logger.debug(msg)
+            await source.on_connect()
+    except Exception:
+        pass
