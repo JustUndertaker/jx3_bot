@@ -1,3 +1,6 @@
+import asyncio
+import random
+import time
 from datetime import datetime
 
 from nonebot import on_message, on_notice, on_regex, on_request
@@ -85,6 +88,9 @@ detele_friend = on_regex(pattern=detele_friend_regex,
 
 # 帮助信息
 owner_help = on_regex(pattern=r"^帮助$", permission=OWNER, priority=2, block=True)
+# 管理员广播
+borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
+borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
 
 
 @someone_add_me.handle()
@@ -289,3 +295,58 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     log = f"Bot({bot.self_id}) | 管理员私聊帮助"
     logger.info(log)
     await owner_help.finish(msg)
+
+
+@borodcast_all.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    管理员广播，全体广播
+    '''
+    bot_id = int(bot.self_id)
+    get_msg = event.get_message()
+    get_msg[0], _ = source.handle_borad_message(all=True, one_message=get_msg[0])
+    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
+    get_msg.insert(0, msg_0)
+
+    group_list = await source.get_bot_group_list(bot_id)
+    num = len(group_list)
+    time_start = time.time()
+    count_success = 0
+    count_failed = 0
+    for group_id in group_list:
+        try:
+            await bot.send_group_msg(group_id=group_id, message=get_msg)
+            await asyncio.sleep(random.uniform(0.3, 0.5))
+            count_success += 1
+        except Exception:
+            count_failed += 1
+    time_end = time.time()
+    time_use = round(time_end-time_start, 2)
+    msg = f"发送完毕，共发送 {num} 个群\n成功 {count_success} 个\n失败 {count_failed} 个\n用时 {time_use} 秒"
+    await borodcast_all.finish(msg)
+
+
+@borodcast.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''
+    广播某个群
+    '''
+    bot_id = int(bot.self_id)
+    get_msg = event.get_message()
+    get_msg[0], group_id = source.handle_borad_message(all=False, one_message=get_msg[0])
+    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
+    get_msg.insert(0, msg_0)
+
+    robot_status = await source.get_robot_status(bot_id, group_id)
+    if robot_status is None:
+        msg = f"广播失败，未找到群[{str(group_id)}]。"
+        await borodcast.finish(msg)
+    elif robot_status is False:
+        msg = f"广播失败，机器人在群[{str(group_id)}]处于关闭。"
+        await borodcast.finish(msg)
+    try:
+        await bot.send_group_msg(group_id=group_id, message=get_msg)
+        msg = f"广播已发送至群[{str(group_id)}]。"
+    except Exception:
+        msg = f"广播失败至群[{str(group_id)}]失败，可能被禁言。"
+    await borodcast.finish(msg)

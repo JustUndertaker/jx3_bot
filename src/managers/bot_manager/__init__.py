@@ -1,6 +1,3 @@
-import asyncio
-import random
-import time
 from datetime import datetime
 
 from nonebot import get_bots, get_driver, on_regex
@@ -12,7 +9,6 @@ from src.utils.browser import get_html_screenshots
 from src.utils.config import config
 from src.utils.log import logger
 from src.utils.scheduler import scheduler
-from src.utils.utils import OWNER
 
 from . import data_source as source
 
@@ -67,9 +63,6 @@ async def _():
 set_owner = on_regex(pattern=r"^设置管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
 # 清除管理员
 clean_owner = on_regex(pattern=r"^清除管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
-# 管理员广播
-borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
-borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
 # 查看所有连接机器人
 server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, priority=2, block=True)
 # 授权高级功能
@@ -110,61 +103,6 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     else:
         msg = "清除失败惹，你不是管理员。"
     await clean_owner.finish(msg)
-
-
-@borodcast_all.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    管理员广播，全体广播
-    '''
-    bot_id = int(bot.self_id)
-    get_msg = event.get_message()
-    get_msg[0], _ = source.handle_borad_message(all=True, one_message=get_msg[0])
-    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
-    get_msg.insert(0, msg_0)
-
-    group_list = await source.get_bot_group_list(bot_id)
-    num = len(group_list)
-    time_start = time.time()
-    count_success = 0
-    count_failed = 0
-    for group_id in group_list:
-        try:
-            await bot.send_group_msg(group_id=group_id, message=get_msg)
-            await asyncio.sleep(random.uniform(0.3, 0.5))
-            count_success += 1
-        except Exception:
-            count_failed += 1
-    time_end = time.time()
-    time_use = round(time_end-time_start, 2)
-    msg = f"发送完毕，共发送 {num} 个群\n成功 {count_success} 个\n失败 {count_failed} 个\n用时 {time_use} 秒"
-    await borodcast_all.finish(msg)
-
-
-@borodcast.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    广播某个群
-    '''
-    bot_id = int(bot.self_id)
-    get_msg = event.get_message()
-    get_msg[0], group_id = source.handle_borad_message(all=False, one_message=get_msg[0])
-    msg_0 = MessageSegment.text('管理员广播消息：\n\n')
-    get_msg.insert(0, msg_0)
-
-    robot_status = await source.get_robot_status(bot_id, group_id)
-    if robot_status is None:
-        msg = f"广播失败，未找到群[{str(group_id)}]。"
-        await borodcast.finish(msg)
-    elif robot_status is False:
-        msg = f"广播失败，机器人在群[{str(group_id)}]处于关闭。"
-        await borodcast.finish(msg)
-    try:
-        await bot.send_group_msg(group_id=group_id, message=get_msg)
-        msg = f"广播已发送至群[{str(group_id)}]。"
-    except Exception:
-        msg = f"广播失败至群[{str(group_id)}]失败，可能被禁言。"
-    await borodcast.finish(msg)
 
 
 @server_list.handle()

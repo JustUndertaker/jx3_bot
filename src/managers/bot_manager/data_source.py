@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
+from typing import Optional
 
-from nonebot.adapters.cqhttp import MessageSegment
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
@@ -137,26 +136,3 @@ async def get_bot_owner(bot_id: int) -> Optional[int]:
     '''
     owner_id = await BotInfo.get_owner(bot_id)
     return owner_id
-
-
-def handle_borad_message(all: bool, one_message: MessageSegment) -> Tuple[MessageSegment, Optional[int]]:
-    '''
-    处理广播消息第一条参数问题，非全体广播会返回group_id
-    '''
-    text: str = one_message.data['text']
-    if all:
-        # 全体广播
-        req_text = text[5:]
-        req_msg = MessageSegment.text(req_text)
-        req_group_id = None
-    else:
-        # 单体广播
-        text_list = text.split(' ')
-        req_group_id = int(text_list[1])
-        if len(text_list) > 2:
-            req_text = " "
-            req_text = req_text.join(text_list[2:])
-        else:
-            req_text = ""
-        req_msg = MessageSegment.text(req_text)
-    return req_msg, req_group_id

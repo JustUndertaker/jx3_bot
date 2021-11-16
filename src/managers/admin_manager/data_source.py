@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
 import httpx
-from nonebot.adapters.cqhttp import Bot, Event
+from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 from nonebot.rule import Rule
 from nonebot.typing import T_State
 from src.modules.bot_info import BotInfo
@@ -150,3 +150,26 @@ async def get_reply_qingyunke(text: str) -> Optional[str]:
             log = f'青云客API访问失败：{str(e)}'
             logger.error(log)
             return None
+
+
+def handle_borad_message(all: bool, one_message: MessageSegment) -> Tuple[MessageSegment, Optional[int]]:
+    '''
+    处理广播消息第一条参数问题，非全体广播会返回group_id
+    '''
+    text: str = one_message.data['text']
+    if all:
+        # 全体广播
+        req_text = text[5:]
+        req_msg = MessageSegment.text(req_text)
+        req_group_id = None
+    else:
+        # 单体广播
+        text_list = text.split(' ')
+        req_group_id = int(text_list[1])
+        if len(text_list) > 2:
+            req_text = " "
+            req_text = req_text.join(text_list[2:])
+        else:
+            req_text = ""
+        req_msg = MessageSegment.text(req_text)
+    return req_msg, req_group_id
