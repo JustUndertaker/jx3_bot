@@ -24,12 +24,6 @@ async def get_bot_group_list(bot_id: int) -> list[int]:
     return group_list
 
 
-async def get_robot_status(bot_id: int, group_id: int) -> Optional[bool]:
-    '''获取机器人开关'''
-    robot_status = await GroupInfo.get_robot_status(bot_id=bot_id, group_id=group_id)
-    return robot_status
-
-
 async def clean_bot(outtime: int) -> int:
     '''清理bot数据，返回清理bot数量'''
     bot_list = await BotInfo.get_disconnect_bot()

@@ -152,6 +152,12 @@ async def get_reply_qingyunke(text: str) -> Optional[str]:
             return None
 
 
+async def get_robot_status(bot_id: int, group_id: int) -> Optional[bool]:
+    '''获取机器人开关'''
+    robot_status = await GroupInfo.get_robot_status(bot_id=bot_id, group_id=group_id)
+    return robot_status
+
+
 def handle_borad_message(all: bool, one_message: MessageSegment) -> Tuple[MessageSegment, Optional[int]]:
     '''
     处理广播消息第一条参数问题，非全体广播会返回group_id
