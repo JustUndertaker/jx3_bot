@@ -25,7 +25,7 @@ class PluginInfo(Model):
     '''
     QQ群号
     '''
-    status = fields.BooleanField(null=True)
+    status = fields.BooleanField(null=True, default=False)
     '''
     插件状态
     '''
