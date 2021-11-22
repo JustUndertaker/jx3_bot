@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import localtime, strftime
 
 from nonebot import on_regex
 from nonebot.adapters.cqhttp import Bot, GroupMessageEvent, MessageSegment
@@ -123,11 +124,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = "daily"
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await daily.finish(msg)
@@ -160,12 +161,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'attribute'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await equipquery.finish(msg)
@@ -195,11 +196,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'check'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await open_server_send.finish(msg)
@@ -227,17 +228,16 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'demon'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await gold_query.finish(msg)
 
-    if vip_flag:
-        data = data[0]
+    data = data[0]
     date_now = datetime.now().strftime("%m-%d %H:%M")
     msg = f'金价[{data.get("server")}] {date_now}\n'
     msg += f'官方平台：1元={data.get("wanbaolou")}金\n'
@@ -260,11 +260,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'qixue'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await extra_point.finish(msg)
@@ -286,11 +286,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'heighten'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await medicine.finish(msg)
@@ -318,11 +318,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'macro'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await macro.finish(msg)
@@ -344,11 +344,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'require'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await adventurecondition.finish(msg)
@@ -368,11 +368,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'exam'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "question":  question
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await exam.finish(msg)
@@ -394,11 +394,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'equip'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await equip_group_query.finish(msg)
@@ -419,11 +419,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'strategy'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await raiderse.finish(msg)
@@ -451,11 +451,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'flower'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await flowers.finish(msg)
@@ -493,11 +493,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'price'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await price_query.finish(msg)
@@ -528,13 +528,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'serendipity'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    app = 'role'
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await serendipity.finish(msg)
@@ -570,13 +570,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
-    app = 'recent'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    app = 'statistical'
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "serendipity": serendipity
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await serendipityList.finish(msg)
@@ -601,9 +601,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'random'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {}
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await saohua_query.finish(msg)
@@ -623,11 +623,11 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'furniture'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await furniture_query.finish(msg)
@@ -663,13 +663,13 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
     logger.info(log)
 
-    app = 'seniority'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    app = 'app_seniority'
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "sect": sect
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await seniority_query.finish(msg)
@@ -704,12 +704,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'match'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await indicator.finish(msg)
@@ -749,12 +749,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'awesome'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "match": match,
         "limit": 10
     }
-    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await awesome_query.finish(msg)
@@ -787,12 +787,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
     logger.info(log)
 
     app = 'teamCdList'
-    vip_flag, url = await source.get_jx3_url(bot_id, app)
+    vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(url=url, params=params, vip_flag=vip_flag)
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await teamcdlist.finish(msg)
@@ -822,12 +822,22 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
     logger.info(log)
 
-    flag, data = await source.get_jx3sp_img(server)
-    if flag:
-        text = f"[{server}]沙盘 更新时间 {data.get('createTime')}"
-        img = data.get('sandImage')
-        msg = MessageSegment.text(text)+MessageSegment.image(img)
-    else:
-        msg = f"查询失败，{data}"
+    app = 'sand'
+    vip_flag, url = await source.get_jx3_url(app)
+    params = {
+        "server": server
+    }
+    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    if req_msg != 'success':
+        msg = f"查询失败，{req_msg}。"
+        await teamcdlist.finish(msg)
 
-    await raiderse.finish(msg)
+    data = data[0]
+    url = data.get('url')
+    _time = data.get('time')
+    timeArray = localtime(_time)
+    get_time = strftime("%m-%d %H:%M", timeArray)
+    msg = f"[{server}]沙盘 更新时间：{get_time}"
+    msg += MessageSegment.image(url)
+
+    await sand_query.finish(msg)

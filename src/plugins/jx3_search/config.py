@@ -102,121 +102,41 @@ daily_list = {
 '''日常任务对应表'''
 
 jx3_app = {
-    "daily": {
-        "free": "/app/daily",
-        "vip": "/next/daily"
+    "free": {
+        "daily": "/app/daily",  # 日常
+        "check": "/app/check",  # 开服
+        "demon": "/app/demon",  # 金价
+        "flower": "/app/flower",  # 花价
+        "sand": "/app/sand",  # 沙盘
+        "exam": "/app/exam",  # 科举
+        "furniture": "/app/furniture",  # 装饰
+        "require": "/app/require",  # 奇遇条件
+        "heighten": "/app/heighten",  # 推荐小药
+        "equip": "/app/equip",  # 推荐配装
+        "qixue": "/app/qixue",  # 奇穴
+        "server": "/app/server",  # 主从区服
+        "macro": "/app/macro",  # 宏查询
+        "travel": "/app/travel",  # 器物谱
+        "price": "/app/price",  # 物价信息
+        "prices": "/app/prices",  # 物品收出价格
+        "app_seniority": "/app/seniority",  # 资历排名
+        "strategy": "/app/strategy",    # 奇遇攻略
+        "horse": "/app/horse",  # 刷马地点
+        "random": "/app/random",  # 骚话
+        "matchId": "/movie/matchId"  # 动画编辑id
     },
-    "check": {
-        "free": "/app/check",
-        "vip": "/next/check"
-    },
-    "demon": {
-        "free": "/app/demon",
-        "vip": "/next/demon"
-    },
-    "flower": {
-        "free": "/app/flower",
-        "vip": "/next/flower"
-    },
-    "exam": {
-        "free": "/app/exam",
-        "vip": "/next/exam"
-    },
-    "furniture": {
-        "free": "/app/furniture",
-        "vip": "/next/furniture"
-    },
-    "require": {
-        "free": "/app/require",
-        "vip": "/next/require"
-    },
-    "heighten": {
-        "free": "/app/heighten",
-        "vip": "/next/heighten"
-    },
-    "equip": {
-        "free": "/app/equip",
-        "vip": "/next/equip"
-    },
-    "qixue": {
-        "free": "/app/qixue",
-        "vip": "/next/qixue"
-    },
-    "server": {
-        "free": "/app/server",
-        "vip": "/next/server"
-    },
-    "macro": {
-        "free": "/app/macro",
-        "vip": "/next/macro"
-    },
-    "price": {
-        "free": "/app/price",
-        "vip": "/next/price"
-    },
-    "prices": {
-        "free": "/app/prices",
-        "vip": "/next/prices"
-    },
-    "seniority": {
-        "free": "/app/seniority",
-        "vip": "/next/seniority"
-    },
-    "strategy": {
-        "free": "/app/strategy",
-        "vip": "/next/strategy"
-    },
-    "horse": {
-        "free": "/app/horse",
-        "vip": "/next/horse"
-    },
-    "serendipity": {
-        "free": "/advent/serendipity",
-        "vip": "/advent/serendipity"
-    },
-    "recent": {
-        "free": "/advent/recent",
-        "vip": "/advent/recent"
-    },
-    "collect": {
-        "free": "/advent/collect",
-        "vip": "/advent/collect"
-    },
-    "random": {
-        "free": "/app/random",
-        "vip": "/next/random"
-    },
-    "roleInfo": {
-        "free": "/role/roleInfo",
-        "vip": "/role/roleInfo"
-    },
-    "teamCdList": {
-        "free": "/role/teamCdList",
-        "vip": "/role/teamCdList"
-    },
-    "attribute": {
-        "free": "/role/attribute",
-        "vip": "/role/attribute"
-    },
-    "achievement": {
-        "free": "/role/achievement",
-        "vip": "/role/achievement"
-    },
-    "role_seniority": {
-        "free": "/role/attribute",
-        "vip": "/role/attribute"
-    },
-    "match": {
-        "free": "/arena/match",
-        "vip": "/arena/match"
-    },
-    "awesome": {
-        "free": "/arena/awesome",
-        "vip": "/arena/awesome"
-    },
-    "schools": {
-        "free": "/arena/schools",
-        "vip": "/arena/schools"
+    "vip": {
+        "role": "/advent/role",  # 个人奇遇
+        "statistical": "/advent/statistical",  # 服务器某奇遇统计
+        "collect": "/advent/collect",  # 某服务器最近奇遇统计
+        "roleInfo": "/role/roleInfo",  # 角色id信息
+        "teamCdList": "/role/teamCdList",  # 副本cd记录
+        "attribute": "/role/attribute",  # 装备属性
+        "achievement": "/role/achievement",  # 成就进度
+        "role_seniority": "/role/seniority",  # 角色资历
+        "match": "/arena/match",  # 个人战绩
+        "awesome": "/arena/awesome",  # 名剑排行
+        "schools": "/arena/schools"  # 名剑统计
     }
 }
 '''jx3api的app名字对应表'''

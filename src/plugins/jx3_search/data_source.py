@@ -14,73 +14,56 @@ config = baseconfig.get('jx3-api')
 '''jx3-api的配置'''
 
 _jx3_token = config.get('jx3-token')
-_jx3_vip_token = config.get('jx3-vip-token')
-if _jx3_vip_token is None:
-    _jx3_vip_token = ""
+if _jx3_token is None:
+    _jx3_token = ""
 
 _jx3_headers = {"token": _jx3_token, "User-Agent": "Nonebot2-jx3_bot"}
-_jx3_vip_headers = {"token": _jx3_vip_token, "User-Agent": "Nonebot2-jx3_bot"}
 
 jx3_client = httpx.AsyncClient(headers=_jx3_headers)
 '''异步请求库客户端'''
-jx3_vip_client = httpx.AsyncClient(headers=_jx3_vip_headers)
-'''异步请求库客户端'''
-
-jx3sp_token: Optional[str] = None
-'''jx3sp的token'''
-_j3sp_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0"}
-http_client = httpx.AsyncClient(headers=_j3sp_headers)
 
 
-async def get_jx3_url(bot_id: int, app: str) -> Tuple[bool, str]:
+async def get_jx3_url(app: str) -> Tuple[bool, str]:
     '''
     :说明
         获取访问api的url，如果未配置高级站点地址，则默认采用普通站访问
 
     :参数
-        * bot_id：机器人QQ
         * app：应用名称
 
     :返回
-        * bool：是否为高级用户
+        * bool：是否需要vip
         * str：url地址
     '''
-    jx3_url = config.get('jx3-url')
-    vip_url = config.get('jx3-vip-url')
-    app_dict = jx3_app.get(app)
-    if vip_url is None:
-        url = jx3_url+app_dict.get('free')
-        return False, url
-
-    permission = await BotInfo.bot_get_permission(bot_id)
-    if permission:
-        url = vip_url+app_dict.get('vip')
-    else:
-        url = jx3_url+app_dict.get('free')
-
-    return permission, url
+    jx3_url: str = config.get('jx3-url')
+    need_vip: bool = app in jx3_app['vip']
+    app_dict = jx3_app['vip'] if need_vip else jx3_app['free']
+    url = jx3_url+app_dict[app]
+    return need_vip, url
 
 
-async def get_data_from_jx3api(url: str, params: dict, vip_flag: bool) -> Tuple[str, Optional[dict]]:
+async def get_data_from_jx3api(bot_id: int, vip_flag: bool, url: str, params: dict) -> Tuple[str, Optional[dict]]:
     '''
     :说明
         发送一条请求给jx3-api，返回结果
 
     :参数
+        * bot_id：机器人QQ
+        * vip_flag：是否需要vip
         * url：url地址
         * params：请求参数
-        * vip_flag：是否为高级用户
 
     :返回
         * msg：返回msg，为'success'时成功
         * data：返回数据
     '''
     if vip_flag:
-        client = jx3_vip_client
-    else:
-        client = jx3_client
+        permission = await BotInfo.bot_get_permission(bot_id)
+        if not permission:
+            return "此机器人未开启高级权限", None
+
     try:
-        req_url = await client.get(url, params=params)
+        req_url = await jx3_client.get(url, params=params)
         req = req_url.json()
         msg = req['msg']
         data = req['data']
@@ -100,18 +83,17 @@ async def get_master_server(server: str) -> Optional[str]:
     '''
     获取主服务器名称
     '''
-    app = "/app/server"
-    url = config.get('jx3-url')+app
+    url = config.get('jx3-url')+jx3_app.get('free').get('server')
     params = {
         "name": server
     }
-    msg, data = await get_data_from_jx3api(url, params, False)
-
-    if msg != 'success':
+    try:
+        req_url = await jx3_client.get(url, params=params)
+        req = req_url.json()
+        data = req['data']
+        return data.get('server')
+    except Exception:
         return None
-
-    server = data.get('server')
-    return server
 
 
 def get_equipquery_name(text: str) -> Tuple[Optional[str], str]:
@@ -343,112 +325,3 @@ def indicator_query_hanlde(data: list[dict]) -> list[dict]:
         req_data.append(one_req_data)
 
     return req_data
-
-
-async def _get_jx3sp_token() -> Tuple[bool, str]:
-    '''
-    :说明
-        获取jx3sp的token
-
-    :返回
-        * bool：是否成功
-        * str：返回消息
-    '''
-    global jx3sp_token
-    account = config.get('jx3sp').get('account')
-    password = config.get('jx3sp').get('password')
-    if account is None or password is None:
-        msg = "未配置jx3sp账号密码，请联系服务器管理员"
-        return False, msg
-
-    url = "https://www.j3sp.com/api/user/login"
-    params = {
-        "account": account,
-        "password": password
-    }
-    try:
-        req_url = await http_client.get(url, params=params)
-        req = req_url.json()
-        if req['code'] == 1:
-            jx3sp_token = req.get('data').get('userinfo').get('token')
-            return True, "success"
-        else:
-            msg = "jx3sp:"+req['msg']
-            return False, msg
-    except Exception as e:
-        msg = "网络错误，"+str(e)
-        return False, msg
-
-
-async def _check_jx3sp_token() -> Tuple[bool, str]:
-    '''
-    :说明
-        检查jx3sp的token并刷新
-
-    :返回
-        * bool：是否成功
-        * str：成功为token，不成功为消息
-    '''
-    global jx3sp_token
-    if jx3sp_token is None:
-        flag, msg = await _get_jx3sp_token()
-        return flag, msg
-
-    url = "https://www.j3sp.com/api/token/check"
-    params = {'token': jx3sp_token}
-    try:
-        req_url = await http_client.get(url, params=params)
-        req = req_url.json()
-        if req['code'] == 1:
-            jx3sp_token = req.get('data').get('token')
-            return True, "success"
-        else:
-            msg = "jx3sp:"+req['msg']
-            return False, msg
-    except Exception as e:
-        msg = "网络错误，"+str(e)
-        return False, msg
-
-
-async def get_jx3sp_img(server: str) -> Tuple[bool, Optional[dict]]:
-    '''
-    :说明
-        获取沙盘数据
-
-    :参数
-        * server：服务器名
-
-    :返回
-        * bool：是否成功
-        * str：成功则为sand_data数据，失败则为返回消息
-    '''
-    # 验证token
-    global jx3sp_token
-    flag, msg = await _check_jx3sp_token()
-    if not flag:
-        return False, msg
-
-    shadow_flag = config.get('jx3sp').get('shadow')
-    if shadow_flag:
-        shadow = 0
-    else:
-        shadow = 1
-    url = "https://www.j3sp.com/api/sand/"
-    params = {
-        "token": jx3sp_token,
-        "serverName": server,
-        "is_history": 0,
-        "shadow": shadow
-    }
-    try:
-        req_url = await http_client.get(url, params=params)
-        req = req_url.json()
-        if req['code'] == 1:
-            data = req.get('data').get('sand_data')
-            return True, data
-        else:
-            msg = "jx3sp:"+req['msg']
-            return False, msg
-    except Exception as e:
-        msg = "网络错误，"+str(e)
-        return False, msg
