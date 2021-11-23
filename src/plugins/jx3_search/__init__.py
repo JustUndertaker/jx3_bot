@@ -816,7 +816,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         server = await source.get_master_server(server_text)
         if server is None:
             msg = "查询错误，请输入正确的服务器名。"
-            await flowers.finish(msg)
+            await sand_query.finish(msg)
     else:
         server = await source.get_server(bot_id, group_id)
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
@@ -830,7 +830,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
-        await teamcdlist.finish(msg)
+        await sand_query.finish(msg)
 
     data = data[0]
     url = data.get('url')
