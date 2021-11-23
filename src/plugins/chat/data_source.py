@@ -4,10 +4,9 @@ import httpx
 from src.utils.config import config
 from src.utils.log import logger
 from src.utils.user_agent import get_user_agent
-from src.utils.utils import nickname
 
 
-async def get_reply_jx3(question: str) -> Optional[str]:
+async def get_reply_jx3(question: str, nickname: str) -> Optional[str]:
     '''
     使用jx3_api获取回复
     '''
@@ -42,7 +41,7 @@ async def get_reply_jx3(question: str) -> Optional[str]:
             return None
 
 
-async def get_reply_qingyunke(text: str) -> Optional[str]:
+async def get_reply_qingyunke(text: str, nickname: str) -> Optional[str]:
     '''
     :说明
         获取聊天结果，使用青云客的API，备胎

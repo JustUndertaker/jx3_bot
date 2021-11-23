@@ -10,7 +10,7 @@ from nonebot.plugin import Matcher
 from nonebot.typing import T_State
 from src.utils.browser import get_html_screenshots
 from src.utils.log import logger
-from src.utils.utils import OWNER
+from src.utils.utils import OWNER, get_nickname
 
 from . import data_source as source
 from .model import manager_init
@@ -144,10 +144,11 @@ async def _(bot: Bot, event: GroupMessageEvent, state: T_State):
     显示功能开关状态
     '''
     self_id = int(bot.self_id)
+    nickname = await get_nickname(self_id)
     group_id = event.group_id
     log = f'Bot({bot.self_id}) | {event.sender.nickname}（{event.user_id}，{event.group_id}）请求功能菜单。'
     logger.info(log)
-    data = await source.get_meau_data(self_id, group_id)
+    data = await source.get_meau_data(self_id, group_id, nickname)
     pagename = "meau.html"
     img = await get_html_screenshots(pagename, data)
     msg = MessageSegment.image(img)

@@ -64,6 +64,8 @@ yiqing:
 
 # 默认设置
 default:
+  # 默认昵称
+  nickname: 团子
   # ws链接最大重连次数
   max-recon-times: 100
   # 插件debug日志是否显示在控制台

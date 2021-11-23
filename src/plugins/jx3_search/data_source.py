@@ -6,7 +6,6 @@ import httpx
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.utils.config import config as baseconfig
-from src.utils.utils import nickname
 
 from .config import daily_list, jx3_app, zhiye_name
 
@@ -184,7 +183,7 @@ def handle_adventure_data(data: list[dict]) -> list[dict]:
     return data
 
 
-async def handle_equip_data(alldata: dict) -> dict:
+async def handle_equip_data(alldata: dict, nickname: str) -> dict:
     '''预处理装备数据'''
     kungfu = alldata.get("kungfu")
     tittle = f'{alldata.get("serverName")}-{alldata.get("roleName")}'

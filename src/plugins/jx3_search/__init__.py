@@ -7,6 +7,7 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from src.utils.browser import get_html_screenshots, get_web_screenshot
 from src.utils.log import logger
+from src.utils.utils import get_nickname
 
 from . import data_source as source
 
@@ -152,6 +153,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 async def _(bot: Bot, event: GroupMessageEvent):
     '''装备查询'''
     bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     group_id = event.group_id
     text = event.get_plaintext()
     server, name = source.get_equipquery_name(text)
@@ -171,7 +173,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"查询失败，{req_msg}。"
         await equipquery.finish(msg)
 
-    data = await source.handle_equip_data(req_data)
+    data = await source.handle_equip_data(req_data, nickname)
     pagename = "equip.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
     msg = MessageSegment.image(img)

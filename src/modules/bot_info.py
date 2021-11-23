@@ -1,8 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
+from src.utils.config import config
 from tortoise import fields
 from tortoise.models import Model
+
+defaule_nickname: str = config.get('default').get('nickname')
 
 
 class BotInfo(Model):
@@ -11,6 +14,7 @@ class BotInfo(Model):
     '''机器人QQ号'''
     owner_id = fields.IntField(null=True)
     '''管理员账号'''
+    nickname = fields.CharField(max_length=255, default=defaule_nickname)
     permission = fields.BooleanField(default=False)
     '''高级权限，可以开启高级查询功能'''
     last_sign = fields.DatetimeField(null=True)
@@ -164,6 +168,38 @@ class BotInfo(Model):
         '''
         record = await cls.get_or_none(bot_id=bot_id)
         return None if record is None else record.online
+
+    @classmethod
+    async def set_nickname(cls, bot_id: int, nickname: str) -> bool:
+        '''
+        :说明
+            设置昵称
+
+        :参数
+            * bot_id：机器人QQ
+            * nickname：昵称
+        '''
+        record = await cls.get_or_none(bot_id=bot_id)
+        if record is None:
+            return False
+        record.nickname = nickname
+        await record.save(update_fields=["nickname"])
+        return True
+
+    @classmethod
+    async def get_nickname(cls, bot_id: int) -> Optional[str]:
+        '''
+        :说明
+            获取昵称
+
+        :参数
+            * bot_id：机器人QQ
+
+        :返回
+            * str：昵称
+        '''
+        record = await cls.get_or_none(bot_id=bot_id)
+        return None if record is None else record.nickname
 
     @classmethod
     async def detele_bot(cls, bot_id) -> bool:

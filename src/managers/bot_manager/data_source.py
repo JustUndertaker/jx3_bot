@@ -130,3 +130,8 @@ async def get_bot_owner(bot_id: int) -> Optional[int]:
     '''
     owner_id = await BotInfo.get_owner(bot_id)
     return owner_id
+
+
+async def get_bot_nickname(bot_id: int) -> str:
+    '''获取nickname'''
+    return await BotInfo.get_nickname(bot_id)

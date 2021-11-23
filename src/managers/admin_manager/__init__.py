@@ -11,7 +11,7 @@ from nonebot.plugin import export
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
-from src.utils.utils import OWNER, nickname
+from src.utils.utils import OWNER, get_nickname
 
 from . import data_source as source
 
@@ -92,6 +92,9 @@ owner_help = on_regex(pattern=r"^帮助$", permission=OWNER, priority=2, block=T
 borodcast_all = on_regex(pattern=r"^全体广播 ", permission=OWNER, priority=2, block=True)
 borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, block=True)
 
+# 设置昵称
+set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
+
 
 @someone_add_me.handle()
 async def _(bot: Bot, event: FriendAddNoticeEvent):
@@ -131,6 +134,7 @@ async def _(bot: Bot, event: GroupRequestEvent):
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''管理员获取机器人状态'''
     bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     data = {}
     groups = await source.get_all_data(bot_id)
     group_nums = len(groups)
@@ -187,6 +191,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''其他人私聊消息
     自动根据确定API
     '''
+    bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     private_chat = config.get('private-chat')
     if not private_chat:
         await chat.finish()
@@ -197,10 +203,10 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     logger.info(log)
 
     # 使用jx3api访问
-    msg = await source.get_reply_jx3(text)
+    msg = await source.get_reply_jx3(text, nickname)
     if msg is None:
         # 使用青云客访问
-        msg = await source.get_reply_qingyunke(text)
+        msg = await source.get_reply_qingyunke(text, nickname)
         if msg is None:
             # 访问失败
             log = '接口访问失败，关闭事件。'
@@ -233,6 +239,8 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 @get_friend.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
     '''获取好友列表'''
+    bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     self_id = event.self_id
     friend_list = await bot.get_friend_list()
     friends = []
@@ -350,3 +358,13 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     except Exception:
         msg = f"广播失败至群[{str(group_id)}]失败，可能被禁言。"
     await borodcast.finish(msg)
+
+
+@set_nickname.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''设置昵称'''
+    bot_id = bot.self_id
+    nickname = event.get_plaintext().split(" ")[-1]
+    await source.set_bot_nickname(bot_id, nickname)
+    msg = f"设置成功，机器人目前昵称为：{nickname}"
+    await set_nickname.finish(msg)

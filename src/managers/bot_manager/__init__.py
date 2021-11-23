@@ -33,6 +33,8 @@ async def _(bot: Bot):
     log = f'连接到bot（{bot.self_id}），正在注册信息'
     logger.info(log)
     await source.bot_connect(bot_id)
+    nickname = await source.get_bot_nickname(bot_id)
+    bot.config.nickname = [nickname]
     log = f'bot（{bot.self_id}）信息注册完毕'
     logger.info(log)
 

@@ -1,6 +1,7 @@
 from typing import Optional, Tuple
 
 import httpx
+from nonebot import get_bot
 from nonebot.adapters.cqhttp import Bot, Event, MessageSegment
 from nonebot.rule import Rule
 from nonebot.typing import T_State
@@ -10,7 +11,6 @@ from src.modules.user_info import UserInfo
 from src.utils.config import config
 from src.utils.log import logger
 from src.utils.user_agent import get_user_agent
-from src.utils.utils import nickname
 
 
 def check_event(event_list: list[str]):
@@ -74,7 +74,7 @@ async def leave_group(bot_id: int, group_id: int) -> Tuple[bool, str]:
     return True, group_name
 
 
-async def get_reply_jx3(question: str) -> Optional[str]:
+async def get_reply_jx3(question: str, nickname: str) -> Optional[str]:
     '''
     使用jx3_api获取回复
     '''
@@ -109,7 +109,7 @@ async def get_reply_jx3(question: str) -> Optional[str]:
             return None
 
 
-async def get_reply_qingyunke(text: str) -> Optional[str]:
+async def get_reply_qingyunke(text: str, nickname: str) -> Optional[str]:
     '''
     :说明
         获取聊天结果，使用青云客的API，备胎
@@ -179,3 +179,10 @@ def handle_borad_message(all: bool, one_message: MessageSegment) -> Tuple[Messag
             req_text = ""
         req_msg = MessageSegment.text(req_text)
     return req_msg, req_group_id
+
+
+async def set_bot_nickname(bot_id: str, nickname: str):
+    '''设置昵称'''
+    await BotInfo.set_nickname(int(bot_id), nickname)
+    bot = get_bot(self_id=bot_id)
+    bot.config.nickname = [nickname]

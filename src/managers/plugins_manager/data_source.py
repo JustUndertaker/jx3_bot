@@ -3,7 +3,6 @@ from typing import Optional
 from nonebot.adapters.cqhttp import MessageSegment
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
-from src.utils.utils import nickname
 
 from .model import PluginManager
 
@@ -97,7 +96,7 @@ async def change_plugin_status(bot_id: int, plugin_name: str, group_id: int, sta
     return msg
 
 
-async def get_meau_data(self_id: int, group_id: int) -> dict:
+async def get_meau_data(self_id: int, group_id: int, nickname: str) -> dict:
     '''
     :说明
         获取机器人状态数据
@@ -105,6 +104,7 @@ async def get_meau_data(self_id: int, group_id: int) -> dict:
     :参数
         * self_id：机器人QQ
         * group_id：QQ群号
+        * nickname：昵称
 
     :返回
         * dict

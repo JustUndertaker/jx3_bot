@@ -4,6 +4,7 @@ from nonebot.adapters.cqhttp.permission import GROUP
 from nonebot.plugin import export
 from nonebot.rule import to_me
 from src.utils.log import logger
+from src.utils.utils import get_nickname
 
 from . import data_source as source
 
@@ -24,16 +25,18 @@ async def _(bot: Bot, event: GroupMessageEvent):
     自动根据确定API
     '''
     # 获得聊天内容
+    bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     text = event.get_plaintext()
     name = event.sender.nickname if event.sender.card == "" else event.sender.card
     log = f'Bot({bot.self_id}) | {name}（{event.user_id}，{event.group_id}）闲聊：{text}'
     logger.info(log)
 
     # 使用jx3api访问
-    msg = await source.get_reply_jx3(text)
+    msg = await source.get_reply_jx3(text, nickname)
     if msg is None:
         # 使用青云客访问
-        msg = await source.get_reply_qingyunke(text)
+        msg = await source.get_reply_qingyunke(text, nickname)
         if msg is None:
             # 访问失败
             log = '接口访问失败，关闭事件。'

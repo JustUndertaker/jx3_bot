@@ -1,10 +1,11 @@
-import nonebot
 from nonebot.adapters.cqhttp import Bot, Event
 from nonebot.adapters.cqhttp.permission import Permission
 from src.modules.bot_info import BotInfo
 
-nickname = list(nonebot.get_driver().config.nickname)[0]
-'''机器人昵称'''
+
+async def get_nickname(bot_id: int) -> str:
+    '''获取昵称'''
+    return await BotInfo.get_nickname(bot_id)
 
 
 async def _owner(bot: "Bot", event: "Event"):

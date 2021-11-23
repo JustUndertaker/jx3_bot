@@ -12,7 +12,7 @@ from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.scheduler import scheduler
-from src.utils.utils import OWNER, nickname
+from src.utils.utils import OWNER, get_nickname
 
 from ..plugins_manager.data_source import plugin_init
 from . import data_source as source
@@ -181,6 +181,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     群成员增加事件
     '''
     bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     group_id = event.group_id
     user_id = event.user_id
     self_id = event.self_id
@@ -270,6 +271,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     设置机器人状态
     '''
     bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     get_status = event.get_plaintext().split(" ")[-1]
     group_id = event.group_id
     if get_status == "开":
@@ -289,6 +291,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     滴滴管理员，给管理员发送消息
     '''
     bot_id = int(bot.self_id)
+    nickname = await get_nickname(bot_id)
     # 获取管理员
     owner = await source.get_bot_owner(bot_id)
     if owner is None:
