@@ -7,6 +7,7 @@ from nonebot.rule import Rule
 from nonebot.typing import T_State
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
+from src.modules.token_info import TokenInfo
 from src.modules.user_info import UserInfo
 from src.utils.config import config
 from src.utils.log import logger
@@ -186,3 +187,18 @@ async def set_bot_nickname(bot_id: str, nickname: str):
     await BotInfo.set_nickname(int(bot_id), nickname)
     bot = get_bot(self_id=bot_id)
     bot.config.nickname = [nickname]
+
+
+async def add_token(bot_id: int, token: str) -> bool:
+    '''增加一条token'''
+    return await TokenInfo.append_token(bot_id, token)
+
+
+async def get_token(bot_id: int) -> list[dict]:
+    '''获取token'''
+    return await TokenInfo.get_token(bot_id)
+
+
+async def remove_token(bot_id: int, token: str) -> bool:
+    '''删除一条token'''
+    return await TokenInfo.remove_token(bot_id, token)

@@ -1,5 +1,6 @@
 import asyncio
 import random
+import re
 import time
 from datetime import datetime
 
@@ -8,6 +9,7 @@ from nonebot.adapters.cqhttp import (Bot, FriendAddNoticeEvent,
                                      FriendRequestEvent, GroupRequestEvent,
                                      MessageSegment, PrivateMessageEvent)
 from nonebot.plugin import export
+from nonebot.typing import T_State
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
@@ -94,6 +96,11 @@ borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, b
 
 # 设置昵称
 set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
+
+# 增加token
+add_token = on_regex(pattern=r"^token [A-Za-z0-9]+$", permission=OWNER, priority=2, block=True)
+# 查看token
+check_token = on_regex(pattern=r"^token$", permission=OWNER, priority=2, block=True)
 
 
 @someone_add_me.handle()
@@ -368,3 +375,60 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await source.set_bot_nickname(bot_id, nickname)
     msg = f"设置成功，机器人目前昵称为：{nickname}"
     await set_nickname.finish(msg)
+
+
+@add_token.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''增加一条token'''
+    bot_id = int(bot.self_id)
+    token = event.get_plaintext().split(" ")[-1]
+    flag = await source.add_token(bot_id, token)
+    if flag:
+        msg = "添加token成功了！"
+    else:
+        msg = "添加token失败，token已存在！"
+    await add_token.finish(msg)
+
+
+@check_token.handle()
+async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
+    '''查看token'''
+    bot_id = int(bot.self_id)
+    token_list = await source.get_token(bot_id)
+    state['token_list'] = token_list
+    state['got'] = True
+    msg = "当前token：\n"
+    count = 1
+    for one_token in token_list:
+        msg += f"{count}：{one_token['token']}\n"
+
+    await check_token.send(msg)
+
+
+@check_token.got(key="got")
+async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
+    '''等待后续命令'''
+    bot_id = int(bot.self_id)
+    token_list = state['token_list']
+    if len(token_list) == 0:
+        await check_token.finish()
+
+    text = event.get_plaintext()
+    match = re.match(pattern=r"^删除 [0-9]+$", string=text)
+    if not match:
+        msg = "输入“删除 [序号]”删除token"
+        await check_token.reject(msg)
+
+    count = int(text.split(' ')[-1])
+    try:
+        token = token_list[count-1]['token']
+    except Exception:
+        msg = "输入序号有误!请重新输入。"
+        await check_token.reject(msg)
+
+    flag = await source.remove_token(bot_id, token)
+    if flag:
+        msg = "已删除该token！"
+    else:
+        msg = "删除token失败！"
+    await check_token.finish(msg)

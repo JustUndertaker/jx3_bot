@@ -14,7 +14,8 @@ async def database_init():
         'src.modules.bot_info',
         'src.modules.group_info',
         'src.modules.plugin_info',
-        'src.modules.user_info'
+        'src.modules.user_info',
+        'src.modules.token_info'
     ]
     modules = {"models": models}
     await Tortoise.init(db_url=db_url, modules=modules)
