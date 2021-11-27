@@ -4,6 +4,7 @@ from typing import Optional
 from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
 from src.modules.plugin_info import PluginInfo
+from src.modules.token_info import TokenInfo
 from src.modules.user_info import UserInfo
 from src.utils.log import logger
 
@@ -53,6 +54,9 @@ async def _clean_bot(bot_id: int) -> None:
     log = f'bot（{str(bot_id)}）正在清理表user_info'
     logger.debug(log)
     await UserInfo.detele_bot(bot_id)
+    log = f'bot（{str(bot_id)}）正在清理表token_info'
+    logger.debug(log)
+    await TokenInfo.detele_bot(bot_id)
     log = f'bot（{str(bot_id)}）数据清理完毕'
     logger.debug(log)
 

@@ -68,7 +68,7 @@ class TokenInfo(Model):
         return True
 
     @classmethod
-    async def remove_bot(cls, bot_id: int):
+    async def detele_bot(cls, bot_id: int):
         '''
         :说明
             删除一个bot的token
