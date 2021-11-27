@@ -2,7 +2,7 @@ import asyncio
 import random
 import time
 
-from nonebot import get_bots, get_driver, on_notice, on_regex
+from nonebot import get_bots, on_notice, on_regex
 from nonebot.adapters.cqhttp import (Bot, GroupDecreaseNoticeEvent,
                                      GroupIncreaseNoticeEvent,
                                      GroupMessageEvent, MessageSegment)
@@ -25,28 +25,6 @@ export.default_status = True  # 插件默认开关
 export.ignore = True  # 插件管理器忽略此插件
 
 config = baseconfig.get('default')
-
-driver = get_driver()
-
-
-@driver.on_bot_connect
-async def _(bot: Bot):
-    '''
-    初始化注册
-    '''
-    # 群注册
-    bot_id = int(bot.self_id)
-    group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
-        group_name = group['group_name']
-        await source.group_init(bot_id=bot_id, group_id=group_id, group_name=group_name)
-        # 用户注册
-        user_list = await bot.get_group_member_list(group_id=group_id)
-        for user in user_list:
-            user_id = user['user_id']
-            user_name = user['nickname'] if user['card'] == "" else user['card']
-            await source.user_init(bot_id, user_id, group_id, user_name)
 
 
 # 零点重置签到数

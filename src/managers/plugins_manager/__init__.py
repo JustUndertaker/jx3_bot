@@ -25,20 +25,6 @@ driver = get_driver()
 driver.on_startup(manager_init)
 
 
-# 链接bot时处理，自动为所有群注册插件
-@driver.on_bot_connect
-async def _(bot: Bot):
-    bot_id = int(bot.self_id)
-    group_list = await bot.get_group_list()
-    log = f'Bot({bot.self_id}) | 开始自动为所有群注册插件信息……'
-    logger.debug(log)
-    for group in group_list:
-        group_id = group['group_id']
-        await source.plugin_init(bot_id, group_id)
-    log = f'Bot({bot.self_id}) | 插件信息注册完毕。'
-    logger.debug(log)
-
-
 @run_preprocessor
 async def _(matcher: Matcher, bot: Bot, event: GroupMessageEvent, state: T_State):
     '''

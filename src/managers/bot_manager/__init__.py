@@ -5,6 +5,8 @@ from nonebot.adapters.cqhttp import Bot, MessageSegment, PrivateMessageEvent
 from nonebot.adapters.cqhttp.permission import PRIVATE_FRIEND
 from nonebot.permission import SUPERUSER
 from nonebot.plugin import export
+from src.managers.group_manager import data_source as group_source
+from src.managers.plugins_manager import data_source as plugins_source
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config
 from src.utils.log import logger
@@ -30,13 +32,30 @@ async def _(bot: Bot):
     链接bot
     '''
     bot_id = int(bot.self_id)
-    log = f'连接到bot（{bot.self_id}），正在注册信息'
-    logger.info(log)
+    log = f'连接到bot（{bot.self_id}），正在注册bot_info信息'
+    logger.debug(log)
     await source.bot_connect(bot_id)
     nickname = await source.get_bot_nickname(bot_id)
     bot.config.nickname = [nickname]
-    log = f'bot（{bot.self_id}）信息注册完毕'
-    logger.info(log)
+    log = f'bot（{bot.self_id}）bot_info信息注册完毕'
+    logger.debug(log)
+
+    log = f'bot（{bot.self_id}）正在注册group_info和plugin_info信息'
+    logger.debug(log)
+    group_list = await bot.get_group_list()
+    for group in group_list:
+        group_id = group['group_id']
+        group_name = group['group_name']
+        await plugins_source.plugin_init(bot_id, group_id)
+        await group_source.group_init(bot_id=bot_id, group_id=group_id, group_name=group_name)
+        # 用户注册
+        user_list = await bot.get_group_member_list(group_id=group_id)
+        for user in user_list:
+            user_id = user['user_id']
+            user_name = user['nickname'] if user['card'] == "" else user['card']
+            await group_source.user_init(bot_id, user_id, group_id, user_name)
+    log = f'bot（{bot.self_id}）group_info和plugin_info信息注册完毕'
+    logger.debug(log)
 
 
 @driver.on_bot_disconnect
