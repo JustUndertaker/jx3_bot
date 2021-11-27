@@ -103,40 +103,40 @@ daily_list = {
 
 jx3_app = {
     "free": {
-        "daily": "/app/daily",  # 日常
-        "check": "/app/check",  # 开服
-        "demon": "/app/demon",  # 金价
-        "flower": "/app/flower",  # 花价
-        "sand": "/app/sand",  # 沙盘
-        "exam": "/app/exam",  # 科举
-        "furniture": "/app/furniture",  # 装饰
-        "require": "/app/require",  # 奇遇条件
-        "heighten": "/app/heighten",  # 推荐小药
-        "equip": "/app/equip",  # 推荐配装
-        "qixue": "/app/qixue",  # 奇穴
+        "日常": "/app/daily",  # 日常
+        "开服": "/app/check",  # 开服
+        "金价": "/app/demon",  # 金价
+        "花价": "/app/flower",  # 花价
+        "沙盘": "/app/sand",  # 沙盘
+        "科举": "/app/exam",  # 科举
+        "装饰": "/app/furniture",  # 装饰
+        "前置": "/app/require",  # 奇遇条件
+        "小药": "/app/heighten",  # 推荐小药
+        "配装": "/app/equip",  # 推荐配装
+        "奇穴": "/app/qixue",  # 奇穴
         "server": "/app/server",  # 主从区服
-        "macro": "/app/macro",  # 宏查询
-        "travel": "/app/travel",  # 器物谱
-        "price": "/app/price",  # 物价信息
-        "prices": "/app/prices",  # 物品收出价格
-        "app_seniority": "/app/seniority",  # 资历排名
-        "strategy": "/app/strategy",    # 奇遇攻略
-        "horse": "/app/horse",  # 刷马地点
-        "random": "/app/random",  # 骚话
-        "matchId": "/movie/matchId"  # 动画编辑id
+        "宏": "/app/macro",  # 宏查询
+        "器物谱": "/app/travel",  # 器物谱
+        "物价信息": "/app/price",  # 物价信息
+        "物品收出价格": "/app/prices",  # 物品收出价格
+        "资历排名": "/app/seniority",  # 资历排名
+        "奇遇攻略": "/app/strategy",    # 奇遇攻略
+        "刷马地点": "/app/horse",  # 刷马地点
+        "骚话": "/app/random",  # 骚话
+        "动画id": "/movie/matchId"  # 动画编辑id
     },
     "vip": {
-        "role": "/advent/role",  # 个人奇遇
-        "statistical": "/advent/statistical",  # 服务器某奇遇统计
-        "collect": "/advent/collect",  # 某服务器最近奇遇统计
-        "roleInfo": "/role/roleInfo",  # 角色id信息
-        "teamCdList": "/role/teamCdList",  # 副本cd记录
-        "attribute": "/role/attribute",  # 装备属性
-        "achievement": "/role/achievement",  # 成就进度
-        "role_seniority": "/role/seniority",  # 角色资历
-        "match": "/arena/match",  # 个人战绩
-        "awesome": "/arena/awesome",  # 名剑排行
-        "schools": "/arena/schools"  # 名剑统计
+        "个人奇遇": "/advent/result",  # 个人奇遇
+        "服务器某奇遇": "/advent/statistical",  # 服务器某奇遇统计
+        "服务器最近奇遇": "/advent/collect",  # 某服务器最近奇遇统计
+        "角色信息": "/role/roleInfo",  # 角色id信息
+        "副本记录": "/role/teamCdList",  # 副本cd记录
+        "装备属性": "/role/attribute",  # 装备属性
+        "成就进度": "/role/achievement",  # 成就进度
+        "角色资历": "/role/seniority",  # 角色资历
+        "个人战绩": "/arena/match",  # 个人战绩
+        "名剑排行": "/arena/awesome",  # 名剑排行
+        "名剑统计": "/arena/schools"  # 名剑统计
     }
 }
 '''jx3api的app名字对应表'''

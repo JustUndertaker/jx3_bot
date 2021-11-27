@@ -124,7 +124,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询日常：server：{server}"
     logger.info(log)
 
-    app = "daily"
+    app = "日常"
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -162,7 +162,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装备：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'attribute'
+    app = '装备属性'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -197,7 +197,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询开服：server：{server}"
     logger.info(log)
 
-    app = 'check'
+    app = '开服'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
@@ -229,7 +229,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
     logger.info(log)
 
-    app = 'demon'
+    app = '金价'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
@@ -261,7 +261,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
     logger.info(log)
 
-    app = 'qixue'
+    app = '奇穴'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -287,7 +287,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
     logger.info(log)
 
-    app = 'heighten'
+    app = '小药'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -319,7 +319,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询宏：name：{name}"
     logger.info(log)
 
-    app = 'macro'
+    app = '宏'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -345,7 +345,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{name}"
     logger.info(log)
 
-    app = 'require'
+    app = '前置'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -369,7 +369,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询科举：question：{question}"
     logger.info(log)
 
-    app = 'exam'
+    app = '科举'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "question":  question
@@ -395,7 +395,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询配装：name：{name}"
     logger.info(log)
 
-    app = 'equip'
+    app = '配装'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -420,7 +420,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{name}"
     logger.info(log)
 
-    app = 'strategy'
+    app = '奇遇攻略'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -452,7 +452,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询花价：server：{server}"
     logger.info(log)
 
-    app = 'flower'
+    app = '花价'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
@@ -494,7 +494,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询物价：name：{name}"
     logger.info(log)
 
-    app = 'price'
+    app = '物价信息'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -530,7 +530,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'role'
+    app = '个人奇遇'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -572,7 +572,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
-    app = 'statistical'
+    app = '服务器某奇遇'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -602,7 +602,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询请求骚话"
     logger.info(log)
 
-    app = 'random'
+    app = '骚话'
     vip_flag, url = await source.get_jx3_url(app)
     params = {}
     req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
@@ -624,7 +624,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装饰：name：{name}"
     logger.info(log)
 
-    app = 'furniture'
+    app = '装饰'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "name": name
@@ -665,7 +665,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
     logger.info(log)
 
-    app = 'app_seniority'
+    app = '资历排名'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -705,7 +705,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'match'
+    app = '个人战绩'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -750,7 +750,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
 
-    app = 'awesome'
+    app = '名剑排行'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "match": match,
@@ -788,7 +788,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询副本记录：server：{server}，name：{name}"
     logger.info(log)
 
-    app = 'teamCdList'
+    app = '副本记录'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server,
@@ -824,7 +824,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
     logger.info(log)
 
-    app = 'sand'
+    app = '沙盘'
     vip_flag, url = await source.get_jx3_url(app)
     params = {
         "server": server
