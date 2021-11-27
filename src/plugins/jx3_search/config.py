@@ -102,41 +102,133 @@ daily_list = {
 '''日常任务对应表'''
 
 jx3_app = {
-    "free": {
-        "日常": "/app/daily",  # 日常
-        "开服": "/app/check",  # 开服
-        "金价": "/app/demon",  # 金价
-        "花价": "/app/flower",  # 花价
-        "沙盘": "/app/sand",  # 沙盘
-        "科举": "/app/exam",  # 科举
-        "装饰": "/app/furniture",  # 装饰
-        "前置": "/app/require",  # 奇遇条件
-        "小药": "/app/heighten",  # 推荐小药
-        "配装": "/app/equip",  # 推荐配装
-        "奇穴": "/app/qixue",  # 奇穴
-        "server": "/app/server",  # 主从区服
-        "宏": "/app/macro",  # 宏查询
-        "器物谱": "/app/travel",  # 器物谱
-        "物价信息": "/app/price",  # 物价信息
-        "物品收出价格": "/app/prices",  # 物品收出价格
-        "资历排名": "/app/seniority",  # 资历排名
-        "奇遇攻略": "/app/strategy",    # 奇遇攻略
-        "刷马地点": "/app/horse",  # 刷马地点
-        "骚话": "/app/random",  # 骚话
-        "动画id": "/movie/matchId"  # 动画编辑id
+    "日常": {
+        "app": "/app/daily",
+        "cd": 0
     },
-    "vip": {
-        "个人奇遇": "/advent/result",  # 个人奇遇
-        "服务器某奇遇": "/advent/statistical",  # 服务器某奇遇统计
-        "服务器最近奇遇": "/advent/collect",  # 某服务器最近奇遇统计
-        "角色信息": "/role/roleInfo",  # 角色id信息
-        "副本记录": "/role/teamCdList",  # 副本cd记录
-        "装备属性": "/role/attribute",  # 装备属性
-        "成就进度": "/role/achievement",  # 成就进度
-        "角色资历": "/role/seniority",  # 角色资历
-        "个人战绩": "/arena/match",  # 个人战绩
-        "名剑排行": "/arena/awesome",  # 名剑排行
-        "名剑统计": "/arena/schools"  # 名剑统计
+    "开服": {
+        "app": "/app/check",
+        "cd": 0
+    },
+    "金价": {
+        "app": "/app/demon",
+        "cd": 0
+    },
+    "花价": {
+        "app": "/app/flower",
+        "cd": 0
+    },
+    "沙盘": {
+        "app": "/app/sand",
+        "cd": 0
+    },
+    "科举": {
+        "app": "/app/exam",
+        "cd": 0
+    },
+    "装饰": {
+        "app": "/app/furniture",
+        "cd": 0
+    },
+    "前置": {
+        "app": "/app/require",
+        "cd": 0
+    },
+    "小药": {
+        "app": "/app/heighten",
+        "cd": 0
+    },
+    "配装": {
+        "app": "/app/equip",
+        "cd": 0
+    },
+    "奇穴": {
+        "app": "/app/qixue",
+        "cd": 0
+    },
+    "server": {
+        "app": "/app/server",
+        "cd": 0
+    },  # 主从区服
+    "宏": {
+        "app": "/app/macro",
+        "cd": 0
+    },
+    "器物谱": {
+        "app": "/app/travel",
+        "cd": 0
+    },
+    "物价信息": {
+        "app": "/app/price",
+        "cd": 0
+    },
+    "物品收出价格": {
+        "app": "/app/prices",
+        "cd": 0
+    },
+    "资历排名": {
+        "app": "/app/seniority",
+        "cd": 0
+    },
+    "奇遇攻略": {
+        "app": "/app/strategy",
+        "cd": 0
+    },
+    "刷马地点": {
+        "app": "/app/horse",
+        "cd": 0
+    },
+    "骚话": {
+        "app": "/app/random",
+        "cd": 0
+    },
+    "动画id": {
+        "app": "/movie/matchId",
+        "cd": 0
+    },
+    "个人奇遇":  {
+        "app": "/advent/result",
+        "cd": 10
+    },
+    "服务器某奇遇": {
+        "app": "/advent/statistical",
+        "cd": 10
+    },
+    "服务器最近奇遇": {
+        "app": "/advent/collect",
+        "cd": 10
+    },
+    "角色信息": {
+        "app": "/role/roleInfo",
+        "cd": 0
+    },
+    "副本记录": {
+        "app": "/role/teamCdList",
+        "cd": 10
+    },
+    "装备属性": {
+        "app": "/role/attribute",
+        "cd": 10
+    },
+    "成就进度": {
+        "app": "/role/achievement",
+        "cd": 10
+    },
+    "角色资历": {
+        "app": "/role/seniority",
+        "cd": 10
+    },
+    "个人战绩": {
+        "app": "/arena/match",
+        "cd": 10
+    },
+    "名剑排行": {
+        "app": "/arena/awesome",
+        "cd": 10
+    },
+    "名剑统计": {
+        "app": "/arena/schools",
+        "cd": 10
     }
 }
 '''jx3api的app名字对应表'''
