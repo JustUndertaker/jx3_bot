@@ -397,10 +397,13 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     token_list = await source.get_token(bot_id)
     state['token_list'] = token_list
     state['got'] = True
-    msg = "当前token：\n"
-    count = 1
-    for one_token in token_list:
-        msg += f"{count}：{one_token['token']}\n"
+
+    data = {}
+    data['data'] = token_list
+    data['token_nums'] = len(token_list)
+    pagename = "token_info.html"
+    img = await get_html_screenshots(pagename, data)
+    msg = MessageSegment.image(img)
 
     await check_token.send(msg)
 
@@ -410,13 +413,16 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     '''等待后续命令'''
     bot_id = int(bot.self_id)
     token_list = state['token_list']
-    if len(token_list) == 0:
-        await check_token.finish()
 
     text = event.get_plaintext()
+    match = re.match(pattern=r"^退出$", string=text)
+    if match:
+        msg = "退出token管理。"
+        await check_token.finish(msg)
+
     match = re.match(pattern=r"^删除 [0-9]+$", string=text)
     if not match:
-        msg = "输入“删除 [序号]”删除token"
+        msg = "输入“删除 [序号]”删除token，输入“退出”结束管理"
         await check_token.reject(msg)
 
     count = int(text.split(' ')[-1])
@@ -428,7 +434,7 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
 
     flag = await source.remove_token(bot_id, token)
     if flag:
-        msg = "已删除该token！"
+        msg = "已删除该token！退出管理。"
     else:
-        msg = "删除token失败！"
+        msg = "删除token失败！退出管理。"
     await check_token.finish(msg)
