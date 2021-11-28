@@ -15,8 +15,6 @@ class BotInfo(Model):
     owner_id = fields.IntField(null=True)
     '''管理员账号'''
     nickname = fields.CharField(max_length=255, default=defaule_nickname)
-    permission = fields.BooleanField(default=False)
-    '''高级权限，可以开启高级查询功能'''
     last_sign = fields.DatetimeField(null=True)
     '''上次登录时间'''
     last_left = fields.DatetimeField(null=True)
@@ -58,42 +56,6 @@ class BotInfo(Model):
             record.last_left = now_time
             record.online = False
             await record.save(update_fields=["last_left", "online"])
-
-    @classmethod
-    async def bot_get_permission(cls, bot_id: int) -> Optional[bool]:
-        '''
-        :说明
-            获取机器人的高级权限
-
-        :参数
-            * bot_id：机器人QQ
-
-        :返回
-            * bool：是否开启高级权限
-            * None：不存在
-        '''
-        record = await cls.get_or_none(bot_id=bot_id)
-        return None if record is None else record.permission
-
-    @classmethod
-    async def set_permission(cls, bot_id: int, permission: bool) -> bool:
-        '''
-        :说明
-            设置机器人权限
-
-        :参数
-            * bot_id：机器人QQ
-            * permission：权限
-
-        :返回
-            * bool：是否成功
-        '''
-        record = await cls.get_or_none(bot_id=bot_id)
-        if record is None:
-            return False
-        record.permission = permission
-        await record.save(update_fields=["permission"])
-        return True
 
     @classmethod
     async def set_owner(cls, bot_id, owner_id) -> bool:
@@ -232,5 +194,5 @@ class BotInfo(Model):
         '''
         获取所有数据
         '''
-        record_list = await cls.all().values("bot_id", "owner_id", "permission", "last_sign", "last_left", "online")
+        record_list = await cls.all().values("bot_id", "owner_id", "last_sign", "last_left", "online")
         return record_list

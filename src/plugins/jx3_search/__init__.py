@@ -124,15 +124,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询日常：server：{server}"
     logger.info(log)
 
-    app = "日常"
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "日常"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await daily.finish(msg)
+
     params = {
         "server": server,
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url, params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await daily.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     msg = f'日常[{server}]\n'
     msg += f'当前时间：{data.get("date")} 星期{data.get("week")}\n'
@@ -162,16 +170,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装备：server：{server}，name：{name}"
     logger.info(log)
 
-    app = '装备属性'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "装备属性"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await equipquery.finish(msg)
+
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url, params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await equipquery.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = await source.handle_equip_data(req_data, nickname)
     pagename = "equip.html"
@@ -197,15 +213,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询开服：server：{server}"
     logger.info(log)
 
-    app = '开服'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "开服"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await open_server_send.finish(msg)
+
     params = {
         "server": server
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await open_server_send.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     status = "已开服" if data['status'] == 1 else "维护中"
     msg = f'{data.get("server")} 当前状态是[{status}]'
@@ -229,15 +253,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
     logger.info(log)
 
-    app = '金价'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "开服"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await gold_query.finish(msg)
+
     params = {
         "server": server
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await gold_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = data[0]
     date_now = datetime.now().strftime("%m-%d %H:%M")
@@ -261,15 +293,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
     logger.info(log)
 
-    app = '奇穴'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "奇穴"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await extra_point.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await extra_point.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     img = data.get('all')
     msg = MessageSegment.image(img)
@@ -287,15 +327,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
     logger.info(log)
 
-    app = '小药'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "小药"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await medicine.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await medicine.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     name = data.get('name')
     data = data.get('data')
@@ -319,15 +367,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询宏：name：{name}"
     logger.info(log)
 
-    app = '宏'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "宏"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await macro.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await macro.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     msg = f'宏 {data.get("name")} 更新时间：{data.get("time")}\n'
     msg += f'{data.get("macro")}\n'
@@ -345,15 +401,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{name}"
     logger.info(log)
 
-    app = '前置'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "前置"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await adventurecondition.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await adventurecondition.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     url = data.get("upload")
     msg = MessageSegment.image(url)
@@ -369,15 +433,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询科举：question：{question}"
     logger.info(log)
 
-    app = '科举'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "科举"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await exam.finish(msg)
+
     params = {
         "question":  question
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await exam.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
+
     data: list = data[0]
     msg = f'[问题]\n{data.get("question")}\n'
     msg += f'[答案]\n{data.get("answer")}'
@@ -395,15 +468,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询配装：name：{name}"
     logger.info(log)
 
-    app = '配装'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "配装"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await equip_group_query.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await equip_group_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     msg = MessageSegment.text(f'{data.get("name")}配装：\nPve装备：\n')+MessageSegment.image(data.get("pve")) + \
         MessageSegment.text("Pvp装备：\n")+MessageSegment.image(data.get("pvp"))
@@ -420,15 +501,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{name}"
     logger.info(log)
 
-    app = '奇遇攻略'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "奇遇攻略"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await raiderse.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await raiderse.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     img = data.get("url")
     msg = MessageSegment.image(img)
@@ -452,15 +541,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询花价：server：{server}"
     logger.info(log)
 
-    app = '花价'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "花价"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await flowers.finish(msg)
+
     params = {
         "server": server
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await flowers.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = {}
     data["server"] = server
@@ -494,15 +591,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询物价：name：{name}"
     logger.info(log)
 
-    app = '物价信息'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "物价信息"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await price_query.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await price_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     pagename = "itemprice.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
@@ -530,16 +635,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
     logger.info(log)
 
-    app = '个人奇遇'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "个人奇遇"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await serendipity.finish(msg)
+
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await serendipity.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = {}
     data["server"] = server
@@ -572,16 +685,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
-    app = '服务器某奇遇'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "服务器某奇遇"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await serendipityList.finish(msg)
+
     params = {
         "server": server,
         "serendipity": serendipity
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await serendipityList.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = {}
     data["server"] = server
@@ -602,13 +723,21 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询请求骚话"
     logger.info(log)
 
-    app = '骚话'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "骚话"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await saohua_query.finish(msg)
+
     params = {}
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await saohua_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     msg = data.get('text')
     await saohua_query.finish(msg)
@@ -624,15 +753,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装饰：name：{name}"
     logger.info(log)
 
-    app = '装饰'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "装饰"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await furniture_query.finish(msg)
+
     params = {
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await furniture_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     pagename = "furniture.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
@@ -665,16 +802,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
     logger.info(log)
 
-    app = '资历排名'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "资历排名"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await seniority_query.finish(msg)
+
     params = {
         "server": server,
         "sect": sect
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await seniority_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = []
     for i in range(10):
@@ -705,16 +850,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    app = '个人战绩'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "个人战绩"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await indicator.finish(msg)
+
     params = {
         "server": server,
         "name": name
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await indicator.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = {}
     data['name'] = req_data['server']+"-"+req_data['name']
@@ -750,16 +903,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
 
-    app = '名剑排行'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "个人战绩"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await awesome_query.finish(msg)
+
     params = {
         "match": match,
         "limit": 10
     }
-    req_msg, req_data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await awesome_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = source.handle_awesome_data(match, req_data)
     pagename = "awesome_query.html"
@@ -788,16 +949,24 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询副本记录：server：{server}，name：{name}"
     logger.info(log)
 
-    app = '副本记录'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "副本记录"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await teamcdlist.finish(msg)
+
     params = {
         "server": server,
         "name": name
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await teamcdlist.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     pagename = "teamcdlist.html"
     img = await get_html_screenshots(pagename=pagename, data=data)
@@ -824,15 +993,23 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
     logger.info(log)
 
-    app = '沙盘'
-    vip_flag, url = await source.get_jx3_url(app)
+    app_name = "沙盘"
+    url, cd_time = await source.get_jx3_url(app_name)
+    can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
+    if not can_use:
+        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        await sand_query.finish(msg)
+
     params = {
         "server": server
     }
-    req_msg, data = await source.get_data_from_jx3api(bot_id=bot_id, vip_flag=vip_flag, url=url, params=params)
+    req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
         msg = f"查询失败，{req_msg}。"
         await sand_query.finish(msg)
+
+    # 查询成功
+    await source.use_one_app(bot_id, group_id, app_name)
 
     data = data[0]
     url = data.get('url')

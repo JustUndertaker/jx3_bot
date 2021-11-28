@@ -3,8 +3,8 @@ import time
 from typing import Optional, Tuple
 
 import httpx
-from src.modules.bot_info import BotInfo
 from src.modules.group_info import GroupInfo
+from src.modules.search_record import SearchRecord
 from src.utils.config import config as baseconfig
 
 from .config import daily_list, jx3_app, zhiye_name
@@ -22,7 +22,7 @@ jx3_client = httpx.AsyncClient(headers=_jx3_headers)
 '''异步请求库客户端'''
 
 
-async def get_jx3_url(app: str) -> Tuple[bool, str]:
+async def get_jx3_url(app: str) -> Tuple[str, int]:
     '''
     :说明
         获取访问api的url，如果未配置高级站点地址，则默认采用普通站访问
@@ -31,24 +31,56 @@ async def get_jx3_url(app: str) -> Tuple[bool, str]:
         * app：应用名称
 
     :返回
-        * bool：是否需要vip
         * str：url地址
+        * int：cd时间，秒
     '''
     jx3_url: str = config.get('jx3-url')
-    need_vip: bool = app in jx3_app['vip']
-    app_dict = jx3_app['vip'] if need_vip else jx3_app['free']
-    url = jx3_url+app_dict[app]
-    return need_vip, url
+    get_app: dict = jx3_app.get(app)
+    if get_app:
+        url = jx3_url+get_app['app']
+        cd_time = get_app['cd']
+        return url, cd_time
+
+    return "", 0
 
 
-async def get_data_from_jx3api(bot_id: int, vip_flag: bool, url: str, params: dict) -> Tuple[str, Optional[dict]]:
+async def check_cd_time(bot_id: int, group_id: int, app_name: str, cd_time: int) -> Tuple[bool, int]:
+    '''
+    :说明
+        检查模块cd
+
+    :参数
+        * bot_id：机器人QQ
+        * group_id：QQ群号
+        * app_name：查询类型
+
+    :返回
+        * bool：检查成功flag
+        * int：剩余cd
+    '''
+    # 没有记录创建记录
+    await SearchRecord.append_or_update(bot_id, group_id, app_name)
+    time_last = await SearchRecord.get_last_time(bot_id, group_id, app_name)
+    time_now = int(time.time())
+    over_time = time_now-time_last
+    if over_time > cd_time:
+        return True, 0
+    else:
+        left_cd = cd_time-over_time
+        return False, left_cd
+
+
+async def use_one_app(bot_id: int, group_id: int, app_name: str):
+    '''记录使用一次查询'''
+    await SearchRecord.count_search(bot_id, group_id, app_name)
+
+
+async def get_data_from_jx3api(url: str, params: dict) -> Tuple[str, Optional[dict]]:
     '''
     :说明
         发送一条请求给jx3-api，返回结果
 
     :参数
-        * bot_id：机器人QQ
-        * vip_flag：是否需要vip
         * url：url地址
         * params：请求参数
 
@@ -56,11 +88,6 @@ async def get_data_from_jx3api(bot_id: int, vip_flag: bool, url: str, params: di
         * msg：返回msg，为'success'时成功
         * data：返回数据
     '''
-    if vip_flag:
-        permission = await BotInfo.bot_get_permission(bot_id)
-        if not permission:
-            return "此机器人未开启高级权限", None
-
     try:
         req_url = await jx3_client.get(url, params=params)
         req = req_url.json()

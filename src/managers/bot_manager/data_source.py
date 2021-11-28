@@ -112,12 +112,6 @@ async def get_all_bot() -> list[dict]:
     return data
 
 
-async def set_permission(bot_id: int, permission: bool) -> bool:
-    '''授权一个机器人'''
-    req = await BotInfo.set_permission(bot_id, permission)
-    return req
-
-
 async def clean_one_group(bot_id: int, group_id: int) -> None:
     '''清理一个机器人，一个群数据'''
     # 清理插件

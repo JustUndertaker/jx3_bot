@@ -86,9 +86,6 @@ set_owner = on_regex(pattern=r"^设置管理员$", permission=PRIVATE_FRIEND, pr
 clean_owner = on_regex(pattern=r"^清除管理员$", permission=PRIVATE_FRIEND, priority=2, block=True)
 # 查看所有连接机器人
 server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, priority=2, block=True)
-# 授权高级功能
-open_permission = on_regex(pattern=r"^授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
-close_permission = on_regex(pattern=r"^取消授权 [0-9]+$", permission=SUPERUSER, priority=2, block=True)
 # 手动清理离线机器人
 clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
 # 管理员更新数据库
@@ -151,34 +148,6 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     img = await get_html_screenshots(pagename=pagename, data=alldata)
     msg = MessageSegment.image(img)
     await server_list.finish(msg)
-
-
-@open_permission.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    私聊授权高级功能
-    '''
-    bot_id = int(event.get_plaintext().split(" ")[-1])
-    req = await source.set_permission(bot_id, True)
-    if req:
-        msg = f"授权成功，机器人[{bot_id}]已开启高级功能。"
-    else:
-        msg = f"授权失败，未找到机器人[{bot_id}]。"
-    await open_permission.finish(msg)
-
-
-@close_permission.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''
-    私聊取消高级功能
-    '''
-    bot_id = int(event.get_plaintext().split(" ")[-1])
-    req = await source.set_permission(bot_id, False)
-    if req:
-        msg = f"机器人[{bot_id}]已关闭高级功能。"
-    else:
-        msg = f"失败，未找到机器人[{bot_id}]。"
-    await close_permission.finish(msg)
 
 
 @clean_outline_bot.handle()

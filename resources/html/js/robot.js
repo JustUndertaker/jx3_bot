@@ -17,14 +17,8 @@ function get_string(data) {
     var one_string = "<tr><td>" + data['bot_id'] + '</td><td>' + data['owner_id']
     one_string += '</td><td>' + data['last_sign']
     one_string += '</td><td>' + data['last_left']
-    permission = data['permission']
-    if (permission) {
-        one_string += '</td><td class="text-success">已授权'
-    } else {
-        one_string += '</td><td class="text-danger">未授权'
-    }
-    online = data['online']
 
+    online = data['online']
     if (online) {
         one_string += '</td><td><div class="text-success">在线</td></tr>'
     } else {
