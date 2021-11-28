@@ -50,3 +50,8 @@ class SearchRecord(Model):
         '''获取统计次数'''
         record = await cls.get_or_none(bot_id=bot_id, group_id=group_id, app_name=app_name)
         return record.count if record else None
+
+    @classmethod
+    async def detele_bot(cls, bot_id: int):
+        '''清理一个机器人的数据'''
+        await cls.filter(bot_id=bot_id).delete()
