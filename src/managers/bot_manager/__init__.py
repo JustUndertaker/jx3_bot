@@ -90,6 +90,8 @@ server_list = on_regex(pattern=r"^服务器列表$", permission=SUPERUSER, prior
 clean_outline_bot = on_regex(pattern=r"(^清理所有离线$)|(^清理离线 [0-9]+$)", permission=SUPERUSER, priority=2, block=True)
 # 管理员更新数据库
 update_database = on_regex(pattern=r"^清理数据$", permission=SUPERUSER, priority=2, block=True)
+# 帮助信息
+super_help = on_regex(pattern=r"^超级帮助$", permission=SUPERUSER, priority=2, block=True)
 
 
 @set_owner.handle()
@@ -196,3 +198,15 @@ async def _(bot: Bot, event: PrivateMessageEvent):
         msg += f"bot[{id}] 共清理群数据 {count} 个.\n"
 
     await update_database.finish(msg)
+
+
+@super_help.handle()
+async def _(bot: Bot, event: PrivateMessageEvent):
+    '''超级用户帮助'''
+    pagename = "superuser_help.html"
+    img = await get_html_screenshots(pagename)
+    msg = MessageSegment.image(img)
+
+    log = "超级用户私聊帮助"
+    logger.info(log)
+    await super_help.finish(msg)
