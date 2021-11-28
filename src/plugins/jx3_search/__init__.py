@@ -128,7 +128,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await daily.finish(msg)
 
     params = {
@@ -174,7 +174,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await equipquery.finish(msg)
 
     params = {
@@ -217,7 +217,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await open_server_send.finish(msg)
 
     params = {
@@ -257,7 +257,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await gold_query.finish(msg)
 
     params = {
@@ -297,7 +297,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await extra_point.finish(msg)
 
     params = {
@@ -331,7 +331,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await medicine.finish(msg)
 
     params = {
@@ -371,7 +371,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await macro.finish(msg)
 
     params = {
@@ -405,7 +405,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await adventurecondition.finish(msg)
 
     params = {
@@ -437,7 +437,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await exam.finish(msg)
 
     params = {
@@ -472,7 +472,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await equip_group_query.finish(msg)
 
     params = {
@@ -505,7 +505,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await raiderse.finish(msg)
 
     params = {
@@ -545,7 +545,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await flowers.finish(msg)
 
     params = {
@@ -595,7 +595,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await price_query.finish(msg)
 
     params = {
@@ -639,7 +639,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipity.finish(msg)
 
     params = {
@@ -689,7 +689,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipityList.finish(msg)
 
     params = {
@@ -727,7 +727,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await saohua_query.finish(msg)
 
     params = {}
@@ -757,7 +757,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await furniture_query.finish(msg)
 
     params = {
@@ -806,7 +806,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await seniority_query.finish(msg)
 
     params = {
@@ -854,7 +854,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await indicator.finish(msg)
 
     params = {
@@ -907,7 +907,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await awesome_query.finish(msg)
 
     params = {
@@ -953,7 +953,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await teamcdlist.finish(msg)
 
     params = {
@@ -997,7 +997,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
-        msg = f"[{app_name}]查询模块冷却中({left_cd})"
+        msg = f"[{app_name}]模块冷却中({left_cd})"
         await sand_query.finish(msg)
 
     params = {
