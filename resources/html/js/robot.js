@@ -15,6 +15,7 @@ function handle(data) {
 
 function get_string(data) {
     var one_string = "<tr><td>" + data['bot_id'] + '</td><td>' + data['owner_id']
+    one_string += '</td><td>' + data['nickname']
     one_string += '</td><td>' + data['last_sign']
     one_string += '</td><td>' + data['last_left']
 

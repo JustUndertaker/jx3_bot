@@ -15,6 +15,7 @@ class BotInfo(Model):
     owner_id = fields.IntField(null=True)
     '''管理员账号'''
     nickname = fields.CharField(max_length=255, default=defaule_nickname)
+    '''机器人昵称'''
     last_sign = fields.DatetimeField(null=True)
     '''上次登录时间'''
     last_left = fields.DatetimeField(null=True)
@@ -194,5 +195,5 @@ class BotInfo(Model):
         '''
         获取所有数据
         '''
-        record_list = await cls.all().values("bot_id", "owner_id", "last_sign", "last_left", "online")
+        record_list = await cls.all().values("bot_id", "owner_id", "nickname", "last_sign", "last_left", "online")
         return record_list
