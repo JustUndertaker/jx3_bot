@@ -102,47 +102,47 @@ daily_list = {
 '''日常任务对应表'''
 
 jx3_app = {
-    "日常": {
+    "日常查询": {
         "app": "/app/daily",
         "cd": 0
     },
-    "开服": {
+    "开服查询": {
         "app": "/app/check",
         "cd": 0
     },
-    "金价": {
+    "金价查询": {
         "app": "/app/demon",
         "cd": 0
     },
-    "花价": {
+    "花价查询": {
         "app": "/app/flower",
         "cd": 0
     },
-    "沙盘": {
+    "沙盘查询": {
         "app": "/app/sand",
         "cd": 0
     },
-    "科举": {
+    "考试查询": {
         "app": "/app/exam",
         "cd": 0
     },
-    "装饰": {
+    "装饰查询": {
         "app": "/app/furniture",
         "cd": 0
     },
-    "前置": {
+    "前置查询": {
         "app": "/app/require",
         "cd": 0
     },
-    "小药": {
+    "小药查询": {
         "app": "/app/heighten",
         "cd": 0
     },
-    "配装": {
+    "配装查询": {
         "app": "/app/equip",
         "cd": 0
     },
-    "奇穴": {
+    "奇穴查询": {
         "app": "/app/qixue",
         "cd": 0
     },
@@ -150,7 +150,7 @@ jx3_app = {
         "app": "/app/server",
         "cd": 0
     },  # 主从区服
-    "宏": {
+    "宏查询": {
         "app": "/app/macro",
         "cd": 0
     },
@@ -158,7 +158,7 @@ jx3_app = {
         "app": "/app/travel",
         "cd": 0
     },
-    "物价信息": {
+    "物价查询": {
         "app": "/app/price",
         "cd": 0
     },
@@ -166,11 +166,11 @@ jx3_app = {
         "app": "/app/prices",
         "cd": 0
     },
-    "资历排名": {
-        "app": "/app/seniority",
+    "资历排行": {
+        "app": "/next/seniority",
         "cd": 0
     },
-    "奇遇攻略": {
+    "攻略查询": {
         "app": "/app/strategy",
         "cd": 0
     },
@@ -186,11 +186,11 @@ jx3_app = {
         "app": "/movie/matchId",
         "cd": 0
     },
-    "个人奇遇":  {
+    "奇遇查询":  {
         "app": "/advent/result",
         "cd": 10
     },
-    "服务器某奇遇": {
+    "奇遇列表": {
         "app": "/advent/statistical",
         "cd": 10
     },
@@ -218,7 +218,7 @@ jx3_app = {
         "app": "/role/seniority",
         "cd": 10
     },
-    "个人战绩": {
+    "战绩查询": {
         "app": "/arena/match",
         "cd": 10
     },

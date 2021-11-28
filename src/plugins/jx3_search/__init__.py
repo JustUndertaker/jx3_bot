@@ -124,7 +124,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询日常：server：{server}"
     logger.info(log)
 
-    app_name = "日常"
+    app_name = "日常查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -213,7 +213,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询开服：server：{server}"
     logger.info(log)
 
-    app_name = "开服"
+    app_name = "开服查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -253,7 +253,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询金价：server：{server}"
     logger.info(log)
 
-    app_name = "开服"
+    app_name = "金价查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -293,7 +293,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇穴：name：{name}"
     logger.info(log)
 
-    app_name = "奇穴"
+    app_name = "奇穴查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -327,7 +327,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询小药：name：{name}"
     logger.info(log)
 
-    app_name = "小药"
+    app_name = "小药查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -367,7 +367,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询宏：name：{name}"
     logger.info(log)
 
-    app_name = "宏"
+    app_name = "宏查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -401,7 +401,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询前置：name：{name}"
     logger.info(log)
 
-    app_name = "前置"
+    app_name = "前置查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -433,7 +433,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询科举：question：{question}"
     logger.info(log)
 
-    app_name = "科举"
+    app_name = "考试查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -468,7 +468,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询配装：name：{name}"
     logger.info(log)
 
-    app_name = "配装"
+    app_name = "配装查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -501,7 +501,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询攻略：name：{name}"
     logger.info(log)
 
-    app_name = "奇遇攻略"
+    app_name = "攻略查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -541,7 +541,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询花价：server：{server}"
     logger.info(log)
 
-    app_name = "花价"
+    app_name = "花价查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -591,7 +591,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询物价：name：{name}"
     logger.info(log)
 
-    app_name = "物价信息"
+    app_name = "物价查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -635,7 +635,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇：server：{server}，name：{name}"
     logger.info(log)
 
-    app_name = "个人奇遇"
+    app_name = "奇遇查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -685,7 +685,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询奇遇列表：server：{server}，serendipity：{serendipity}"
     logger.info(log)
 
-    app_name = "服务器某奇遇"
+    app_name = "奇遇列表"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -753,7 +753,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询装饰：name：{name}"
     logger.info(log)
 
-    app_name = "装饰"
+    app_name = "装饰查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -802,7 +802,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询资历排行：server：{server}，sect：{sect}"
     logger.info(log)
 
-    app_name = "资历排名"
+    app_name = "资历排行"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -850,7 +850,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询战绩总览：server：{server}，name：{name}"
     logger.info(log)
 
-    app_name = "个人战绩"
+    app_name = "战绩查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -903,7 +903,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询名剑排名：match：{params}"
     logger.info(log)
 
-    app_name = "个人战绩"
+    app_name = "名剑排行"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
@@ -993,7 +993,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     log = f"Bot({bot.self_id}) | 群[{group_id}]查询沙盘：server：{server}"
     logger.info(log)
 
-    app_name = "沙盘"
+    app_name = "沙盘查询"
     url, cd_time = await source.get_jx3_url(app_name)
     can_use, left_cd = await source.check_cd_time(bot_id, group_id, app_name, cd_time)
     if not can_use:
