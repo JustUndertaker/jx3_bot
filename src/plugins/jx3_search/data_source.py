@@ -110,7 +110,7 @@ async def get_master_server(server: str) -> Optional[str]:
     '''
     获取主服务器名称
     '''
-    url = config.get('jx3-url')+jx3_app.get('free').get('server')
+    url = config.get('jx3-url')+jx3_app.get('server').get('app')
     params = {
         "name": server
     }
