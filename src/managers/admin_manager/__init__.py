@@ -98,7 +98,7 @@ borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, b
 set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
 
 # 增加token
-add_token = on_regex(pattern=r"^^ticket [(A-Za-z0-9)|(:)|(=)]+$", permission=OWNER, priority=2, block=True)
+add_token = on_regex(pattern=r"^^ticket [(A-Za-z0-9)|(:)|(=)|(_)]+$", permission=OWNER, priority=2, block=True)
 # 查看token
 check_token = on_regex(pattern=r"^ticket$", permission=OWNER, priority=2, block=True)
 
