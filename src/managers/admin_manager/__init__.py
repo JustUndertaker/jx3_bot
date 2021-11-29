@@ -98,9 +98,9 @@ borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, b
 set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
 
 # 增加token
-add_token = on_regex(pattern=r"^^token [(A-Za-z0-9)|(:)|(=)]+$", permission=OWNER, priority=2, block=True)
+add_token = on_regex(pattern=r"^^ticket [(A-Za-z0-9)|(:)|(=)]+$", permission=OWNER, priority=2, block=True)
 # 查看token
-check_token = on_regex(pattern=r"^token$", permission=OWNER, priority=2, block=True)
+check_token = on_regex(pattern=r"^ticket$", permission=OWNER, priority=2, block=True)
 
 
 @someone_add_me.handle()
@@ -379,27 +379,27 @@ async def _(bot: Bot, event: PrivateMessageEvent):
 
 @add_token.handle()
 async def _(bot: Bot, event: PrivateMessageEvent):
-    '''增加一条token'''
+    '''增加一条ticket'''
     bot_id = int(bot.self_id)
     token = event.get_plaintext().split(" ")[-1]
     # 验证token
     alive, req_msg = await source.check_token(ticket=token)
     if not alive:
-        msg = f"添加token失败，{req_msg}。"
+        msg = f"添加ticket失败，{req_msg}。"
         await add_token.finish(msg)
 
     flag = await source.add_token(bot_id, token)
     if flag:
-        msg = "添加token成功了！"
+        msg = "添加ticket成功了！"
     else:
-        msg = "添加token失败，token已存在！"
+        msg = "添加ticket失败，ticket已存在！"
 
     await add_token.finish(msg)
 
 
 @check_token.handle()
 async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
-    '''查看token'''
+    '''查看ticket'''
     bot_id = int(bot.self_id)
     token_list = await source.get_token(bot_id)
     state['token_list'] = token_list
@@ -424,12 +424,12 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     text = event.get_plaintext()
     match = re.match(pattern=r"^退出$", string=text)
     if match:
-        msg = "退出token管理。"
+        msg = "退出ticket管理。"
         await check_token.finish(msg)
 
     match = re.match(pattern=r"^删除 [0-9]+$", string=text)
     if not match:
-        msg = "输入“删除 [序号]”删除token，输入“退出”结束管理"
+        msg = "输入“删除 [序号]”删除ticket，输入“退出”结束管理"
         await check_token.reject(msg)
 
     count = int(text.split(' ')[-1])
@@ -441,7 +441,7 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
 
     flag = await source.remove_token(bot_id, token)
     if flag:
-        msg = "已删除该token！退出管理。"
+        msg = "已删除该ticket！退出管理。"
     else:
-        msg = "删除token失败！退出管理。"
+        msg = "删除ticket失败！退出管理。"
     await check_token.finish(msg)
