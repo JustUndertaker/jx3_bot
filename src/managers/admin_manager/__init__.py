@@ -98,7 +98,7 @@ borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, b
 set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
 
 # 增加token
-add_token = on_regex(pattern=r"^token [A-Za-z0-9]+$", permission=OWNER, priority=2, block=True)
+add_token = on_regex(pattern=r"^^token [(A-Za-z0-9)|(:)|(=)]+$", permission=OWNER, priority=2, block=True)
 # 查看token
 check_token = on_regex(pattern=r"^token$", permission=OWNER, priority=2, block=True)
 
@@ -382,11 +382,18 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     '''增加一条token'''
     bot_id = int(bot.self_id)
     token = event.get_plaintext().split(" ")[-1]
+    # 验证token
+    alive, req_msg = await source.check_token(ticket=token)
+    if not alive:
+        msg = f"添加token失败，{req_msg}。"
+        await add_token.finish(msg)
+
     flag = await source.add_token(bot_id, token)
     if flag:
         msg = "添加token成功了！"
     else:
         msg = "添加token失败，token已存在！"
+
     await add_token.finish(msg)
 
 

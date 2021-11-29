@@ -202,3 +202,22 @@ async def get_token(bot_id: int) -> list[dict]:
 async def remove_token(bot_id: int, token: str) -> bool:
     '''删除一条token'''
     return await TokenInfo.remove_token(bot_id, token)
+
+
+async def check_token(ticket: str) -> Tuple[bool, str]:
+    '''检查token有效性'''
+    url = config.get('jx3-api').get('jx3-url')+'/token/validity'
+    token = config.get('jx3-api').get('jx3-token')
+    params = {
+        'token': token,
+        'ticket': ticket
+    }
+    async with httpx.AsyncClient(headers=get_user_agent()) as client:
+        try:
+            req_url = await client.get(url=url, params=params)
+            req = req_url.json()
+            code = req['code']
+            msg = req['msg']
+            return (code == 200), msg
+        except Exception as e:
+            return False, str(e)

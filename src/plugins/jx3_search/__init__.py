@@ -177,9 +177,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await equipquery.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await equipquery.finish(msg)
+
     params = {
         "server": server,
-        "name": name
+        "name": name,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url, params)
     if req_msg != 'success':
@@ -642,9 +648,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipity.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await serendipity.finish(msg)
+
     params = {
         "server": server,
-        "name": name
+        "name": name,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
@@ -692,9 +704,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipityList.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await serendipityList.finish(msg)
+
     params = {
         "server": server,
-        "serendipity": serendipity
+        "serendipity": serendipity,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
@@ -809,9 +827,14 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await seniority_query.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await seniority_query.finish(msg)
     params = {
         "server": server,
-        "sect": sect
+        "sect": sect,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
@@ -857,9 +880,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await indicator.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await indicator.finish(msg)
+
     params = {
         "server": server,
-        "name": name
+        "name": name,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
@@ -910,9 +939,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await awesome_query.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await awesome_query.finish(msg)
+
     params = {
         "match": match,
-        "limit": 10
+        "limit": 10,
+        "ticket": ticket
     }
     req_msg, req_data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':
@@ -956,9 +991,15 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await teamcdlist.finish(msg)
 
+    ticket = await source.get_token(bot_id)
+    if ticket is None:
+        msg = "请求失败，未找到合适的ticket！"
+        await teamcdlist.finish(msg)
+
     params = {
         "server": server,
-        "name": name
+        "name": name,
+        "ticket": ticket
     }
     req_msg, data = await source.get_data_from_jx3api(url=url, params=params)
     if req_msg != 'success':

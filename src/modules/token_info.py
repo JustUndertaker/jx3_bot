@@ -28,8 +28,32 @@ class TokenInfo(Model):
         :返回
             * list[dict]，dict{"token":"","alive":""}
         '''
-        record = await cls.get_or_none(bot_id=bot_id).values("token", "alive")
+        record = await cls.filter(bot_id=bot_id).values("token", "alive")
         return record
+
+    @classmethod
+    async def get_alive_token(cls, bot_id: int) -> list[str]:
+        '''
+        :说明
+            获取可用的token列表，返回[]
+
+        :参数
+            * bot_id：机器人QQ
+
+        :返回
+            * list[str]
+        '''
+        record = await cls.filter(bot_id=bot_id, alive=True).values("token")
+        req_list = [one['token'] for one in record]
+        return req_list
+
+    @classmethod
+    async def change_alive(cls, bot_id: int, token: str, alive: bool):
+        '''改变token的有效性'''
+        record = await cls.get_or_none(bot_id=bot_id, token=token)
+        if record is not None:
+            record.alive = alive
+            await record.save(update_fields=["alive"])
 
     @classmethod
     async def append_token(cls, bot_id: int, token: str) -> bool:
