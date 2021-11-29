@@ -354,8 +354,8 @@ def indicator_query_hanlde(data: list[dict]) -> list[dict]:
     return req_data
 
 
-async def _check_token(ticket: str) -> bool:
-    '''检测token是否有效'''
+async def _check_token(ticket: str) -> str:
+    '''检测token是否有效，返回msg值'''
     url = config.get('jx3-url')+'/token/validity'
     params = {
         'ticket': ticket
@@ -363,20 +363,18 @@ async def _check_token(ticket: str) -> bool:
     try:
         req_url = await jx3_client.get(url=url, params=params)
         req = req_url.json()
-        code = req['code']
-        return (code == 200)
-    except Exception:
-        return False
+        msg = req['msg']
+        return msg
+    except Exception as e:
+        return str(e)
 
 
-async def get_token(bot_id: int) -> Optional[str]:
-    '''获取一条token'''
+async def get_token(bot_id: int) -> Tuple[str, str]:
+    '''获取一条token，返回msg，token'''
     token_list = await TokenInfo.get_alive_token(bot_id)
     for one_token in token_list:
         # 验证token
-        flag = await _check_token(one_token)
-        if flag:
-            return one_token
-        else:
-            await TokenInfo.change_alive(bot_id, one_token, False)
-    return None
+        msg = await _check_token(one_token)
+        return msg, one_token
+
+    return "没有找到合适的ticket", ""

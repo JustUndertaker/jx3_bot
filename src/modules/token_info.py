@@ -1,3 +1,5 @@
+import random
+
 from tortoise import fields
 from tortoise.models import Model
 
@@ -45,6 +47,7 @@ class TokenInfo(Model):
         '''
         record = await cls.filter(bot_id=bot_id, alive=True).values("token")
         req_list = [one['token'] for one in record]
+        random.shuffle(req_list)
         return req_list
 
     @classmethod

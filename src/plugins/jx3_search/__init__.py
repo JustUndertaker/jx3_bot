@@ -177,9 +177,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await equipquery.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await equipquery.finish(msg)
 
     params = {
@@ -648,9 +648,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipity.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await serendipity.finish(msg)
 
     params = {
@@ -704,9 +704,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await serendipityList.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await serendipityList.finish(msg)
 
     params = {
@@ -827,9 +827,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await seniority_query.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await seniority_query.finish(msg)
     params = {
         "server": server,
@@ -880,9 +880,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await indicator.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await indicator.finish(msg)
 
     params = {
@@ -939,9 +939,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await awesome_query.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await awesome_query.finish(msg)
 
     params = {
@@ -991,9 +991,9 @@ async def _(bot: Bot, event: GroupMessageEvent):
         msg = f"[{app_name}]模块冷却中({left_cd})"
         await teamcdlist.finish(msg)
 
-    ticket = await source.get_token(bot_id)
-    if ticket is None:
-        msg = "请求失败，未找到合适的ticket！"
+    _msg, ticket = await source.get_token(bot_id)
+    if _msg != 'success':
+        msg = f"请求失败，{_msg}！"
         await teamcdlist.finish(msg)
 
     params = {
