@@ -91,7 +91,7 @@ default:
   # 群默认晚安开关
   robot-goodnight-status: true
   # 默认晚安说辞
-  robot-goodnight: 小团子要去睡觉了，大家晚安……
+  robot-goodnight: 我要去睡觉了，大家晚安……
   # 是否开启智能私聊，开启后私聊机器人会获得回复
   private-chat: true
   # 离线bot数据清理时间，单位：小时
