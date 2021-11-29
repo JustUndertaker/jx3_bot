@@ -20,12 +20,6 @@ async def bot_disconnect(bot_id: int) -> None:
     await BotInfo.bot_disconnect(bot_id)
 
 
-async def get_bot_group_list(bot_id: int) -> list[int]:
-    '''获取机器人开启群组名单'''
-    group_list = await GroupInfo.get_group_list(bot_id)
-    return group_list
-
-
 async def clean_bot(outtime: int) -> int:
     '''清理bot数据，返回清理bot数量'''
     bot_list = await BotInfo.get_disconnect_bot()

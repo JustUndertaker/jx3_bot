@@ -204,6 +204,12 @@ async def remove_token(bot_id: int, token: str) -> bool:
     return await TokenInfo.remove_token(bot_id, token)
 
 
+async def get_bot_group_list(bot_id: int) -> list[int]:
+    '''获取机器人开启群组名单'''
+    group_list = await GroupInfo.get_group_list(bot_id)
+    return group_list
+
+
 async def check_token(ticket: str) -> Tuple[bool, str]:
     '''检查token有效性'''
     url = config.get('jx3-api').get('jx3-url')+'/token/validity'
