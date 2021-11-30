@@ -97,10 +97,8 @@ borodcast = on_regex(pattern=r"^广播 [0-9]+ ", permission=OWNER, priority=2, b
 # 设置昵称
 set_nickname = on_regex(pattern=r"^设置昵称 [\u4E00-\u9FA5A-Za-z0-9_]+$", permission=OWNER, priority=2, block=True)
 
-# 增加token
-add_token = on_regex(pattern=r"^^ticket [^\s\u4e00-\u9fa5]+$", permission=OWNER, priority=2, block=True)
-# 查看token
-check_token = on_regex(pattern=r"^ticket$", permission=OWNER, priority=2, block=True)
+# ticket管理器
+token_manager = on_regex(pattern=r"^ticket$", permission=OWNER, priority=2, block=True)
 
 
 @someone_add_me.handle()
@@ -377,27 +375,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     await set_nickname.finish(msg)
 
 
-@add_token.handle()
-async def _(bot: Bot, event: PrivateMessageEvent):
-    '''增加一条ticket'''
-    bot_id = int(bot.self_id)
-    token = event.get_plaintext().split(" ")[-1]
-    # 验证token
-    alive, req_msg = await source.check_token(ticket=token)
-    if not alive:
-        msg = f"添加ticket失败，{req_msg}。"
-        await add_token.finish(msg)
-
-    flag = await source.add_token(bot_id, token)
-    if flag:
-        msg = "添加ticket成功了！"
-    else:
-        msg = "添加ticket失败，ticket已存在！"
-
-    await add_token.finish(msg)
-
-
-@check_token.handle()
+@token_manager.handle()
 async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     '''查看ticket'''
     bot_id = int(bot.self_id)
@@ -412,10 +390,10 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     img = await get_html_screenshots(pagename, data)
     msg = MessageSegment.image(img)
 
-    await check_token.send(msg)
+    await token_manager.send(msg)
 
 
-@check_token.got(key="got")
+@token_manager.got(key="got")
 async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     '''等待后续命令'''
     bot_id = int(bot.self_id)
@@ -425,23 +403,41 @@ async def _(bot: Bot, event: PrivateMessageEvent, state: T_State):
     match = re.match(pattern=r"^退出$", string=text)
     if match:
         msg = "退出ticket管理。"
-        await check_token.finish(msg)
+        await token_manager.finish(msg)
+
+    match = re.match(pattern=r"^增加 [^\s\u4e00-\u9fa5]+$", string=text)
+    if match:
+        token = text.split(" ")[-1]
+        # 验证token
+        alive, req_msg = await source.check_token(ticket=token)
+
+        if alive:
+            flag = await source.add_token(bot_id, token)
+            if flag:
+                msg = "添加ticket成功了！退出管理"
+                await token_manager.finish(msg)
+            else:
+                msg = "添加ticket失败，ticket已存在！"
+                await token_manager.reject(msg)
+        else:
+            msg = f"添加ticket失败，{req_msg}。"
+            await token_manager.send(msg)
 
     match = re.match(pattern=r"^删除 [0-9]+$", string=text)
     if not match:
-        msg = "输入“删除 [序号]”删除ticket，输入“退出”结束管理"
-        await check_token.reject(msg)
+        msg = "输入“增加 [ticket]”新增ticket值\n输入“删除 [序号]”删除ticket\n输入“退出”结束管理"
+        await token_manager.reject(msg)
 
     count = int(text.split(' ')[-1])
     try:
         token = token_list[count-1]['token']
     except Exception:
         msg = "输入序号有误!请重新输入。"
-        await check_token.reject(msg)
+        await token_manager.reject(msg)
 
     flag = await source.remove_token(bot_id, token)
     if flag:
         msg = "已删除该ticket！退出管理。"
     else:
         msg = "删除ticket失败！退出管理。"
-    await check_token.finish(msg)
+    await token_manager.finish(msg)
