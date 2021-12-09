@@ -23,7 +23,7 @@ export.ignore = False  # 插件管理器忽略此插件
 daily = on_regex(pattern=r"(^日常$)|(^日常 [\u4e00-\u9fa5]+$)", permission=GROUP, priority=5, block=True)
 
 # 装备查询
-equipquery_regex = r"(^((装备)|(属性)) [(\u4e00-\u9fa5)|(@)]+$)|(^((装备)|(属性)) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+equipquery_regex = r"(^((装备)|(属性)) [(\u4e00-\u9fa5)|(1-9)|(@)]+$)|(^((装备)|(属性)) [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(1-9)|(@)]+$)"
 equipquery = on_regex(pattern=equipquery_regex, permission=GROUP, priority=5, block=True)
 
 # 开服查询
@@ -72,7 +72,7 @@ update_query = on_regex(pattern=update_regex, permission=GROUP, priority=5, bloc
 price_query = on_regex(pattern=r"^物价 [\u4e00-\u9fa5]+$", permission=GROUP, priority=5, block=True)
 
 # 奇遇查询
-serendipity = on_regex(pattern=r"(^奇遇 [(\u4e00-\u9fa5)|(@)]+$)|(^奇遇 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)",
+serendipity = on_regex(pattern=r"(^奇遇 [(\u4e00-\u9fa5)|(1-9)|(@)]+$)|(^奇遇 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(1-9)|(@)]+$)",
                        permission=GROUP, priority=5, block=True)
 
 # 奇遇列表
@@ -90,7 +90,7 @@ seniority_regex = r"(^资历排行 [\u4e00-\u9fa5]+$)|(^资历排行 [\u4e00-\u9
 seniority_query = on_regex(pattern=seniority_regex, permission=GROUP, priority=5, block=True)
 
 # 战绩总览查询
-indicator_regex = r"(^战绩 [(\u4e00-\u9fa5)|(@)]+$)|(^战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+indicator_regex = r"(^战绩 [(\u4e00-\u9fa5)|(1-9)|(@)]+$)|(^战绩 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(1-9)|(@)]+$)"
 indicator = on_regex(pattern=indicator_regex, permission=GROUP, priority=5, block=True)
 
 # 名剑排行查询
@@ -98,7 +98,7 @@ awesome_query_regex = r"(^名剑排行 [0-9]+$)|(^名剑排行$)"
 awesome_query = on_regex(pattern=awesome_query_regex, permission=GROUP, priority=5, block=True)
 
 # 团本记录查询
-teamcdlist_regex = r"(^副本记录 [(\u4e00-\u9fa5)|(@)]+$)|(^副本记录 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(@)]+$)"
+teamcdlist_regex = r"(^副本记录 [(\u4e00-\u9fa5)|(1-9)|(@)]+$)|(^副本记录 [\u4e00-\u9fa5]+ [(\u4e00-\u9fa5)|(1-9)|(@)]+$)"
 teamcdlist = on_regex(pattern=teamcdlist_regex, permission=GROUP, priority=5, block=True)
 
 
