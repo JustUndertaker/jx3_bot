@@ -6,21 +6,17 @@ import websockets
 from nonebot import get_bots
 from nonebot.message import handle_event
 from src.utils.config import config
-from src.utils.jx3_event import Jx3EventList
+from src.utils.jx3_event import create_jx3_event
 from src.utils.log import logger
 from websockets.exceptions import (ConnectionClosed, ConnectionClosedError,
                                    ConnectionClosedOK)
 from websockets.legacy.client import WebSocketClientProtocol
 
 ws_connect: WebSocketClientProtocol
-'''
-ws全局链接
-'''
+'''ws全局链接'''
 
 loop: AbstractEventLoop
-'''
-事件循环池
-'''
+'''事件循环池'''
 
 
 def init():
@@ -67,16 +63,11 @@ async def _task():
             data_recv = await ws_connect.recv()
             data = json.loads(data_recv)
             msg_type: int = data['type']
-            event = None
-            for event_type in Jx3EventList:
-                if msg_type == event_type.get_api_type():
-                    event = event_type(data)
-                    break
+            event = create_jx3_event(msg_type, data)
 
             if event is not None:
                 # 服务器推送，对所有机器人广播事件
-                log = _get_recv_log(data)
-                logger.debug(log)
+                logger.debug(event.log)
                 bots = get_bots()
                 for _, one_bot in bots.items():
                     await handle_event(one_bot, event)
@@ -87,29 +78,3 @@ async def _task():
         else:
             logger.error('jx3_api > 链接被关闭！')
         logger.error(e)
-
-
-def _get_recv_log(data: dict) -> str:
-    '''
-    返回服务器推送日志
-    '''
-    recv_type = data.get('type')
-    recv_data: dict = data.get('data')
-    if recv_type == 2001:
-        server = recv_data.get('server')
-        _stauts = recv_data.get('stauts')
-        if _stauts == 1:
-            status = "已开服"
-        else:
-            status = "已维护"
-        log = f"开服推送事件：[{server}]状态-{status}"
-    elif recv_type == 2002:
-        news_type = recv_data.get('type')
-        news_tittle = recv_data.get('tittle')
-        log = f"[{news_type}]事件：{news_tittle}"
-    elif recv_type == 2003:
-        server = recv_data.get('server')
-        name = recv_data.get('name')
-        serendipity = recv_data.get('serendipity')
-        log = f"奇遇推送事件：[{server}]的[{name}]抱走了奇遇：{serendipity}"
-    return log

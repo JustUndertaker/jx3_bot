@@ -1,5 +1,5 @@
 import time
-from typing import Optional, Union
+from typing import Optional
 
 from nonebot.adapters import Event as BaseEvent
 from nonebot.adapters.cqhttp.message import Message
@@ -15,6 +15,11 @@ class RecvEvent(BaseEvent):
     __event__ = "jx3_api"
     message_type: str = "jx3_api"
     post_type: Optional[str]
+
+    @property
+    def log(self) -> str:
+        '''事件日志内容'''
+        return ""
 
     @classmethod
     def get_api_type(cls):
@@ -61,13 +66,9 @@ class OpenServerRecvEvent(RecvEvent):
     __event__ = "open_server_recv"
     post_type = "open_server_recv"
     server: Optional[str]
-    '''
-    服务器名
-    '''
+    '''服务器名'''
     status: Optional[bool]
-    '''
-    服务器状态
-    '''
+    '''服务器状态'''
 
     def __init__(self, all_data: dict):
         '''
@@ -79,9 +80,14 @@ class OpenServerRecvEvent(RecvEvent):
         status = data.get('status')
         self.status = (True if status == 1 else False)
 
-    @classmethod
-    def get_api_type(cls):
-        return 2001
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        if self.status == 1:
+            status = "已开服"
+        else:
+            status = "已维护"
+        log = f"开服推送事件：[{self.server}]状态-{status}"
+        return log
 
 
 class NewsRecvEvent(RecvEvent):
@@ -91,21 +97,13 @@ class NewsRecvEvent(RecvEvent):
     __event__ = "news_recv"
     post_type = "news_recv"
     news_type: Optional[str]
-    '''
-    新闻类型，一般为官方新闻
-    '''
+    '''新闻类型'''
     news_tittle: Optional[str]
-    '''
-    新闻标题
-    '''
+    '''新闻标题'''
     news_url: Optional[str]
-    '''
-    新闻url链接
-    '''
+    '''新闻url链接'''
     news_date: Optional[str]
-    '''
-    新闻日期
-    '''
+    '''新闻日期'''
 
     def __init__(self, all_data: dict):
         '''
@@ -118,9 +116,10 @@ class NewsRecvEvent(RecvEvent):
         self.news_url = data.get('url')
         self.news_date = data.get('date')
 
-    @classmethod
-    def get_api_type(cls):
-        return 2002
+    @overrides
+    def log(self) -> str:
+        log = f"[{self.news_type}]事件：{self.news_tittle}"
+        return log
 
 
 class AdventureRecvEvent(RecvEvent):
@@ -130,21 +129,13 @@ class AdventureRecvEvent(RecvEvent):
     __event__ = "adventure_recv"
     post_type = "adventure_recv"
     server: Optional[str]
-    '''
-    服务器名
-    '''
+    '''服务器名'''
     name: Optional[str]
-    '''
-    玩家名
-    '''
+    '''玩家名'''
     time: Optional[str]
-    '''
-    触发时间
-    '''
+    '''触发时间'''
     serendipity: Optional[str]
-    '''
-    奇遇名
-    '''
+    '''奇遇名'''
 
     def __init__(self, all_data: dict):
         '''
@@ -159,20 +150,18 @@ class AdventureRecvEvent(RecvEvent):
         self.time = time.strftime('%m/%d %H:%M', start_trans)
         self.serendipity = data.get('serendipity')
 
-    @classmethod
-    def get_api_type(cls):
-        return 2003
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        log = f"奇遇推送事件：[{self.server}]的[{self.name}]抱走了奇遇：{self.serendipity}"
+        return log
 
 
-Jx3EventType = Union[
-    None,
-    OpenServerRecvEvent,
-    NewsRecvEvent,
-    AdventureRecvEvent
-]
-
-Jx3EventList = [
-    OpenServerRecvEvent,
-    NewsRecvEvent,
-    AdventureRecvEvent
-]
+def create_jx3_event(_type: int, data: dict) -> Optional[RecvEvent]:
+    '''根据type值返回事件实例'''
+    if _type == 2001:
+        return OpenServerRecvEvent(data)
+    if _type == 2002:
+        return NewsRecvEvent(data)
+    if _type == 2003:
+        return AdventureRecvEvent(data)
+    return None
