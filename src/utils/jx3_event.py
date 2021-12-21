@@ -158,9 +158,9 @@ class AdventureRecvEvent(RecvEvent):
 
 def create_jx3_event(_type: int, data: dict) -> Optional[RecvEvent]:
     '''根据type值返回事件实例'''
-    if _type == 2001:
+    if _type == 2011:
         return OpenServerRecvEvent(data)
-    if _type == 2002:
+    if _type == 2012:
         return NewsRecvEvent(data)
     if _type == 2003:
         return AdventureRecvEvent(data)
