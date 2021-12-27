@@ -67,7 +67,7 @@ async def _task():
 
             if event is not None:
                 # 服务器推送，对所有机器人广播事件
-                logger.debug(event.log)
+                logger.debug(event.log())
                 bots = get_bots()
                 for _, one_bot in bots.items():
                     await handle_event(one_bot, event)
