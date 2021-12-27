@@ -156,6 +156,140 @@ class AdventureRecvEvent(RecvEvent):
         return log
 
 
+class HorseRefreshEvent(RecvEvent):
+    '''
+    马驹刷新事件
+    '''
+    __event__ = "horse_refesh"
+    post_type = "horse_refesh"
+    server: Optional[str]
+    '''服务器名'''
+    map: Optional[str]
+    '''刷新地图'''
+    min: Optional[int]
+    '''时间范围min'''
+    max: Optional[int]
+    '''时间范围max'''
+    time: Optional[str]
+    '''推送时间'''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        data: dict = all_data.get('data')
+        self.server = data.get('server')
+        self.map = data.get('map')
+        self.min = data.get('min')
+        self.max = data.get('max')
+        get_time = data.get('time')
+        start_trans = time.localtime(get_time)
+        self.time = time.strftime('%H:%M:%S', start_trans)
+
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        log = f"马驹刷新推送：[{self.server}]的[{self.map}]将要在 {str(self.min)}-{str(self.max)} 分后刷新马驹。"
+        return log
+
+
+class HorseCatchedEvent(RecvEvent):
+    '''
+    马驹被抓事件
+    '''
+    __event__ = "horse_catched"
+    post_type = "horse_catched"
+    server: Optional[str]
+    '''服务器名'''
+    name: Optional[str]
+    '''触发角色名'''
+    map: Optional[str]
+    '''地图'''
+    horse: Optional[str]
+    '''马驹名'''
+    time: Optional[str]
+    '''事件时间'''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        data: dict = all_data.get('data')
+        self.server = data.get('server')
+        self.map = data.get('map')
+        self.name = data.get('name')
+        self.horse = data.get('horse')
+        get_time = data.get('time')
+        start_trans = time.localtime(get_time)
+        self.time = time.strftime('%H:%M:%S', start_trans)
+
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        log = f"马驹被抓事件：[{self.server}]的[{self.name}]在[{self.map}]捕获了 {self.horse} 。"
+        return log
+
+
+class FuyaoRefreshEvent(RecvEvent):
+    '''
+    扶摇开启事件
+    '''
+    __event__ = "fuyao_refresh"
+    post_type = "fuyao_refresh"
+    server: Optional[str]
+    '''服务器名'''
+    time: Optional[str]
+    '''事件时间'''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        data: dict = all_data.get('data')
+        self.server = data.get('server')
+        get_time = data.get('time')
+        start_trans = time.localtime(get_time)
+        self.time = time.strftime('%H:%M:%S', start_trans)
+
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        log = f"扶摇刷新事件：[{self.server}]的扶摇开始刷新 。"
+        return log
+
+
+class FuyaoCatchedEvent(RecvEvent):
+    '''
+    扶摇点名事件
+    '''
+    __event__ = "fuyao_catched"
+    post_type = "fuyao_catched"
+    server: Optional[str]
+    '''服务器名'''
+    names: Optional[list[str]]
+    '''点名角色组'''
+    time: Optional[str]
+    '''点名时间'''
+
+    def __init__(self, all_data: dict):
+        '''
+        重写初始化函数
+        '''
+        super().__init__()
+        data: dict = all_data.get('data')
+        self.server = data.get('server')
+        self.names = data.get('name')
+        get_time = data.get('time')
+        start_trans = time.localtime(get_time)
+        self.time = time.strftime('%H:%M:%S', start_trans)
+
+    @overrides(RecvEvent)
+    def log(self) -> str:
+        name = ",".join(self.names)
+        log = f"扶摇点名事件：[{self.server}]的扶摇点名了，玩家[{name}] 。"
+        return log
+
+
 def create_jx3_event(_type: int, data: dict) -> Optional[RecvEvent]:
     '''根据type值返回事件实例'''
     # 开服推送
@@ -167,4 +301,16 @@ def create_jx3_event(_type: int, data: dict) -> Optional[RecvEvent]:
     # 奇遇推送
     if _type == 2000:
         return AdventureRecvEvent(data)
+    # 马驹刷新
+    if _type == 2001:
+        return HorseRefreshEvent(data)
+    # 马驹捕获
+    if _type == 2002:
+        return HorseCatchedEvent(data)
+    # 扶摇刷新
+    if _type == 2003:
+        return FuyaoRefreshEvent(data)
+    # 扶摇点名
+    if _type == 2004:
+        return FuyaoCatchedEvent(data)
     return None
