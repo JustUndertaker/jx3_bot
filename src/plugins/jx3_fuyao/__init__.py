@@ -33,7 +33,8 @@ async def _(bot: Bot, event: FuyaoRefreshEvent):
     for group in group_list:
         group_id = group['group_id']
         group_server = await source.get_server(bot_id, group_id)
-        if group_server == server:
+        status = await source.get_robot_status(bot_id, group_id)
+        if group_server == server and status:
             try:
                 await bot.send_group_msg(group_id=group_id, message=msg)
                 await asyncio.sleep(random.uniform(0.3, 0.5))
@@ -57,7 +58,8 @@ async def _(bot: Bot, event: FuyaoCatchedEvent):
     for group in group_list:
         group_id = group['group_id']
         group_server = await source.get_server(bot_id, group_id)
-        if group_server == server:
+        status = await source.get_robot_status(bot_id, group_id)
+        if group_server == server and status:
             try:
                 await bot.send_group_msg(group_id=group_id, message=msg)
                 await asyncio.sleep(random.uniform(0.3, 0.5))
