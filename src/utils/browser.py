@@ -57,7 +57,7 @@ async def get_html_screenshots(pagename: str, data: dict = None) -> str:
         * str：截图数据base64编码数据
     '''
     global browser
-    if browser is None:
+    if not browser:
         await browser_init()
 
     page = await browser.new_page()
