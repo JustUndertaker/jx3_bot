@@ -4,7 +4,7 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import NewsRecvEvent
-from utils.utils import GroupList_Async
+from src.utils.utils import GroupList_Async
 
 from . import data_source as source
 
