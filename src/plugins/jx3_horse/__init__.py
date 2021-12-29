@@ -16,11 +16,11 @@ export.default_status = True  # 插件默认开关
 export.ignore = False  # 插件管理器忽略此插件
 
 
-hores_refresh = on(type="hores_refresh", priority=5, block=True)  # 马驹刷新
-hores_catched = on(type="hores_catched", priority=5, block=True)  # 马驹被抓
+horse_refresh = on(type="horse_refresh", priority=5, block=True)  # 马驹刷新
+horse_catched = on(type="horse_catched", priority=5, block=True)  # 马驹被抓
 
 
-@hores_refresh.handle()
+@horse_refresh.handle()
 async def _(bot: Bot, event: HorseRefreshEvent):
     '''
     马驹刷新事件
@@ -42,10 +42,10 @@ async def _(bot: Bot, event: HorseRefreshEvent):
                 await asyncio.sleep(random.uniform(0.3, 0.5))
             except Exception:
                 pass
-    await hores_refresh.finish()
+    await horse_refresh.finish()
 
 
-@hores_catched.handle()
+@horse_catched.handle()
 async def _(bot: Bot, event: HorseCatchedEvent):
     '''
     马驹被抓事件
@@ -68,4 +68,4 @@ async def _(bot: Bot, event: HorseCatchedEvent):
                 await asyncio.sleep(random.uniform(0.3, 0.5))
             except Exception:
                 pass
-    await hores_catched.finish()
+    await horse_catched.finish()
