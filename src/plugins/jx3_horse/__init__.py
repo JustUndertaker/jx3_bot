@@ -4,6 +4,7 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import HorseCatchedEvent, HorseRefreshEvent
+from src.utils.utils import GroupList_Async
 
 from . import data_source as source
 
@@ -32,8 +33,7 @@ async def _(bot: Bot, event: HorseRefreshEvent):
     msg = f"[抓马监控] 时间：{get_time}\n{map} 将在[{mins}]后刷新马驹。"
 
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         status = await source.get_robot_status(bot_id, group_id)
         if group_server == server and status:
@@ -59,8 +59,7 @@ async def _(bot: Bot, event: HorseCatchedEvent):
     msg = f"[抓马监控] 时间：{get_time}\n{map} 的 {horse} 被 {name} 抓走了~"
 
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         status = await source.get_robot_status(bot_id, group_id)
         if group_server == server and status:

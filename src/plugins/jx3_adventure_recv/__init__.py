@@ -4,6 +4,7 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import AdventureRecvEvent
+from src.utils.utils import GroupList_Async
 
 from . import data_source as source
 
@@ -27,8 +28,7 @@ async def _(bot: Bot, event: AdventureRecvEvent):
     server = event.server
     msg = f'奇遇推送 {event.time}\n{event.serendipity} 被 {event.name} 抱走惹。'
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         if group_server == server:
             # 判断机器人开关

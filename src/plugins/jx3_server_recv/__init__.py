@@ -5,6 +5,7 @@ from datetime import datetime
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import OpenServerRecvEvent
+from src.utils.utils import GroupList_Async
 
 from . import data_source as source
 
@@ -34,8 +35,7 @@ async def _(bot: Bot, event: OpenServerRecvEvent):
     else:
         msg = f'时间{time_now}\n[{server}]维护惹。'
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         if group_server == server:
             # 判断机器人是否开启

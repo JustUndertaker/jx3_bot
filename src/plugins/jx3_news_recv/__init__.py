@@ -4,6 +4,7 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import NewsRecvEvent
+from utils.utils import GroupList_Async
 
 from . import data_source as source
 
@@ -31,8 +32,7 @@ async def _(bot: Bot, event: NewsRecvEvent):
 
     msg = f"[{news_type}]来惹\n标题：{news_tittle}\n链接：{news_url}\n日期：{news_date}"
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         status = await source.get_robot_status(bot_id, group_id)
         if status:
             try:

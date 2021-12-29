@@ -4,6 +4,7 @@ import random
 from nonebot.adapters.cqhttp import Bot
 from nonebot.plugin import export, on
 from src.utils.jx3_event import FuyaoCatchedEvent, FuyaoRefreshEvent
+from src.utils.utils import GroupList_Async
 
 from . import data_source as source
 
@@ -30,8 +31,7 @@ async def _(bot: Bot, event: FuyaoRefreshEvent):
     msg = f"[扶摇监控]\n扶摇九天在 {get_time} 开启了。"
 
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         status = await source.get_robot_status(bot_id, group_id)
         if group_server == server and status:
@@ -55,8 +55,7 @@ async def _(bot: Bot, event: FuyaoCatchedEvent):
     msg = f"[扶摇监控] 时间：{get_time}\n唐文羽点名了[{name}]。"
 
     group_list = await bot.get_group_list()
-    for group in group_list:
-        group_id = group['group_id']
+    async for group_id in GroupList_Async(group_list):
         group_server = await source.get_server(bot_id, group_id)
         status = await source.get_robot_status(bot_id, group_id)
         if group_server == server and status:

@@ -12,7 +12,7 @@ from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
 from src.utils.scheduler import scheduler
-from src.utils.utils import OWNER, get_nickname
+from src.utils.utils import OWNER, GroupList_Async, get_nickname
 
 from ..plugins_manager.data_source import plugin_init
 from . import data_source as source
@@ -38,7 +38,7 @@ async def _():
         count_closed = 0
         count_all = len(group_list)
         time_start = time.time()
-        for group_id in group_list:
+        async for group_id in GroupList_Async(group_list):
             goodnight_status = await source.get_goodnight_status(int(bot_id), group_id)
             if goodnight_status:
                 try:

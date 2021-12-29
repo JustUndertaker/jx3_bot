@@ -13,7 +13,7 @@ from nonebot.typing import T_State
 from src.utils.browser import get_html_screenshots
 from src.utils.config import config as baseconfig
 from src.utils.log import logger
-from src.utils.utils import OWNER, get_nickname
+from src.utils.utils import OWNER, GroupList_Async, get_nickname
 
 from . import data_source as source
 
@@ -326,7 +326,7 @@ async def _(bot: Bot, event: PrivateMessageEvent):
     time_start = time.time()
     count_success = 0
     count_failed = 0
-    for group_id in group_list:
+    async for group_id in GroupList_Async(group_list):
         try:
             await bot.send_group_msg(group_id=group_id, message=get_msg)
             await asyncio.sleep(random.uniform(0.3, 0.5))
