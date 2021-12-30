@@ -160,8 +160,8 @@ class HorseRefreshEvent(RecvEvent):
     '''
     马驹刷新事件
     '''
-    __event__ = "horse_refesh"
-    post_type = "horse_refesh"
+    __event__ = "horse_refresh"
+    post_type = "horse_refresh"
     server: Optional[str]
     '''服务器名'''
     map: Optional[str]
