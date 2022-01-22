@@ -16,7 +16,8 @@ _✨基于[nonebot2](https://github.com/nonebot/nonebot2)的剑网三群聊机�
 </p>
 
 ## 通知
-由于数据站：[www.jx3api.com](https://www.jx3api.com)将于2022年1月1日关停，没有数据来源，本项目停止维护，感谢大家的陪伴，江湖有缘再见！
+项目是初学python写的，所以东西很乱很杂，维护起来异常困难，最终决定放弃这个项目的维护了。新开了个更加简单的坑：[mini_jx3_bot](https://github.com/JustUndertaker/mini_jx3_bot)，同样的味道，但是单用户，代码更好看了，欢迎使用。
+### 有什么问题也可加QQ群：776825118
 
 ## 简介
 基于nonebot2的剑网三的QQ群聊机器人，采用jx3api为数据接口，提供剑网三的一些查询，娱乐功能。
